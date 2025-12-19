@@ -1,15 +1,15 @@
 # 区块计划
 
-> 最后更新：2025-12-20（v2更新：新增多种普攻系统）
+> 最后更新：2025-12-20（v3更新：同步新增目录和文件）
 
 ## 项目概况
 
 - **项目名称**：御剑无双 (Sword Immortal)
 - **主要语言**：JavaScript (Phaser 3) + Markdown（设计文档）
 - **项目类型**：浏览器无双割草游戏 + Aide 工作流
-- **文件总数**：74（非 node_modules）[+21]
+- **文件总数**：81（非 node_modules）[+7]
 - **空目录数**：1（src/ui）
-- **代码行数**：约 7600 行 [+2750]
+- **代码行数**：约 7600 行
 
 ## 完整目录树
 
@@ -22,10 +22,12 @@ t1/
 │   ├── pending-items.json   待定项
 │   ├── decisions/           决策记录
 │   ├── diagrams/            流程图（6文件）
-│   ├── logs/                历史归档（6文件）
+│   ├── logs/                历史归档（7文件）[+1]
 │   ├── task-plans/          任务计划（5文件）
 │   └── project-docs/        项目文档（本目录）
-├── .github/                 GitHub 配置 [新增]
+├── .claude/                 Claude 配置目录 [新增]
+│   └── settings.local.json  本地设置
+├── .github/                 GitHub 配置
 │   └── workflows/
 │       └── deploy.yml       CI/CD 自动部署
 ├── docs/                    游戏设计文档 (GDD)
@@ -71,8 +73,11 @@ t1/
 │   └── ui/                  [空目录] UI 组件
 ├── dist/                    [ignored] 构建输出
 ├── node_modules/            [ignored] npm 依赖
+├── public/                  公共静态资源 [新增]
+│   └── assets/sprites/      角色精灵（7个SVG）
 ├── index.html               HTML 入口
 ├── package.json             npm 配置
+├── package-lock.json        npm 依赖锁定 [新增]
 ├── vite.config.js           Vite 构建配置
 ├── .gitignore               Git 忽略配置
 ├── CHANGELOG.md             变更日志
@@ -85,9 +90,9 @@ t1/
 ### 区块 1：项目根目录
 
 - **路径**：`./`（根目录文件）
-- **文件数**：7
+- **文件数**：13（+6）
 - **空目录**：0
-- **状态**：✅ 已完成
+- **状态**：✅ 已完成（2025-12-20 v3 更新）
 - **文档**：[01-root.md](./blocks/01-root.md)
 - **包含文件**：
   - `README.md` - 项目说明
@@ -95,8 +100,12 @@ t1/
   - `task-now.md` - 当前任务
   - `index.html` - HTML 入口页面
   - `package.json` - npm 配置
+  - `package-lock.json` - npm 依赖锁定 [新增]
   - `vite.config.js` - Vite 构建配置
   - `.gitignore` - Git 忽略配置
+  - `.github/workflows/deploy.yml` - CI/CD 部署配置
+  - `.claude/settings.local.json` - Claude 本地设置 [新增]
+  - `public/assets/sprites/` - 公共精灵资源（7个SVG）[新增]
 
 ### 区块 2：docs 文档目录
 
@@ -112,9 +121,9 @@ t1/
 ### 区块 3：.aide 工作流目录
 
 - **路径**：`.aide/`
-- **文件数**：27（含 project-docs 自引用）
+- **文件数**：28（+1）
 - **空目录**：0
-- **状态**：✅ 已完成（2025-12-20 v2 更新）
+- **状态**：✅ 已完成（2025-12-20 v3 更新）
 - **文档**：[03-aide.md](./blocks/03-aide.md)
 - **包含内容**：
   - `config.toml` - Aide 核心配置
@@ -123,7 +132,7 @@ t1/
   - `pending-items.json` - 待定项数据
   - `decisions/` - 决策记录（2文件）
   - `diagrams/` - 流程图（6文件）
-  - `logs/` - 历史归档（6文件）
+  - `logs/` - 历史归档（7文件）[+1]
   - `task-plans/` - 任务计划（5文件）
   - `project-docs/` - 项目文档（自引用）
 
@@ -157,8 +166,8 @@ t1/
 | 项目 | 数量 |
 |------|------|
 | 区块总数 | 4 |
-| 总目录数 | 20（含 1 个空目录）|
-| 总文件数 | 74（非 node_modules）|
+| 总目录数 | 23（含 1 个空目录）|
+| 总文件数 | 81（非 node_modules）|
 | 被忽略项 | 2（node_modules/, dist/）|
 | JavaScript 代码 | 约 7600 行 |
 | 文档行数 | 约 2500 行 |
@@ -167,6 +176,8 @@ t1/
 
 | 日期 | 区块 | 变更内容 |
 |------|------|----------|
+| 2025-12-20 | root | **v3 更新**：新增 .claude/ 目录、public/ 目录（7个SVG）、package-lock.json |
+| 2025-12-20 | aide | logs/ 目录新增 1 个历史任务归档文件 |
 | 2025-12-20 | src | **v2 更新**：新增 assets/ 目录（11个SVG）、attacks/ 目录（7个攻击类）、AttackSelectScene、TestScene、AttackManager |
 | 2025-12-20 | aide | logs/ 目录新增 6 个历史任务归档文件 |
 | 2025-12-20 | src | 新增 10 个文件：MainMenuScene、BuffSelectionScene、ComboSystem、DamageSystem、SkillManager、RoguelikeSystem、WaveManager、VFXManager、AudioManager、BuffData |

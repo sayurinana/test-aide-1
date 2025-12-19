@@ -1,7 +1,7 @@
 # 《御剑无双》项目导览
 
 > 本文档面向 LLM，用于快速了解项目结构和脉络。
-> 最后更新：2025-12-20（v2更新：新增多种普攻系统）
+> 最后更新：2025-12-20（v3更新：同步新增目录和文件）
 
 ## 项目简介
 
@@ -27,20 +27,24 @@
 
 ```
 t1/
-├── .github/                 GitHub 配置
-│   └── workflows/
-│       └── deploy.yml       CI/CD 自动部署
 ├── .aide/                   Aide 工作流数据目录
 │   ├── config.toml          核心配置
 │   ├── flow-status.json     任务进度
 │   ├── decisions/           决策记录
 │   ├── diagrams/            流程图（6文件）
-│   ├── logs/                历史归档（6文件）
+│   ├── logs/                历史归档（7文件）[+1]
 │   ├── task-plans/          任务计划（5个子计划）
 │   └── project-docs/        项目文档（本目录）
+├── .claude/                 Claude 配置目录 [新增]
+│   └── settings.local.json  本地设置
+├── .github/                 GitHub 配置
+│   └── workflows/
+│       └── deploy.yml       CI/CD 自动部署
 ├── docs/                    游戏设计文档 (GDD)
 │   ├── gdd-index.md         GDD 总索引
 │   └── gdd-chapter1~8.md    8个章节
+├── public/                  公共静态资源 [新增]
+│   └── assets/sprites/      角色精灵（7个SVG）
 ├── src/                     源代码目录
 │   ├── main.js              游戏入口
 │   ├── config.js            配置常量（含技能、敌人类型、普攻类型）
@@ -78,6 +82,7 @@ t1/
 ├── node_modules/            [ignored] npm 依赖
 ├── index.html               HTML 入口页面
 ├── package.json             npm 配置
+├── package-lock.json        npm 依赖锁定 [新增]
 ├── vite.config.js           Vite 构建配置
 ├── .gitignore               Git 忽略配置
 ├── CHANGELOG.md             变更日志
@@ -157,9 +162,9 @@ t1/
 
 | 区块 | 路径 | 文件数 | 说明 |
 |------|------|--------|------|
-| [项目根目录](./blocks/01-root.md) | `./` | 9 | 项目配置、说明、变更日志 |
+| [项目根目录](./blocks/01-root.md) | `./` | 13 | 项目配置、说明、变更日志、公共资源 |
 | [docs 文档目录](./blocks/02-docs.md) | `docs/` | 9 | 游戏设计文档 (GDD) 完整 8 章 |
-| [.aide 工作流目录](./blocks/03-aide.md) | `.aide/` | 27 | Aide 配置、进度、决策、计划 |
+| [.aide 工作流目录](./blocks/03-aide.md) | `.aide/` | 28 | Aide 配置、进度、决策、计划 |
 | [src 源码目录](./blocks/04-src.md) | `src/` | 39 | 游戏源代码（完整实现 + 多种普攻）|
 
 ## 快速导航
@@ -314,8 +319,8 @@ npm run build
 | 项目 | 数量 |
 |------|------|
 | 区块总数 | 4 |
-| 总目录数 | 20（含 1 个空目录）|
-| 总文件数 | 74（非 node_modules）|
+| 总目录数 | 23（含 1 个空目录）|
+| 总文件数 | 81（非 node_modules）|
 | 被忽略项 | 2（node_modules/, dist/）|
 | JavaScript 代码 | 约 7600 行 |
 | 文档行数 | 约 2500 行 |

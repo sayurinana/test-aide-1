@@ -1,7 +1,7 @@
 # 区块1：项目根目录
 
 > 路径：`./`（根目录文件）
-> 最后更新：2025-12-20
+> 最后更新：2025-12-20（v3更新）
 
 ## 概述
 
@@ -11,16 +11,20 @@
 
 ```
 ./
+├── .claude/                 Claude 配置目录 [新增]
+│   └── settings.local.json  本地设置
 ├── .github/                 GitHub 配置
 │   └── workflows/
 │       └── deploy.yml       CI/CD 自动部署
+├── public/                  公共静态资源 [新增]
+│   └── assets/sprites/      角色精灵（7个SVG）
 ├── .gitignore               Git 忽略配置
 ├── CHANGELOG.md             变更日志
 ├── README.md                项目说明
 ├── task-now.md              当前任务
-├── task-spec.md             任务细则
 ├── index.html               HTML 入口页面
 ├── package.json             npm 配置
+├── package-lock.json        npm 依赖锁定 [新增]
 └── vite.config.js           Vite 构建配置
 ```
 
@@ -31,12 +35,14 @@
 | README.md | 文档 | 95 | 项目主说明文件 |
 | CHANGELOG.md | 文档 | 190+ | 版本变更记录 |
 | task-now.md | 文档 | 1 | 原始任务描述 |
-| task-spec.md | 文档 | 45 | 当前任务细则 |
 | index.html | 入口 | 32 | HTML 入口页面 |
 | package.json | 配置 | 26 | npm 项目配置 |
+| package-lock.json | 配置 | 961 | npm 依赖锁定 [新增] |
 | vite.config.js | 配置 | 16 | Vite 构建配置 |
 | .gitignore | 配置 | 24 | Git 忽略规则 |
 | .github/workflows/deploy.yml | 配置 | 54 | GitHub Actions 部署工作流 |
+| .claude/settings.local.json | 配置 | 3 | Claude Code 本地设置 [新增] |
+| public/assets/sprites/*.svg | 资源 | - | 7个角色精灵 SVG [新增] |
 
 ## 核心内容
 
@@ -186,6 +192,46 @@
 | 系统 | `.DS_Store`, `Thumbs.db` |
 | 日志 | `*.log`, `npm-debug.log*` |
 | 环境 | `.env`, `.env.local` |
+
+---
+
+### .claude/settings.local.json - Claude 配置 [新增]
+
+**职责**：Claude Code CLI 工具的本地配置
+
+**配置内容**：
+- `spinnerTipsEnabled: false` - 禁用加载提示
+
+**说明**：此文件用于配置 Claude Code 命令行工具的本地行为，不同于项目根目录的 CLAUDE.md 指令文件。
+
+---
+
+### public/assets/sprites/ - 公共精灵资源 [新增]
+
+**职责**：存放用于生产环境的角色 SVG 精灵
+
+**文件清单**：
+| 文件 | 大小 | 说明 |
+|------|------|------|
+| player.svg | 1.2KB | 玩家角色精灵 |
+| boss.svg | 1.8KB | Boss 精灵 |
+| elite.svg | 1.2KB | 精英怪精灵 |
+| wolf.svg | 0.9KB | 狼人精灵 |
+| snake.svg | 1.0KB | 毒蛇精灵 |
+| shadow.svg | 0.8KB | 幽灵精灵 |
+| wraith.svg | 1.1KB | 灵魂精灵 |
+
+**说明**：与 `src/assets/sprites/` 内容相同，但 `public/` 目录下的文件会被 Vite 原样复制到构建输出，适用于需要运行时直接访问的场景。
+
+---
+
+### package-lock.json - npm 依赖锁定 [新增]
+
+**职责**：锁定项目依赖的精确版本
+
+**行数**：961 行
+
+**说明**：由 `npm install` 自动生成和更新，记录所有直接和间接依赖的精确版本，确保在不同环境下安装相同的依赖版本。
 
 ## 依赖关系
 
