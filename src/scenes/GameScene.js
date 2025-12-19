@@ -4,6 +4,7 @@
 
 import Phaser from 'phaser'
 import { WORLD, PLAYER, ENEMY } from '../config.js'
+import { Player } from '../entities/Player.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -19,6 +20,12 @@ export class GameScene extends Phaser.Scene {
 
     // 创建简单的背景网格
     this.createBackground()
+
+    // 创建玩家
+    this.player = new Player(this, WORLD.WIDTH / 2, WORLD.HEIGHT / 2)
+
+    // 相机跟随玩家
+    this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
 
     // 启动 HUD 场景
     this.scene.launch('HUDScene')
@@ -45,6 +52,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    // 游戏主循环
+    // 更新玩家
+    if (this.player) {
+      this.player.update(time, delta)
+    }
   }
 }

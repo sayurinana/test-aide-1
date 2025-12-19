@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 29,
+  "current_step": 30,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -222,7 +222,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 29,
-      "summary": "完成2.2游戏场景搭建: 世界边界+相机系统+网格背景"
+      "summary": "完成2.2游戏场景搭建: 世界边界+相机系统+网格背景",
+      "git_commit": "fbe33f2b922e1336aeb73eef7c61686374ee6712"
+    },
+    {
+      "timestamp": "2025-12-19T23:49:57+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 30,
+      "summary": "完成2.3玩家角色实现: WASD移动+鼠标朝向+几何渲染"
     }
   ],
   "source_branch": "master",
