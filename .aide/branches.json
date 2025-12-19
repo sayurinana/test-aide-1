@@ -105,7 +105,9 @@
       "task_id": "2025-12-20T07-20-24",
       "task_summary": "开始任务准备: 同步更新项目文档",
       "started_at": "2025-12-20T07:20:24+08:00",
-      "status": "active"
+      "status": "force-cleaned",
+      "end_commit": "92b1842901206fff5568534b4dc3fbce18c0866b",
+      "finished_at": "2025-12-20T07:24:08+08:00"
     }
   ]
 }
