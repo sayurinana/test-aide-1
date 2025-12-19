@@ -1,0 +1,41 @@
+@startuml bug-fix-flow
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title Bug修复任务执行流程
+
+start
+
+:读取任务文档;
+:分析3个Bug;
+
+partition "Bug #1: 敌人生成停止" {
+  :定位问题: RoguelikeSystem.js;
+  :修改 processLevelUpQueue();
+  :添加 waveState 检查;
+}
+
+partition "Bug #2: 测试模式失效" {
+  :定位问题: TestScene.js;
+  :修改 create();
+  :添加场景停止逻辑;
+}
+
+partition "Bug #3: 画面模糊" {
+  :定位问题: main.js;
+  :移除 resolution 属性;
+}
+
+:运行游戏验证;
+
+if (所有Bug修复?) then (是)
+  :更新 CHANGELOG.md;
+  :提交代码;
+  stop
+else (否)
+  :回退修复问题;
+  backward:重新分析;
+endif
+
+@enduml

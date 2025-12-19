@@ -1,0 +1,51 @@
+@startuml buff-selection-logic
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 强化选择逻辑流程（修复后）
+
+start
+
+:击杀敌人;
+
+fork
+  :WaveManager.onEnemyKilled();
+  if (波次完成?) then (是)
+    :waveState = 'reward';
+    :showBuffSelection();
+    :启动 BuffSelectionScene;
+  else (否)
+  endif
+fork again
+  :RoguelikeSystem.addExp();
+  if (升级?) then (是)
+    :加入 levelUpQueue;
+    :processLevelUpQueue();
+
+    if (waveState == 'reward'?) then (是)
+      #pink:延迟 500ms 重试;
+      note right: 修复点：等待波次选择完成
+    else (否)
+      :showLevelUpBuffSelection();
+    endif
+  else (否)
+  endif
+end fork
+
+:用户选择强化;
+
+if (是波次强化?) then (是)
+  :onBuffSelected();
+  :physics.resume();
+  :waveManager.onBuffSelected();
+  :waveState = 'idle';
+  :延迟后 startNextWave();
+else (否)
+  :onLevelUpBuffSelected();
+  :physics.resume();
+endif
+
+stop
+
+@enduml
