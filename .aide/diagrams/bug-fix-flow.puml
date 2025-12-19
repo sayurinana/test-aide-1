@@ -10,20 +10,20 @@ start
 :读取任务文档;
 :分析3个Bug;
 
-partition "Bug #1: 敌人生成停止" {
-  :定位问题: RoguelikeSystem.js;
-  :修改 processLevelUpQueue();
+partition "Bug1敌人生成停止" {
+  :定位问题 RoguelikeSystem.js;
+  :修改 processLevelUpQueue;
   :添加 waveState 检查;
 }
 
-partition "Bug #2: 测试模式失效" {
-  :定位问题: TestScene.js;
-  :修改 create();
+partition "Bug2测试模式失效" {
+  :定位问题 TestScene.js;
+  :修改 create 方法;
   :添加场景停止逻辑;
 }
 
-partition "Bug #3: 画面模糊" {
-  :定位问题: main.js;
+partition "Bug3画面模糊" {
+  :定位问题 main.js;
   :移除 resolution 属性;
 }
 
@@ -35,7 +35,7 @@ if (所有Bug修复?) then (是)
   stop
 else (否)
   :回退修复问题;
-  backward:重新分析;
+  stop
 endif
 
 @enduml
