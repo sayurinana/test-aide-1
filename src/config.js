@@ -32,10 +32,10 @@ export const ENEMY = {
 
 // 敌人类型配置
 export const ENEMY_TYPES = {
-  // 飘影 - 基础追踪型
+  // 幽灵 - 基础追踪型
   SHADOW: {
     id: 'shadow',
-    name: '飘影',
+    name: '幽灵',
     hp: 30,
     atk: 10,
     speed: 80,
@@ -45,10 +45,10 @@ export const ENEMY_TYPES = {
     score: 10
   },
 
-  // 妖狼 - 冲锋型
+  // 狼人 - 冲锋型
   WOLF: {
     id: 'wolf',
-    name: '妖狼',
+    name: '狼人',
     hp: 50,
     atk: 15,
     speed: 60,
@@ -61,10 +61,10 @@ export const ENEMY_TYPES = {
     score: 20
   },
 
-  // 蛇妖 - 远程投射型
+  // 毒蛇 - 远程投射型
   SNAKE: {
     id: 'snake',
-    name: '蛇妖',
+    name: '毒蛇',
     hp: 25,
     atk: 8,
     speed: 50,
@@ -77,10 +77,10 @@ export const ENEMY_TYPES = {
     score: 15
   },
 
-  // 怨魂 - 分裂型
+  // 灵魂 - 分裂型
   WRAITH: {
     id: 'wraith',
-    name: '怨魂',
+    name: '灵魂',
     hp: 40,
     atk: 8,
     speed: 70,
@@ -92,10 +92,10 @@ export const ENEMY_TYPES = {
     score: 25
   },
 
-  // 精英 - 邪修
+  // 精英怪
   ELITE: {
     id: 'elite',
-    name: '邪修',
+    name: '精英',
     hp: 200,
     atk: 25,
     speed: 60,
@@ -106,10 +106,10 @@ export const ENEMY_TYPES = {
     score: 100
   },
 
-  // Boss - 妖将
+  // Boss
   BOSS: {
     id: 'boss',
-    name: '妖将',
+    name: 'Boss',
     hp: 500,
     atk: 40,
     speed: 40,

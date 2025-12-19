@@ -1,6 +1,6 @@
 /**
- * 御剑无双 - 游戏入口
- * Sword Immortal - Game Entry
+ * 无尽幸存者 - 游戏入口
+ * Endless Survivor - Game Entry
  */
 
 import Phaser from 'phaser'

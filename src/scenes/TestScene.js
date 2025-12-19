@@ -501,7 +501,7 @@ export class TestScene extends Phaser.Scene {
     const overlay = this.add.rectangle(centerX, centerY, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.85)
     uiContainer.add(overlay)
 
-    const titleText = this.add.text(centerX, centerY - 180, '修炼结束', {
+    const titleText = this.add.text(centerX, centerY - 180, '游戏结束', {
       fontSize: '48px',
       fill: '#ff6464',
       fontFamily: 'Arial',

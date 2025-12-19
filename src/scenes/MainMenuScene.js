@@ -31,7 +31,7 @@ export class MainMenuScene extends Phaser.Scene {
     this.createBackground()
 
     // 游戏标题
-    const title = this.add.text(centerX, centerY - 150, '御剑无双', {
+    const title = this.add.text(centerX, centerY - 150, '无尽幸存者', {
       fontSize: '72px',
       fill: '#64c8ff',
       fontFamily: 'Arial',
@@ -50,14 +50,14 @@ export class MainMenuScene extends Phaser.Scene {
     })
 
     // 副标题
-    this.add.text(centerX, centerY - 80, 'Sword Immortal', {
+    this.add.text(centerX, centerY - 80, 'Endless Survivor', {
       fontSize: '24px',
       fill: '#888888',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
 
     // 开始按钮
-    const startButton = this.createButton(centerX, centerY + 30, '开始修炼', (event) => {
+    const startButton = this.createButton(centerX, centerY + 30, '开始游戏', (event) => {
       // Shift + 点击进入测试模式
       if (event && event.shiftKey) {
         this.startTestMode()

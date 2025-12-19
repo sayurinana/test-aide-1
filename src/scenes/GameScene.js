@@ -517,7 +517,7 @@ export class GameScene extends Phaser.Scene {
     uiContainer.add(overlay)
 
     // 标题
-    const titleText = this.add.text(centerX, centerY - 180, '修炼结束', {
+    const titleText = this.add.text(centerX, centerY - 180, '游戏结束', {
       fontSize: '48px',
       fill: '#ff6464',
       fontFamily: 'Arial',
