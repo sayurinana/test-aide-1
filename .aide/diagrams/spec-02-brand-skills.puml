@@ -1,0 +1,81 @@
+@startuml spec-02-brand-skills
+skinparam defaultFontName "Arial"
+skinparam dpi 300
+scale 0.4
+
+title 子计划 2：品牌重塑 + 技能系统
+
+|#LightBlue|品牌重塑|
+start
+:更新游戏名称;
+note right
+  - index.html
+  - MainMenuScene.js
+  - package.json
+  - README.md
+end note
+
+:移除仙侠文案;
+note right
+  - 技能名称
+  - 敌人名称
+  - UI 文案
+end note
+
+:调整视觉元素;
+note right
+  保留几何美术
+  调整配色方案
+end note
+
+|#LightGreen|技能设计|
+:设计 4 个通用技能;
+note right
+  Q - 加速 (Speed Boost)
+  E - 闪现 (Dash)
+  R - 无敌 (Shield)
+  Space - 治疗 (Heal)
+end note
+
+:创建技能 SVG 图标;
+note right
+  src/assets/skills/
+  - speed.svg
+  - dash.svg
+  - shield.svg
+  - heal.svg
+end note
+
+|#LightYellow|代码实现|
+:更新 config.js;
+note right
+  新技能配置
+  冷却/持续时间
+end note
+
+:重构 SkillManager.js;
+note right
+  移除旧 5 技能
+  实现新 4 技能
+end note
+
+:更新 HUDScene.js;
+note right
+  加载技能图标
+  更新技能栏显示
+end note
+
+:更新 BuffData.js;
+note right
+  移除旧技能强化
+  添加新技能强化
+end note
+
+|#Pink|验证|
+:验证品牌更新;
+:验证技能功能;
+:验证强化效果;
+
+stop
+
+@enduml
