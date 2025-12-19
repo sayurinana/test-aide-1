@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 32,
+  "current_step": 33,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -246,7 +246,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 32,
-      "summary": "完成2.5敌人基础实现: Enemy类+EnemySpawner+对象池"
+      "summary": "完成2.5敌人基础实现: Enemy类+EnemySpawner+对象池",
+      "git_commit": "1899bd6e60efad7fa3092061d4f452f0ee198a68"
+    },
+    {
+      "timestamp": "2025-12-19T23:54:17+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 33,
+      "summary": "完成2.6碰撞检测系统: 攻击判定+敌人碰撞+伤害计算"
     }
   ],
   "source_branch": "master",
