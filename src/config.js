@@ -10,24 +10,24 @@ export const WORLD = {
 
 // 玩家配置
 export const PLAYER = {
-  SPEED: 200,
+  SPEED: 220,             // 移动速度（略提升，手感更灵活）
   HP: 100,
-  ATK: 10,
-  ATTACK_RANGE: 80,
-  ATTACK_COOLDOWN: 400,
+  ATK: 12,                // 基础攻击（提升，让初期体验更爽）
+  ATTACK_RANGE: 85,       // 攻击范围（略大，更容易命中）
+  ATTACK_COOLDOWN: 350,   // 攻击冷却（降低，攻击更流畅）
   SIZE: 24,
   COLOR: 0x64c8ff  // 淡蓝色
 }
 
 // 敌人配置
 export const ENEMY = {
-  SPEED: 80,
-  HP: 30,
-  ATK: 10,
+  SPEED: 75,              // 基础速度（略降，让玩家更容易走位）
+  HP: 25,                 // 基础HP（降低，初期击杀更快）
+  ATK: 8,                 // 基础攻击（降低，减少初期压力）
   SIZE: 18,
   COLOR: 0xff6464,  // 红色
   SPAWN_INTERVAL: 1500,
-  MAX_COUNT: 100
+  MAX_COUNT: 150          // 最大敌人数（提升，支持更大规模战斗）
 }
 
 // 敌人类型配置
@@ -124,20 +124,20 @@ export const ENEMY_TYPES = {
 // 战斗系统配置
 export const COMBAT = {
   // 连击系统
-  COMBO_TIMEOUT: 2000,        // 连击超时时间 (ms)
-  COMBO_MULTIPLIER: 0.05,     // 每连击增加伤害百分比
-  MAX_COMBO_MULTIPLIER: 2.0,  // 最大连击倍率
+  COMBO_TIMEOUT: 2500,        // 连击超时时间（增加，更容易维持连击）
+  COMBO_MULTIPLIER: 0.04,     // 每连击增加伤害百分比（略降，防止过于强力）
+  MAX_COMBO_MULTIPLIER: 2.5,  // 最大连击倍率（提升，鼓励维持连击）
 
   // 击退效果
-  KNOCKBACK_FORCE: 200,       // 击退力度
-  KNOCKBACK_DURATION: 150,    // 击退持续时间 (ms)
+  KNOCKBACK_FORCE: 250,       // 击退力度（增强，更有打击感）
+  KNOCKBACK_DURATION: 180,    // 击退持续时间（增加）
 
   // 无敌帧
-  INVINCIBLE_DURATION: 500,   // 无敌帧持续时间 (ms)
+  INVINCIBLE_DURATION: 600,   // 无敌帧持续时间（增加，降低难度）
 
   // 暴击系统
-  CRIT_CHANCE: 0.05,          // 基础暴击率 5%
-  CRIT_MULTIPLIER: 1.5        // 暴击伤害倍率
+  CRIT_CHANCE: 0.08,          // 基础暴击率（提升到8%）
+  CRIT_MULTIPLIER: 1.8        // 暴击伤害倍率（提升，暴击更有反馈）
 }
 
 // 颜色配置

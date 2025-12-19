@@ -17,9 +17,9 @@ export class WaveManager {
     this.totalEnemiesInWave = 0
 
     // 波次配置
-    this.prepareTime = 3000  // 准备时间 3 秒
+    this.prepareTime = 2500  // 准备时间 2.5 秒（缩短，节奏更紧凑）
     this.spawnTimer = 0
-    this.spawnInterval = 1000  // 初始生成间隔
+    this.spawnInterval = 800  // 初始生成间隔（降低，敌人更快出现）
 
     // 统计
     this.stats = {
@@ -51,11 +51,12 @@ export class WaveManager {
   calculateWaveConfig() {
     const wave = this.currentWave
 
-    // 基础敌人数量: 10 + wave * 3 + floor(wave/10) * 5
-    this.totalEnemiesInWave = 10 + wave * 3 + Math.floor(wave / 10) * 5
+    // 基础敌人数量: 8 + wave * 2 + floor(wave/5) * 3
+    // 初期更少，后期增长更平滑
+    this.totalEnemiesInWave = 8 + wave * 2 + Math.floor(wave / 5) * 3
 
     // 生成间隔: 逐渐加快，但有下限
-    this.spawnInterval = Math.max(200, 1000 - wave * 30)
+    this.spawnInterval = Math.max(150, 800 - wave * 25)
 
     // 敌人配置
     this.waveEnemyTypes = this.getEnemyTypesForWave(wave)
@@ -98,13 +99,13 @@ export class WaveManager {
     return 'normal'                          // 普通波
   }
 
-  // 获取难度系数
+  // 获取难度系数（调整为更平滑的曲线）
   getDifficultyMultiplier() {
     const wave = this.currentWave
     return {
-      hp: 1 + wave * 0.1 + Math.pow(wave / 10, 2) * 0.05,
-      atk: 1 + wave * 0.08,
-      speed: Math.min(1 + wave * 0.02, 1.5)
+      hp: 1 + wave * 0.08 + Math.pow(wave / 15, 2) * 0.03,   // 更平滑的 HP 增长
+      atk: 1 + wave * 0.06,                                   // 攻击增长更慢
+      speed: Math.min(1 + wave * 0.015, 1.4)                  // 速度上限降低
     }
   }
 

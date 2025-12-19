@@ -27,50 +27,50 @@ export const BUFF_LIST = [
     name: '锋锐',
     rarity: 'common',
     category: 'attribute',
-    description: 'ATK +3',
+    description: 'ATK +4',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'atk', value: 3 }
+    effect: { type: 'stat_add', stat: 'atk', value: 4 }
   },
   {
     id: 'A02',
     name: '坚韧',
     rarity: 'common',
     category: 'attribute',
-    description: 'HP +15',
+    description: 'HP +20',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'maxHp', value: 15 }
+    effect: { type: 'stat_add', stat: 'maxHp', value: 20 }
   },
   {
     id: 'A03',
     name: '迅捷',
     rarity: 'common',
     category: 'attribute',
-    description: 'SPD +15',
+    description: 'SPD +20',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'speed', value: 15 }
+    effect: { type: 'stat_add', stat: 'speed', value: 20 }
   },
   {
     id: 'A04',
     name: '专注',
     rarity: 'rare',
     category: 'attribute',
-    description: 'CRIT +5%',
+    description: 'CRIT +6%',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'critChance', value: 0.05 }
+    effect: { type: 'stat_add', stat: 'critChance', value: 0.06 }
   },
   {
     id: 'A05',
     name: '猛击',
     rarity: 'rare',
     category: 'attribute',
-    description: 'CRITDMG +20%',
+    description: 'CRITDMG +25%',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'critMultiplier', value: 0.2 }
+    effect: { type: 'stat_add', stat: 'critMultiplier', value: 0.25 }
   },
   {
     id: 'A06',
@@ -243,49 +243,49 @@ export const BUFF_LIST = [
     name: '气血两旺',
     rarity: 'common',
     category: 'survival',
-    description: 'HP +25',
+    description: 'HP +30',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'maxHp', value: 25 }
+    effect: { type: 'stat_add', stat: 'maxHp', value: 30 }
   },
   {
     id: 'H02',
     name: '铁布衫',
     rarity: 'common',
     category: 'survival',
-    description: 'DEF +3',
+    description: 'DEF +4',
     stackable: true,
     maxStacks: 10,
-    effect: { type: 'stat_add', stat: 'def', value: 3 }
+    effect: { type: 'stat_add', stat: 'def', value: 4 }
   },
   {
     id: 'H03',
     name: '回春',
     rarity: 'rare',
     category: 'survival',
-    description: '每秒恢复 1 HP',
+    description: '每秒恢复 2 HP',
     stackable: true,
     maxStacks: 5,
-    effect: { type: 'regen', stat: 'hp', value: 1 }
+    effect: { type: 'regen', stat: 'hp', value: 2 }
   },
   {
     id: 'H04',
     name: '吸血',
     rarity: 'rare',
     category: 'survival',
-    description: '造成伤害回复 3% HP',
+    description: '造成伤害回复 4% HP',
     stackable: true,
     maxStacks: 5,
-    effect: { type: 'trigger', trigger: 'on_damage', action: 'lifesteal', value: 0.03 }
+    effect: { type: 'trigger', trigger: 'on_damage', action: 'lifesteal', value: 0.04 }
   },
   {
     id: 'H05',
     name: '金钟罩',
     rarity: 'epic',
     category: 'survival',
-    description: '受到伤害 -15%',
+    description: '受到伤害 -20%',
     stackable: false,
-    effect: { type: 'stat_add', stat: 'damageReduction', value: 0.15 }
+    effect: { type: 'stat_add', stat: 'damageReduction', value: 0.20 }
   },
   {
     id: 'H06',

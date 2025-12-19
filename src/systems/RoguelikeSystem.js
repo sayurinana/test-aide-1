@@ -302,16 +302,16 @@ export class RoguelikeSystem {
     return choices
   }
 
-  // 随机稀有度
+  // 随机稀有度（优化概率，更慷慨）
   rollRarity(waveNumber, guaranteedRare = false) {
     // Boss 波保底稀有
     if (guaranteedRare) {
       const roll = Math.random()
-      if (roll < 0.03 + this.pity.legendary * 0.01) {
+      if (roll < 0.05 + this.pity.legendary * 0.015) {
         this.pity.legendary = 0
         return 'legendary'
       }
-      if (roll < 0.15 + this.pity.epic * 0.02) {
+      if (roll < 0.20 + this.pity.epic * 0.03) {
         this.pity.epic = 0
         return 'epic'
       }
@@ -320,13 +320,13 @@ export class RoguelikeSystem {
       return 'rare'
     }
 
-    // 正常概率
+    // 正常概率（提升稀有度出现率）
     let roll = Math.random()
 
-    // 保底机制
-    const legendaryChance = 0.03 + this.pity.legendary * 0.005
-    const epicChance = 0.12 + this.pity.epic * 0.015
-    const rareChance = 0.25 + this.pity.rare * 0.04
+    // 保底机制（更快触发）
+    const legendaryChance = 0.04 + this.pity.legendary * 0.008
+    const epicChance = 0.15 + this.pity.epic * 0.02
+    const rareChance = 0.30 + this.pity.rare * 0.05
 
     if (roll < legendaryChance) {
       this.pity.legendary = 0
