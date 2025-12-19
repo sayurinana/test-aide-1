@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- 蛇妖 - 菱形蛇形 -->
+  <defs>
+    <linearGradient id="snakeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#66cc66"/>
+      <stop offset="50%" style="stop-color:#44aa44"/>
+      <stop offset="100%" style="stop-color:#66cc66"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 菱形主体 -->
+  <polygon points="16,2 28,16 16,30 4,16" fill="url(#snakeGrad)" stroke="#55bb55" stroke-width="1"/>
+
+  <!-- 蛇鳞纹路 -->
+  <path d="M16,6 L20,10 L16,14 L12,10 Z" fill="none" stroke="#338833" stroke-width="0.5"/>
+  <path d="M16,14 L20,18 L16,22 L12,18 Z" fill="none" stroke="#338833" stroke-width="0.5"/>
+
+  <!-- 眼睛 - 竖瞳 -->
+  <ellipse cx="16" cy="10" rx="3" ry="4" fill="#ff0000"/>
+  <ellipse cx="16" cy="10" rx="1" ry="3" fill="#000000"/>
+
+  <!-- 蛇信 -->
+  <path d="M16,22 L14,26 M16,22 L18,26" stroke="#cc0000" stroke-width="1" fill="none"/>
+</svg>

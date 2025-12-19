@@ -4,7 +4,7 @@
  */
 
 import Phaser from 'phaser'
-import { WORLD, PLAYER } from '../config.js'
+import { WORLD, PLAYER, ENEMY_TYPES } from '../config.js'
 import { Player } from '../entities/Player.js'
 import { AttackEffect } from '../entities/AttackEffect.js'
 import { EnemySpawner } from '../systems/EnemySpawner.js'
@@ -179,7 +179,6 @@ export class TestScene extends Phaser.Scene {
   }
 
   spawnEnemyWave() {
-    const wave = this.waveManager.currentWave || 1
     for (let i = 0; i < 10; i++) {
       const angle = (i / 10) * Math.PI * 2
       const distance = 300 + Math.random() * 100
@@ -187,7 +186,8 @@ export class TestScene extends Phaser.Scene {
       const y = this.player.y + Math.sin(angle) * distance
       const spawnX = Phaser.Math.Clamp(x, 50, WORLD.WIDTH - 50)
       const spawnY = Phaser.Math.Clamp(y, 50, WORLD.HEIGHT - 50)
-      this.enemySpawner.spawnEnemy(spawnX, spawnY, wave)
+      // 修复：传递正确的敌人配置对象而非波次数字
+      this.enemySpawner.spawnEnemy(spawnX, spawnY, ENEMY_TYPES.SHADOW)
     }
     console.log('[测试] 生成敌人波: 10 个敌人')
     this.audioManager.playSfx('wave')
