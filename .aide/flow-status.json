@@ -73,7 +73,8 @@
       "action": "next-step",
       "phase": "docs",
       "step": 9,
-      "summary": "文档已更新"
+      "summary": "文档已更新",
+      "git_commit": "20fcce29a03ff5357a7076839e07137839380a95"
     }
   ],
   "source_branch": "master",
