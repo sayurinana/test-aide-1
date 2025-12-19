@@ -14,6 +14,8 @@ export class AttackSelectScene extends Phaser.Scene {
 
   init(data) {
     this.onSelect = data.onSelect || (() => {})
+    this.excludeAttacks = data.excludeAttacks || []  // 要排除的攻击类型 ID 列表
+    this.customTitle = data.title || '选择初始普攻'  // 自定义标题
   }
 
   create() {
@@ -33,7 +35,7 @@ export class AttackSelectScene extends Phaser.Scene {
     this.add.text(
       this.cameras.main.width / 2,
       60,
-      '选择初始普攻',
+      this.customTitle,
       {
         fontSize: '36px',
         fill: '#ffffff',
@@ -54,8 +56,9 @@ export class AttackSelectScene extends Phaser.Scene {
       }
     ).setOrigin(0.5)
 
-    // 获取所有普攻类型
-    const attackTypes = Object.values(ATTACK_TYPES)
+    // 获取所有普攻类型，过滤掉已拥有的
+    const allAttackTypes = Object.values(ATTACK_TYPES)
+    const attackTypes = allAttackTypes.filter(at => !this.excludeAttacks.includes(at.id))
 
     // 创建卡片
     const cardWidth = 140

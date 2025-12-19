@@ -300,6 +300,17 @@ export const BUFF_LIST = [
   },
 
   // === 普攻类强化 ===
+  // 获得新攻击方式
+  {
+    id: 'ATK_NEW',
+    name: '新的力量',
+    rarity: 'rare',
+    category: 'attack',
+    description: '获得一种新的攻击方式',
+    stackable: false,
+    effect: { type: 'new_attack' }
+  },
+
   // 射箭专属
   {
     id: 'ATK_ARROW_01',

@@ -101,6 +101,9 @@ export class GameScene extends Phaser.Scene {
     // 启动 HUD 场景
     this.scene.launch('HUDScene')
 
+    // 监听新攻击选择事件
+    this.events.on('showNewAttackSelection', this.showNewAttackSelection, this)
+
     // 显示普攻选择界面
     this.showAttackSelectScene()
 
@@ -116,6 +119,66 @@ export class GameScene extends Phaser.Scene {
         this.onAttackSelected(attackType)
       }
     })
+  }
+
+  /**
+   * 显示新攻击选择界面（用于"新的力量"强化）
+   */
+  showNewAttackSelection() {
+    // 获取已拥有的攻击类型
+    const ownedAttackIds = this.attackManager.getAllAttacks().map(a => a.id)
+
+    this.scene.launch('AttackSelectScene', {
+      excludeAttacks: ownedAttackIds,  // 排除已拥有的攻击
+      title: '选择新的攻击方式',
+      onSelect: (attackType) => {
+        this.onNewAttackSelected(attackType)
+      }
+    })
+  }
+
+  /**
+   * 新攻击选择回调（用于"新的力量"强化）
+   */
+  onNewAttackSelected(attackType) {
+    // 根据选择创建对应的普攻实例
+    let attack
+    switch (attackType.id) {
+      case 'arrow':
+        attack = new ArrowAttack(this)
+        break
+      case 'slash':
+        attack = new SlashAttack(this)
+        break
+      case 'orb':
+        attack = new OrbAttack(this)
+        break
+      case 'wave':
+        attack = new WaveAttack(this)
+        break
+      case 'lightning':
+        attack = new LightningAttack(this)
+        break
+      case 'summon':
+        attack = new SummonAttack(this)
+        break
+      default:
+        return
+    }
+
+    // 添加到普攻管理器
+    this.attackManager.addAttack(attack)
+
+    // 设置碰撞检测（投射物类普攻）
+    if (['arrow', 'orb', 'wave'].includes(attackType.id)) {
+      this.setupProjectileCollision(attack)
+    }
+
+    // 通知 HUD 更新
+    this.events.emit('newAttackAcquired', attackType)
+
+    // 恢复游戏
+    this.physics.resume()
   }
 
   /**
