@@ -21,7 +21,9 @@
       "task_id": "2025-12-20T02-16-28",
       "task_summary": "开始任务准备: 配置 GitHub Actions CI/CD 自动构建与部署",
       "started_at": "2025-12-20T02:16:28+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "bb6adc15c7322011784d12143f28b5aa30a3b31f",
+      "finished_at": "2025-12-20T02:26:00+08:00"
     }
   ]
 }
