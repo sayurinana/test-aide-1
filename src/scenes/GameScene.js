@@ -18,6 +18,10 @@ import { getAudioManager } from '../systems/AudioManager.js'
 import { AttackManager } from '../systems/AttackManager.js'
 import { ArrowAttack } from '../attacks/ArrowAttack.js'
 import { SlashAttack } from '../attacks/SlashAttack.js'
+import { OrbAttack } from '../attacks/OrbAttack.js'
+import { WaveAttack } from '../attacks/WaveAttack.js'
+import { LightningAttack } from '../attacks/LightningAttack.js'
+import { SummonAttack } from '../attacks/SummonAttack.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -127,7 +131,18 @@ export class GameScene extends Phaser.Scene {
       case 'slash':
         attack = new SlashAttack(this)
         break
-      // 其他类型暂时默认使用挥砍
+      case 'orb':
+        attack = new OrbAttack(this)
+        break
+      case 'wave':
+        attack = new WaveAttack(this)
+        break
+      case 'lightning':
+        attack = new LightningAttack(this)
+        break
+      case 'summon':
+        attack = new SummonAttack(this)
+        break
       default:
         attack = new SlashAttack(this)
         break
@@ -136,9 +151,9 @@ export class GameScene extends Phaser.Scene {
     // 添加到普攻管理器
     this.attackManager.addAttack(attack)
 
-    // 如果是射箭，设置碰撞检测
-    if (attackType.id === 'arrow') {
-      this.setupArrowCollision(attack)
+    // 设置碰撞检测（投射物类普攻）
+    if (['arrow', 'orb', 'wave'].includes(attackType.id)) {
+      this.setupProjectileCollision(attack)
     }
 
     // 标记游戏已开始
@@ -154,15 +169,15 @@ export class GameScene extends Phaser.Scene {
   }
 
   /**
-   * 设置箭矢碰撞检测
+   * 设置投射物碰撞检测（通用）
    */
-  setupArrowCollision(arrowAttack) {
-    // 箭矢与敌人碰撞
+  setupProjectileCollision(attack) {
+    // 投射物与敌人碰撞
     this.physics.add.overlap(
-      arrowAttack.getProjectiles(),
+      attack.getProjectiles(),
       this.enemySpawner.getGroup(),
-      (arrow, enemy) => {
-        this.onArrowHitEnemy(arrowAttack, arrow, enemy)
+      (projectile, enemy) => {
+        this.onProjectileHitEnemy(attack, projectile, enemy)
       },
       null,
       this
@@ -170,17 +185,24 @@ export class GameScene extends Phaser.Scene {
   }
 
   /**
-   * 箭矢命中敌人
+   * 投射物命中敌人
    */
-  onArrowHitEnemy(arrowAttack, arrow, enemy) {
+  onProjectileHitEnemy(attack, projectile, enemy) {
     if (this.gameOver) return
 
     const context = this.getAttackContext()
-    const killed = arrowAttack.onHitEnemy(arrow, enemy, context)
+    const killed = attack.onHitEnemy(projectile, enemy, context)
 
     if (killed) {
       this.onEnemyKilled(enemy)
     }
+  }
+
+  /**
+   * 设置箭矢碰撞检测（保留向后兼容）
+   */
+  setupArrowCollision(arrowAttack) {
+    this.setupProjectileCollision(arrowAttack)
   }
 
   /**
