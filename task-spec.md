@@ -110,27 +110,22 @@ this.sprite = this.scene.add.image(0, 0, 'player')
    - GameScene.js：添加 `autoAttack` 状态、F 键监听、update 自动攻击逻辑
    - HUDScene.js：添加自动攻击状态显示和切换事件监听
 
-2. **功能 2：SVG 美化** - 部分完成
+2. **功能 2：SVG 美化** - ✅ 完成
    - ✅ 创建 `src/assets/sprites/` 目录
    - ✅ 创建 7 个 SVG 文件：player.svg, shadow.svg, wolf.svg, snake.svg, wraith.svg, elite.svg, boss.svg
    - ✅ MainMenuScene.js：添加 preload 方法预加载 SVG 资源
+   - ✅ Player.js：使用 SVG 纹理替代 Graphics 绘制
+   - ✅ Enemy.js：根据敌人类型使用对应 SVG 纹理
 
 ### 待完成
 
-1. **修改 Player.js**
-   - 使用 SVG 纹理替代 Graphics 绘制
-   - 替换 `createGraphics()` 和 `drawCharacter()` 方法
-
-2. **修改 Enemy.js**
-   - 根据敌人类型使用对应 SVG 纹理
-   - 替换 `createGraphics()` 和各 `draw*()` 方法
-
-3. **验证与测试**
-   - 运行游戏验证功能
+1. **验证与测试** - 进行中
+   - ✅ 构建成功
+   - 运行游戏验证功能（需浏览器环境）
    - 确保碰撞判定正常
    - 确保动画效果正常
 
-4. **文档更新**
+2. **文档更新**
    - 更新 README.md
    - 更新 CHANGELOG.md
 
