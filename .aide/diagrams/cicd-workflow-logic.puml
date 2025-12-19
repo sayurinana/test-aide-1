@@ -1,0 +1,45 @@
+@startuml cicd-workflow-logic
+!theme plain
+title GitHub Actions Workflow 执行逻辑
+
+|触发|
+start
+:push 到 main/master 分支;
+
+|Build 作业|
+:检出代码;
+note right: actions/checkout@v4
+
+:设置 Node.js 环境;
+note right: actions/setup-node@v4
+
+:安装依赖;
+note right: npm ci
+
+:配置 Pages;
+note right: actions/configure-pages@v4
+
+:构建项目;
+note right: npm run build
+
+:上传构建产物;
+note right
+  actions/upload-pages-artifact@v3
+  path: ./dist
+end note
+
+|Deploy 作业|
+:等待 Build 完成;
+note right: needs: build
+
+:部署到 GitHub Pages;
+note right: actions/deploy-pages@v4
+
+:部署完成;
+note right
+  访问地址:
+  https://<user>.github.io/<repo>/
+end note
+
+stop
+@enduml
