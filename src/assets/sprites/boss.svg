@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Boss - 妖将 -->
+  <defs>
+    <radialGradient id="bossGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff3333;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#880000;stop-opacity:0.9"/>
+    </radialGradient>
+    <filter id="bossAura">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 外层威压光环 -->
+  <circle cx="50" cy="50" r="48" fill="none" stroke="#ffff00" stroke-width="3" opacity="0.5"/>
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#ff6600" stroke-width="2" opacity="0.3"/>
+
+  <!-- 主体 -->
+  <circle cx="50" cy="50" r="38" fill="url(#bossGlow)" filter="url(#bossAura)"/>
+
+  <!-- 犄角 -->
+  <polygon points="30,18 24,0 38,22" fill="#880000" stroke="#440000" stroke-width="1"/>
+  <polygon points="70,18 76,0 62,22" fill="#880000" stroke="#440000" stroke-width="1"/>
+
+  <!-- 额头宝石 -->
+  <polygon points="50,25 54,32 50,39 46,32" fill="#ffff00"/>
+
+  <!-- 凶狠的眼睛 -->
+  <ellipse cx="38" cy="45" rx="8" ry="6" fill="#ffff00"/>
+  <ellipse cx="62" cy="45" rx="8" ry="6" fill="#ffff00"/>
+  <ellipse cx="40" cy="45" rx="4" ry="4" fill="#ff0000"/>
+  <ellipse cx="64" cy="45" rx="4" ry="4" fill="#ff0000"/>
+  <circle cx="40" cy="45" r="2" fill="#000000"/>
+  <circle cx="64" cy="45" r="2" fill="#000000"/>
+
+  <!-- 獠牙嘴 -->
+  <path d="M35,60 Q50,70 65,60" stroke="#440000" stroke-width="2" fill="none"/>
+  <polygon points="40,62 38,70 42,62" fill="#ffffff"/>
+  <polygon points="60,62 62,70 58,62" fill="#ffffff"/>
+
+  <!-- 威压纹路 -->
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#440000" stroke-width="1" opacity="0.5"/>
+</svg>

@@ -22,6 +22,7 @@ export class GameScene extends Phaser.Scene {
     this.killCount = 0
     this.gameOver = false
     this.isPaused = false
+    this.autoAttack = false  // 自动攻击开关，默认关闭
   }
 
   create() {
@@ -29,6 +30,7 @@ export class GameScene extends Phaser.Scene {
     this.killCount = 0
     this.gameOver = false
     this.isPaused = false
+    this.autoAttack = false  // 重置自动攻击状态
 
     // 设置世界边界
     this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
@@ -80,6 +82,9 @@ export class GameScene extends Phaser.Scene {
 
     // 设置暂停输入
     this.setupPauseInput()
+
+    // 设置自动攻击输入
+    this.setupAutoAttackInput()
 
     // 启动 HUD 场景
     this.scene.launch('HUDScene')
@@ -158,6 +163,16 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', () => {
       if (!this.gameOver) {
         this.togglePause()
+      }
+    })
+  }
+
+  setupAutoAttackInput() {
+    this.input.keyboard.on('keydown-F', () => {
+      if (!this.gameOver && !this.isPaused) {
+        this.autoAttack = !this.autoAttack
+        this.audioManager.playSfx('select')
+        this.events.emit('autoAttackToggled', this.autoAttack)
       }
     })
   }
@@ -398,6 +413,11 @@ export class GameScene extends Phaser.Scene {
     // 更新玩家
     if (this.player) {
       this.player.update(time, delta)
+    }
+
+    // 自动攻击
+    if (this.autoAttack) {
+      this.performAttack()
     }
 
     // 更新敌人生成器
