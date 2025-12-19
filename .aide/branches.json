@@ -81,7 +81,9 @@
       "task_id": "2025-12-20T06-41-56",
       "task_summary": "开始任务准备: Bug修复与画面优化",
       "started_at": "2025-12-20T06:41:56+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "32e06158957bf6dd72ce969c8609262fd7fbc5e2",
+      "finished_at": "2025-12-20T06:51:35+08:00"
     }
   ]
 }
