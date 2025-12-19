@@ -18,7 +18,7 @@
 | # | 名称 | 状态 | 细则文档 |
 |---|------|------|----------|
 | 1 | 前期设计 | **completed** | spec-01.md |
-| 2 | 技术原型开发 | **in_progress** | spec-02.md |
+| 2 | 技术原型开发 | **completed** | spec-02.md |
 | 3 | 核心系统实现 | pending | spec-03.md |
 | 4 | 完善打磨 | pending | spec-04.md |
 
