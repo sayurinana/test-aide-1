@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T03-43-38",
   "current_phase": "impl",
-  "current_step": 7,
+  "current_step": 8,
   "started_at": "2025-12-20T03:43:38+08:00",
   "history": [
     {
@@ -57,7 +57,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 7,
-      "summary": "任务中断，已完成：自动攻击功能、SVG资源创建、MainMenuScene预加载；待完成：Player/Enemy SVG渲染"
+      "summary": "任务中断，已完成：自动攻击功能、SVG资源创建、MainMenuScene预加载；待完成：Player/Enemy SVG渲染",
+      "git_commit": "5017a3c7c73025e430bbb392b9282f430d54d1c7"
+    },
+    {
+      "timestamp": "2025-12-20T03:53:11+08:00",
+      "action": "issue",
+      "phase": "impl",
+      "step": 8,
+      "summary": "任务中断，清理：aide/005 - 自动攻击功能 + 界面美化"
     }
   ],
   "source_branch": "master",
