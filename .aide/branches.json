@@ -1,0 +1,15 @@
+{
+  "next_number": 2,
+  "branches": [
+    {
+      "number": 1,
+      "branch_name": "aide/001",
+      "source_branch": "master",
+      "start_commit": "935b9071d32af169b8a7d810b82d0563dfe59716",
+      "task_id": "2025-12-19T22-20-36",
+      "task_summary": "开始任务准备: 无双割草游戏开发",
+      "started_at": "2025-12-19T22:20:36+08:00",
+      "status": "active"
+    }
+  ]
+}
