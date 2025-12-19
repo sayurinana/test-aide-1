@@ -23,6 +23,9 @@ export class HUDScene extends Phaser.Scene {
     // 创建连击显示
     this.createComboDisplay()
 
+    // 创建技能栏
+    this.createSkillBar()
+
     // 创建调试信息
     this.createDebugInfo()
 
@@ -187,6 +190,102 @@ export class HUDScene extends Phaser.Scene {
     })
   }
 
+  createSkillBar() {
+    // 技能栏位于屏幕底部中央
+    const centerX = this.cameras.main.width / 2
+    const y = this.cameras.main.height - 60
+    const slotSize = 50
+    const spacing = 10
+
+    this.skillSlots = []
+    const skillKeys = ['Q', 'E', 'R', 'SPACE']
+    const skillColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xffff00]
+
+    for (let i = 0; i < 4; i++) {
+      const x = centerX - (slotSize + spacing) * 1.5 + i * (slotSize + spacing)
+
+      // 技能槽背景
+      const bg = this.add.graphics()
+      bg.fillStyle(0x333333, 0.8)
+      bg.fillRoundedRect(x, y, slotSize, slotSize, 8)
+      bg.lineStyle(2, skillColors[i], 0.8)
+      bg.strokeRoundedRect(x, y, slotSize, slotSize, 8)
+
+      // 冷却遮罩
+      const cooldownMask = this.add.graphics()
+      cooldownMask.setPosition(x, y)
+
+      // 按键提示
+      const keyLabel = skillKeys[i] === 'SPACE' ? '␣' : skillKeys[i]
+      const keyText = this.add.text(x + slotSize / 2, y + slotSize - 8, keyLabel, {
+        fontSize: '12px',
+        fill: '#ffffff',
+        fontFamily: 'Arial'
+      }).setOrigin(0.5)
+
+      // 冷却文字
+      const cooldownText = this.add.text(x + slotSize / 2, y + slotSize / 2, '', {
+        fontSize: '14px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        fontStyle: 'bold'
+      }).setOrigin(0.5)
+
+      this.skillSlots.push({
+        bg,
+        cooldownMask,
+        cooldownText,
+        x,
+        y,
+        size: slotSize,
+        color: skillColors[i]
+      })
+    }
+  }
+
+  updateSkillBar() {
+    if (!this.gameScene.skillManager) return
+
+    const states = this.gameScene.skillManager.getSkillStates()
+    const skillIds = ['sword_wave', 'dash_slash', 'shield', 'sword_domain']
+
+    skillIds.forEach((id, i) => {
+      const state = states[id]
+      const slot = this.skillSlots[i]
+
+      // 更新冷却遮罩
+      slot.cooldownMask.clear()
+
+      if (!state.ready) {
+        const percent = state.currentCooldown / state.cooldown
+        const height = slot.size * percent
+
+        slot.cooldownMask.fillStyle(0x000000, 0.6)
+        slot.cooldownMask.fillRect(0, slot.size - height, slot.size, height)
+
+        // 显示冷却时间
+        slot.cooldownText.setText((state.currentCooldown / 1000).toFixed(1))
+      } else {
+        slot.cooldownText.setText('')
+      }
+
+      // 激活状态特效
+      if (state.active) {
+        slot.bg.clear()
+        slot.bg.fillStyle(slot.color, 0.4)
+        slot.bg.fillRoundedRect(slot.x, slot.y, slot.size, slot.size, 8)
+        slot.bg.lineStyle(3, slot.color, 1)
+        slot.bg.strokeRoundedRect(slot.x, slot.y, slot.size, slot.size, 8)
+      } else {
+        slot.bg.clear()
+        slot.bg.fillStyle(0x333333, 0.8)
+        slot.bg.fillRoundedRect(slot.x, slot.y, slot.size, slot.size, 8)
+        slot.bg.lineStyle(2, slot.color, state.ready ? 0.8 : 0.3)
+        slot.bg.strokeRoundedRect(slot.x, slot.y, slot.size, slot.size, 8)
+      }
+    })
+  }
+
   update(time, delta) {
     // 更新调试信息
     if (this.debugText && this.gameScene) {
@@ -200,5 +299,8 @@ export class HUDScene extends Phaser.Scene {
         `Enemies: ${enemies}`
       ])
     }
+
+    // 更新技能栏
+    this.updateSkillBar()
   }
 }

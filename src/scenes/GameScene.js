@@ -9,6 +9,7 @@ import { AttackEffect } from '../entities/AttackEffect.js'
 import { EnemySpawner } from '../systems/EnemySpawner.js'
 import { ComboSystem } from '../systems/ComboSystem.js'
 import { DamageSystem } from '../systems/DamageSystem.js'
+import { SkillManager } from '../systems/SkillManager.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -43,6 +44,9 @@ export class GameScene extends Phaser.Scene {
     this.comboSystem = new ComboSystem(this)
     this.damageSystem = new DamageSystem(this)
 
+    // 创建技能管理器
+    this.skillManager = new SkillManager(this, this.player)
+
     // 设置碰撞检测
     this.setupCollisions()
 
@@ -69,6 +73,11 @@ export class GameScene extends Phaser.Scene {
   onEnemyHitPlayer(player, enemy) {
     if (this.gameOver || !enemy.isActive) return
     if (this.player.isInvincible) return
+
+    // 检查护盾反伤
+    if (this.skillManager && this.skillManager.checkShieldReflect(enemy, enemy.atk)) {
+      return // 护盾阻挡了伤害
+    }
 
     // 玩家受伤
     const isDead = this.player.takeDamage(enemy.atk)
@@ -197,6 +206,11 @@ export class GameScene extends Phaser.Scene {
     // 更新连击系统
     if (this.comboSystem) {
       this.comboSystem.update(time, delta)
+    }
+
+    // 更新技能管理器
+    if (this.skillManager) {
+      this.skillManager.update(time, delta)
     }
   }
 

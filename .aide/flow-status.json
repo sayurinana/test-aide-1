@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 43,
+  "current_step": 44,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -334,7 +334,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 43,
-      "summary": "完成3.1完整战斗系统+3.6伤害系统: ComboSystem/DamageSystem/无敌帧/击退/暴击"
+      "summary": "完成3.1完整战斗系统+3.6伤害系统: ComboSystem/DamageSystem/无敌帧/击退/暴击",
+      "git_commit": "ed10868ee7b7df472642dad7fa6389482ecaeea8"
+    },
+    {
+      "timestamp": "2025-12-20T00:37:08+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 44,
+      "summary": "完成3.2技能系统: 4个技能(剑气横扫/瞬步斩/护体真气/剑域)+技能栏UI"
     }
   ],
   "source_branch": "master",
