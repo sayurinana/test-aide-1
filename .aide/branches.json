@@ -9,7 +9,9 @@
       "task_id": "2025-12-19T22-20-36",
       "task_summary": "开始任务准备: 无双割草游戏开发",
       "started_at": "2025-12-19T22:20:36+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "26a3b7f70b46594fe356196b01c3cd1711a72f6a",
+      "finished_at": "2025-12-20T02:07:17+08:00"
     }
   ]
 }
