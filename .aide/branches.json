@@ -1,5 +1,5 @@
 {
-  "next_number": 8,
+  "next_number": 9,
   "branches": [
     {
       "number": 1,
@@ -84,6 +84,16 @@
       "status": "finished",
       "end_commit": "32e06158957bf6dd72ce969c8609262fd7fbc5e2",
       "finished_at": "2025-12-20T06:51:35+08:00"
+    },
+    {
+      "number": 8,
+      "branch_name": "aide/008",
+      "source_branch": "master",
+      "start_commit": "824f04423a95795f10457a1082565ee9e1e529ab",
+      "task_id": "2025-12-20T07-06-28",
+      "task_summary": "开始任务准备: Bug修复与画面优化",
+      "started_at": "2025-12-20T07:06:28+08:00",
+      "status": "active"
     }
   ]
 }
