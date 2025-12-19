@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T07-27-36",
   "current_phase": "task-optimize",
-  "current_step": 1,
+  "current_step": 2,
   "started_at": "2025-12-20T07:27:36+08:00",
   "history": [
     {
@@ -9,7 +9,15 @@
       "action": "start",
       "phase": "task-optimize",
       "step": 1,
-      "summary": "开始任务准备: 攻击方式选择与强化过滤"
+      "summary": "开始任务准备: 攻击方式选择与强化过滤",
+      "git_commit": "c32da78b4353897cb33c46c132e35e06a34d6ee0"
+    },
+    {
+      "timestamp": "2025-12-20T07:28:11+08:00",
+      "action": "next-step",
+      "phase": "task-optimize",
+      "step": 2,
+      "summary": "任务细则已生成，自动确认"
     }
   ],
   "source_branch": "master",
