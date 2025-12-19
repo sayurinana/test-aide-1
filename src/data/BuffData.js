@@ -16,7 +16,8 @@ export const CATEGORY = {
   ATTRIBUTE: { id: 'attribute', name: '属性', icon: '⬆️' },
   SKILL: { id: 'skill', name: '技能', icon: '⚔️' },
   EFFECT: { id: 'effect', name: '特效', icon: '✨' },
-  SURVIVAL: { id: 'survival', name: '生存', icon: '❤️' }
+  SURVIVAL: { id: 'survival', name: '生存', icon: '❤️' },
+  ATTACK: { id: 'attack', name: '普攻', icon: '🎯' }
 }
 
 // 强化道具列表
@@ -296,6 +297,217 @@ export const BUFF_LIST = [
     description: 'HP 低于 10% 时，受伤 -50%',
     stackable: false,
     effect: { type: 'conditional', condition: 'hp_below_10', bonus: { stat: 'damageReduction', value: 0.5 } }
+  },
+
+  // === 普攻类强化 ===
+  // 射箭专属
+  {
+    id: 'ATK_ARROW_01',
+    name: '散射箭矢',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'arrow',
+    description: '射箭时额外发射 +1 支箭',
+    stackable: true,
+    maxStacks: 4,
+    effect: { type: 'attack_buff', attack: 'arrow', stat: 'multishot', value: 1 }
+  },
+  {
+    id: 'ATK_ARROW_02',
+    name: '穿透箭矢',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'arrow',
+    description: '箭矢可穿透 +1 个敌人',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'arrow', stat: 'pierce', value: 1 }
+  },
+  {
+    id: 'ATK_ARROW_03',
+    name: '箭术精通',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'arrow',
+    description: '射箭伤害 +30%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'arrow', stat: 'damage', value: 0.3 }
+  },
+
+  // 挥砍专属
+  {
+    id: 'ATK_SLASH_01',
+    name: '横扫千军',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'slash',
+    description: '挥砍范围 +30%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'slash', stat: 'range', value: 0.3 }
+  },
+  {
+    id: 'ATK_SLASH_02',
+    name: '疾风斩',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'slash',
+    description: '挥砍冷却 -20%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'slash', stat: 'cooldown', value: 0.2 }
+  },
+  {
+    id: 'ATK_SLASH_03',
+    name: '剑道宗师',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'slash',
+    description: '挥砍伤害 +40%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'slash', stat: 'damage', value: 0.4 }
+  },
+
+  // 法球专属
+  {
+    id: 'ATK_ORB_01',
+    name: '多重法球',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'orb',
+    description: '同时发射 +1 个法球',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'orb', stat: 'orbCount', value: 1 }
+  },
+  {
+    id: 'ATK_ORB_02',
+    name: '穿透法球',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'orb',
+    description: '法球可穿透 +1 个敌人',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'orb', stat: 'pierce', value: 1 }
+  },
+  {
+    id: 'ATK_ORB_03',
+    name: '魔法精通',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'orb',
+    description: '法球伤害 +35%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'orb', stat: 'damage', value: 0.35 }
+  },
+
+  // 冲击波专属
+  {
+    id: 'ATK_WAVE_01',
+    name: '多重冲击',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'wave',
+    description: '同时发射 +1 道冲击波',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'wave', stat: 'waveCount', value: 1 }
+  },
+  {
+    id: 'ATK_WAVE_02',
+    name: '扩张冲击',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'wave',
+    description: '冲击波宽度 +40%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'wave', stat: 'width', value: 0.4 }
+  },
+  {
+    id: 'ATK_WAVE_03',
+    name: '冲击精通',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'wave',
+    description: '冲击波伤害 +35%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'wave', stat: 'damage', value: 0.35 }
+  },
+
+  // 闪电链专属
+  {
+    id: 'ATK_LIGHT_01',
+    name: '连锁闪电',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'lightning',
+    description: '闪电弹射次数 +2',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'lightning', stat: 'chainCount', value: 2 }
+  },
+  {
+    id: 'ATK_LIGHT_02',
+    name: '高压电流',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'lightning',
+    description: '闪电衰减降低（伤害保留更多）',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'lightning', stat: 'damageDecay', value: 0.1 }
+  },
+  {
+    id: 'ATK_LIGHT_03',
+    name: '雷霆精通',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'lightning',
+    description: '闪电伤害 +40%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'lightning', stat: 'damage', value: 0.4 }
+  },
+
+  // 召唤物专属
+  {
+    id: 'ATK_SUMMON_01',
+    name: '多重召唤',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'summon',
+    description: '同时召唤 +1 个精灵',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'summon', stat: 'summonCount', value: 1 }
+  },
+  {
+    id: 'ATK_SUMMON_02',
+    name: '持久召唤',
+    rarity: 'rare',
+    category: 'attack',
+    attackType: 'summon',
+    description: '召唤物持续时间 +50%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'summon', stat: 'summonDuration', value: 0.5 }
+  },
+  {
+    id: 'ATK_SUMMON_03',
+    name: '召唤精通',
+    rarity: 'epic',
+    category: 'attack',
+    attackType: 'summon',
+    description: '召唤物伤害 +35%',
+    stackable: true,
+    maxStacks: 3,
+    effect: { type: 'attack_buff', attack: 'summon', stat: 'damage', value: 0.35 }
   }
 ]
 
@@ -312,4 +524,14 @@ export function getBuffsByRarity(rarity) {
 // 根据类别获取强化列表
 export function getBuffsByCategory(category) {
   return BUFF_LIST.filter(b => b.category === category)
+}
+
+// 根据普攻类型获取专属强化
+export function getBuffsByAttackType(attackType) {
+  return BUFF_LIST.filter(b => b.attackType === attackType)
+}
+
+// 获取所有普攻强化
+export function getAttackBuffs() {
+  return BUFF_LIST.filter(b => b.category === 'attack')
 }
