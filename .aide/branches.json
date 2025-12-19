@@ -57,7 +57,9 @@
       "task_id": "2025-12-20T03-43-38",
       "task_summary": "开始任务准备: 自动攻击功能 + 界面美化",
       "started_at": "2025-12-20T03:43:38+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "9d75546c8b19d968cce77fe02d8015ef9334994f",
+      "finished_at": "2025-12-20T04:06:10+08:00"
     }
   ]
 }
