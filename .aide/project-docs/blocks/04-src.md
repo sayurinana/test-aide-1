@@ -1,13 +1,13 @@
 # 区块4：src 源码目录
 
 > 路径：`src/`
-> 最后更新：2025-12-20（v2更新：新增多种普攻系统）
+> 最后更新：2025-12-20（v3更新：同步 v1.1.0-alpha.3 Bug 修复）
 
 ## 概述
 
 游戏源代码目录，使用 Phaser 3 框架开发的《御剑无双》完整游戏。采用 ES6 模块化组织，包含游戏入口、配置、实体、场景、系统、数据和素材等模块。当前已实现完整的 Roguelike 割草游戏框架，包括：主菜单、多种普攻类型、战斗系统、技能系统、波次系统、强化系统、音效系统和视觉效果系统。
 
-**v2 更新**：新增 6 种普攻类型（挥砍、射箭、法球、冲击波、闪电链、召唤物）、普攻选择界面、测试场景和 SVG 素材资源。
+**v3 更新**：修复敌人生成停止、测试模式失效、画面模糊等 Bug（v1.1.0-alpha.3）。
 
 ## 目录结构
 
@@ -88,12 +88,12 @@ src/
 | scenes/HUDScene.js | 场景 | 629 | HUD 界面场景 |
 | scenes/BuffSelectionScene.js | 场景 | 166 | 强化选择场景 |
 | scenes/AttackSelectScene.js | 场景 | 193 | 普攻选择场景 [新增] |
-| scenes/TestScene.js | 场景 | 619 | 测试场景（快捷键调试） [新增] |
+| scenes/TestScene.js | 场景 | 622 | 测试场景（含场景冲突修复）[新增] |
 | systems/EnemySpawner.js | 系统 | 79 | 敌人生成器 |
 | systems/ComboSystem.js | 系统 | 81 | 连击系统 |
 | systems/DamageSystem.js | 系统 | 120 | 伤害系统 |
 | systems/SkillManager.js | 系统 | 416 | 技能管理器 |
-| systems/RoguelikeSystem.js | 系统 | 464 | Roguelike 强化系统 |
+| systems/RoguelikeSystem.js | 系统 | 475 | Roguelike 强化系统（含升级队列冲突修复）|
 | systems/WaveManager.js | 系统 | 337 | 波次管理器 |
 | systems/VFXManager.js | 系统 | 370 | 视觉效果管理器 |
 | systems/AudioManager.js | 系统 | 368 | 音效管理器 |
@@ -336,6 +336,10 @@ src/
 - 强化系统
 - 游戏结算
 
+**v1.1.0-alpha.3 修复**：
+- 在 `create()` 开始时停止 `AttackSelectScene` 和 `BuffSelectionScene`
+- 避免覆盖场景阻止输入或暂停物理系统
+
 ---
 
 ### systems/ComboSystem.js - 连击系统
@@ -416,6 +420,8 @@ multiplier = 1.0 + (combo - 1) * 0.05, 上限 2.0
 - `activeBuffs` - 已激活强化列表
 - `pity` - 保底计数器（稀有、史诗、传说）
 - `player.buffStats` - 强化属性加成
+- `levelUpQueue` - 升级队列
+- `isSelectingBuff` - 是否正在选择强化
 
 **核心方法**：
 | 方法 | 说明 |
@@ -432,6 +438,12 @@ multiplier = 1.0 + (combo - 1) * 0.05, 上限 2.0
 | `calculateDamageTaken(base)` | 计算受到的伤害（减伤） |
 | `getDamageMultiplier(enemy)` | 获取伤害加成（处刑者等） |
 | `isComboInvincible()` | 检查连击无敌（无双之力） |
+| `processLevelUpQueue()` | 处理升级队列（含 waveState 冲突检查）[v1.1.0-alpha.3 修复] |
+
+**v1.1.0-alpha.3 修复**：
+- 在 `processLevelUpQueue()` 中添加 `waveManager.waveState` 检查
+- 如果波次正在等待强化选择（reward 状态），延迟 500ms 处理升级队列
+- 避免两个 `BuffSelectionScene` 同时启动导致回调被覆盖
 
 **强化属性**：
 - 基础属性：ATK、HP、速度、防御、暴击
