@@ -13,6 +13,7 @@ import { DamageSystem } from '../systems/DamageSystem.js'
 import { SkillManager } from '../systems/SkillManager.js'
 import { RoguelikeSystem } from '../systems/RoguelikeSystem.js'
 import { WaveManager } from '../systems/WaveManager.js'
+import { VFXManager } from '../systems/VFXManager.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -64,6 +65,9 @@ export class GameScene extends Phaser.Scene {
     // 创建波次管理器
     this.waveManager = new WaveManager(this)
 
+    // 创建视觉效果管理器
+    this.vfxManager = new VFXManager(this)
+
     // 设置碰撞检测
     this.setupCollisions()
 
@@ -112,6 +116,10 @@ export class GameScene extends Phaser.Scene {
 
     // 玩家受伤
     const isDead = this.player.takeDamage(actualDamage)
+
+    // 受伤视觉反馈
+    this.vfxManager.screenShake(0.008, 100)
+    this.vfxManager.showDamageNumber(this.player.x, this.player.y, actualDamage, false)
 
     // 重置连击
     this.comboSystem.resetCombo()
@@ -176,6 +184,15 @@ export class GameScene extends Phaser.Scene {
 
       this.attackEffects.add(effect)
 
+      // 剑光拖尾效果
+      this.vfxManager.createSlashTrail(
+        attackPos.x,
+        attackPos.y,
+        this.player.rotation,
+        PLAYER.ATTACK_RANGE,
+        0x64c8ff
+      )
+
       // 检测攻击范围内的敌人
       this.checkAttackHits(attackPos)
     }
@@ -233,6 +250,14 @@ export class GameScene extends Phaser.Scene {
           // 应用伤害
           const killed = this.damageSystem.applyDamage(enemy, finalDamage, isCrit)
 
+          // 视觉效果
+          this.vfxManager.showDamageNumber(enemy.x, enemy.y, finalDamage, isCrit)
+          this.vfxManager.flashWhite(enemy, 30)
+          if (isCrit) {
+            this.vfxManager.screenShake(0.003, 50)
+            this.vfxManager.hitStop(30)
+          }
+
           // 应用击退
           this.damageSystem.applyKnockback(enemy, this.player.x, this.player.y)
 
@@ -243,6 +268,9 @@ export class GameScene extends Phaser.Scene {
           this.waveManager.recordDamage(finalDamage)
 
           if (killed) {
+            // 死亡粒子效果
+            this.vfxManager.createDeathParticles(enemy.x, enemy.y, enemy.color, 10)
+            this.vfxManager.screenShake(0.002, 30)
             this.onEnemyKilled(enemy)
           }
         }
@@ -297,8 +325,25 @@ export class GameScene extends Phaser.Scene {
   }
 
   createBackground() {
-    // 创建网格背景
+    // 创建背景层
     const graphics = this.add.graphics()
+
+    // 渐变背景色块（模拟深度）
+    graphics.fillStyle(0x151528, 1)
+    graphics.fillRect(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
+
+    // 添加随机装饰光点（仙气效果）
+    for (let i = 0; i < 50; i++) {
+      const x = Phaser.Math.Between(50, WORLD.WIDTH - 50)
+      const y = Phaser.Math.Between(50, WORLD.HEIGHT - 50)
+      const alpha = Phaser.Math.FloatBetween(0.1, 0.3)
+      const size = Phaser.Math.Between(2, 5)
+
+      graphics.fillStyle(0x6688aa, alpha)
+      graphics.fillCircle(x, y, size)
+    }
+
+    // 创建网格背景
     graphics.lineStyle(1, 0x2a2a4a, 0.3)
 
     const gridSize = 100
@@ -309,9 +354,26 @@ export class GameScene extends Phaser.Scene {
       graphics.lineBetween(0, y, WORLD.WIDTH, y)
     }
 
-    // 绘制边界
-    graphics.lineStyle(3, 0x4a4a6a, 1)
-    graphics.strokeRect(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
+    // 绘制世界边界（带发光效果）
+    graphics.lineStyle(4, 0x4a6a8a, 0.8)
+    graphics.strokeRect(2, 2, WORLD.WIDTH - 4, WORLD.HEIGHT - 4)
+    graphics.lineStyle(2, 0x6a8aaa, 0.5)
+    graphics.strokeRect(6, 6, WORLD.WIDTH - 12, WORLD.HEIGHT - 12)
+
+    // 添加角落装饰
+    this.createCornerDecoration(graphics, 0, 0, 1, 1)
+    this.createCornerDecoration(graphics, WORLD.WIDTH, 0, -1, 1)
+    this.createCornerDecoration(graphics, 0, WORLD.HEIGHT, 1, -1)
+    this.createCornerDecoration(graphics, WORLD.WIDTH, WORLD.HEIGHT, -1, -1)
+  }
+
+  createCornerDecoration(graphics, x, y, dirX, dirY) {
+    const size = 80
+    graphics.lineStyle(2, 0x4a6a8a, 0.6)
+    graphics.lineBetween(x, y, x + size * dirX, y)
+    graphics.lineBetween(x, y, x, y + size * dirY)
+    graphics.lineBetween(x + size * 0.5 * dirX, y, x + size * 0.5 * dirX, y + size * 0.3 * dirY)
+    graphics.lineBetween(x, y + size * 0.5 * dirY, x + size * 0.3 * dirX, y + size * 0.5 * dirY)
   }
 
   update(time, delta) {
