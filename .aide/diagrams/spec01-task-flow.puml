@@ -1,0 +1,37 @@
+@startuml spec01-task-flow
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 子计划1：任务执行流程图
+
+start
+:阅读相关代码;
+note right: GameScene.js\nRoguelikeSystem.js\nWaveManager.js
+
+partition "Bug 1: 死亡后相机/UI飘移" {
+  :定位问题\n分析 GameScene.onGameOver();
+  :修复相机\n死亡时停止相机跟随;
+  :修复UI\n确保按钮在屏幕中央;
+  :测试验证;
+}
+
+partition "Bug 2: 连续升级选择被覆盖" {
+  :定位问题\n当前无经验值系统;
+  :设计经验值系统;
+  :实现升级队列机制;
+  :修改强化选择流程;
+  :测试验证;
+}
+
+partition "测试关卡" {
+  :创建 TestScene.js;
+  :实现数字键功能;
+  :添加主菜单入口;
+  :测试验证;
+}
+
+:更新相关文档;
+stop
+
+@enduml

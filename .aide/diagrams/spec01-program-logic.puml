@@ -1,0 +1,73 @@
+@startuml spec01-program-logic
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 子计划1：程序逻辑流图
+
+|GameScene|
+start
+:玩家死亡 onGameOver();
+:停止相机跟随;
+note right: this.cameras.main.stopFollow()
+:计算屏幕中心位置;
+note right: 使用固定屏幕坐标\n不再依赖 scrollX/Y
+:显示结算界面;
+stop
+
+|RoguelikeSystem/新增|
+start
+:击杀敌人;
+:获得经验值;
+:expCurrent += expGain;
+
+while (expCurrent >= expToNext?) is (是)
+  :levelUpQueue.push()\n加入升级队列;
+  :expCurrent -= expToNext;
+  :expToNext *= 1.1\n提升下一级所需经验;
+endwhile (否)
+
+if (levelUpQueue.length > 0\n且未在选择中?) then (是)
+  :触发 showBuffSelection();
+  :isSelectingBuff = true;
+else (否)
+  :等待当前选择完成;
+endif
+stop
+
+|BuffSelectionScene|
+start
+:用户选择强化;
+:应用强化效果;
+:levelUpQueue.shift()\n移除已处理的升级;
+
+if (levelUpQueue.length > 0?) then (是)
+  :延迟后再次显示选择界面;
+else (否)
+  :isSelectingBuff = false;
+  :恢复游戏;
+endif
+stop
+
+|TestScene/新增|
+start
+:进入测试场景;
+:监听数字键;
+
+switch (按下的数字键)
+case (1)
+  :addExp(10000)\n快速获得大量经验;
+case (2)
+  :player.takeDamage(999)\n直接死亡;
+case (3)
+  :spawnWave()\n生成一波敌人;
+case (4)
+  :clearAllEnemies()\n清除所有敌人;
+case (5)
+  :toggleInvincible()\n切换无敌模式;
+case (0)
+  :返回主菜单;
+endswitch
+stop
+
+@enduml
