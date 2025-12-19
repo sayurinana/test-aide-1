@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 31,
+  "current_step": 32,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -238,7 +238,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 31,
-      "summary": "完成2.4基础攻击系统: 鼠标点击攻击+挥剑弧线效果"
+      "summary": "完成2.4基础攻击系统: 鼠标点击攻击+挥剑弧线效果",
+      "git_commit": "97578ea07b83c3343b62bfe23767576779210c0a"
+    },
+    {
+      "timestamp": "2025-12-19T23:53:00+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 32,
+      "summary": "完成2.5敌人基础实现: Enemy类+EnemySpawner+对象池"
     }
   ],
   "source_branch": "master",

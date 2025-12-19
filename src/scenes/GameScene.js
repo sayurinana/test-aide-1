@@ -6,10 +6,12 @@ import Phaser from 'phaser'
 import { WORLD, PLAYER, ENEMY } from '../config.js'
 import { Player } from '../entities/Player.js'
 import { AttackEffect } from '../entities/AttackEffect.js'
+import { EnemySpawner } from '../systems/EnemySpawner.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' })
+    this.killCount = 0
   }
 
   create() {
@@ -30,6 +32,9 @@ export class GameScene extends Phaser.Scene {
 
     // 攻击效果组
     this.attackEffects = this.add.group()
+
+    // 创建敌人生成器
+    this.enemySpawner = new EnemySpawner(this, this.player)
 
     // 设置攻击输入
     this.setupAttackInput()
@@ -91,5 +96,16 @@ export class GameScene extends Phaser.Scene {
     if (this.player) {
       this.player.update(time, delta)
     }
+
+    // 更新敌人生成器
+    if (this.enemySpawner) {
+      this.enemySpawner.update(time, delta)
+    }
+  }
+
+  addKill() {
+    this.killCount++
+    // 通知 HUD 更新
+    this.events.emit('killCountUpdated', this.killCount)
   }
 }
