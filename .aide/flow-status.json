@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "confirm",
-  "current_step": 23,
+  "current_step": 24,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -174,7 +174,15 @@
       "action": "next-step",
       "phase": "confirm",
       "step": 23,
-      "summary": "项目文档更新: 新增区块3(.aide工作流目录)"
+      "summary": "项目文档更新: 新增区块3(.aide工作流目录)",
+      "git_commit": "792cea0f8d71635a62c5479eb4206016315743a5"
+    },
+    {
+      "timestamp": "2025-12-19T23:40:57+08:00",
+      "action": "next-step",
+      "phase": "confirm",
+      "step": 24,
+      "summary": "子计划1(前期设计)完成，全自动模式跳过confirm"
     }
   ],
   "source_branch": "master",
