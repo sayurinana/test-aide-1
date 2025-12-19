@@ -61,6 +61,25 @@ npm run dev
 npm run build
 ```
 
+## 部署
+
+本项目配置了 GitHub Actions 自动部署到 GitHub Pages。
+
+### 自动部署
+
+推送代码到 `main` 或 `master` 分支时，会自动触发构建和部署。
+
+### 首次设置
+
+1. 在 GitHub 仓库中，进入 **Settings** > **Pages**
+2. 在 **Source** 下选择 **GitHub Actions**
+3. 推送代码即可自动部署
+
+部署完成后，游戏可通过以下地址访问：
+```
+https://<username>.github.io/<repo-name>/
+```
+
 ## 项目结构
 
 ```

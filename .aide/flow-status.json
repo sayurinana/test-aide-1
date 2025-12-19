@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T02-16-28",
   "current_phase": "docs",
-  "current_step": 11,
+  "current_step": 12,
   "started_at": "2025-12-20T02:16:28+08:00",
   "history": [
     {
@@ -89,7 +89,15 @@
       "action": "next-part",
       "phase": "docs",
       "step": 11,
-      "summary": "验证通过，进入文档环节"
+      "summary": "验证通过，进入文档环节",
+      "git_commit": "55591a6215ef9adaa3292bc70d9f7913745c4128"
+    },
+    {
+      "timestamp": "2025-12-20T02:24:59+08:00",
+      "action": "next-step",
+      "phase": "docs",
+      "step": 12,
+      "summary": "文档更新完成：README.md 添加部署说明，CHANGELOG.md 添加 v1.0.1 条目"
     }
   ],
   "source_branch": "master",
