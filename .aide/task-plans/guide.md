@@ -20,7 +20,7 @@
 | 1 | 前期设计 | **completed** | spec-01.md |
 | 2 | 技术原型开发 | **completed** | spec-02.md |
 | 3 | 核心系统实现 | **completed** | spec-03.md |
-| 4 | 完善打磨 | pending | spec-04.md |
+| 4 | 完善打磨 | **completed** | spec-04.md |
 
 ## 执行顺序
 

@@ -31,17 +31,34 @@ t1/
 │   ├── decisions/           决策记录
 │   ├── diagrams/            流程图（6文件）
 │   ├── logs/                [空目录] 历史归档
-│   ├── task-plans/          任务计划（4个子计划）
+│   ├── task-plans/          任务计划（5个子计划）
 │   └── project-docs/        项目文档（本目录）
 ├── docs/                    游戏设计文档 (GDD)
 │   ├── gdd-index.md         GDD 总索引
 │   └── gdd-chapter1~8.md    8个章节
 ├── src/                     源代码目录
 │   ├── main.js              游戏入口
-│   ├── config.js            配置常量
-│   ├── entities/            游戏实体（Player/Enemy/AttackEffect）
-│   ├── scenes/              Phaser 场景（GameScene/HUDScene）
-│   ├── systems/             游戏系统（EnemySpawner）
+│   ├── config.js            配置常量（含技能、敌人类型）
+│   ├── entities/            游戏实体
+│   │   ├── Player.js        玩家角色
+│   │   ├── Enemy.js         敌人类
+│   │   └── AttackEffect.js  攻击效果
+│   ├── scenes/              Phaser 场景
+│   │   ├── MainMenuScene.js 主菜单场景
+│   │   ├── GameScene.js     游戏主场景
+│   │   ├── HUDScene.js      HUD 界面
+│   │   └── BuffSelectionScene.js 强化选择
+│   ├── systems/             游戏系统
+│   │   ├── EnemySpawner.js  敌人生成器
+│   │   ├── ComboSystem.js   连击系统
+│   │   ├── DamageSystem.js  伤害系统
+│   │   ├── SkillManager.js  技能管理器
+│   │   ├── RoguelikeSystem.js Roguelike 系统
+│   │   ├── WaveManager.js   波次管理器
+│   │   ├── VFXManager.js    视觉效果管理器
+│   │   └── AudioManager.js  音效管理器
+│   ├── data/                游戏数据
+│   │   └── BuffData.js      强化道具数据
 │   └── ui/                  [空目录] UI 组件
 ├── dist/                    [ignored] 构建输出
 ├── node_modules/            [ignored] npm 依赖
@@ -84,29 +101,42 @@ t1/
 ## 代码架构
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        main.js                               │
-│                    (Phaser.Game 初始化)                       │
-└────────────────────────────┬────────────────────────────────┘
-                             │
-              ┌──────────────┴──────────────┐
-              ▼                              ▼
-┌─────────────────────────┐    ┌─────────────────────────┐
-│      GameScene          │    │       HUDScene          │
-│  ┌───────────────────┐  │    │  ┌───────────────────┐  │
-│  │ Player            │  │    │  │ HP Bar            │  │
-│  │ AttackEffect      │◄─┼────┼──│ Kill Counter      │  │
-│  │ EnemySpawner      │  │    │  │ Debug Info        │  │
-│  │   └─ Enemy[]      │  │    │  └───────────────────┘  │
-│  └───────────────────┘  │    │                         │
-└─────────────────────────┘    └─────────────────────────┘
-              │
-              ▼
-┌─────────────────────────┐
-│       config.js         │
-│  WORLD | PLAYER | ENEMY │
-│        COLORS           │
-└─────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                           main.js                                    │
+│                      (Phaser.Game 初始化)                            │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+       ┌────────────────────────┼────────────────────────┐
+       ▼                        ▼                        ▼
+┌──────────────┐     ┌─────────────────────┐     ┌──────────────┐
+│ MainMenuScene │     │     GameScene       │     │BuffSelection │
+│              │     │                     │     │    Scene     │
+└──────────────┘     │  ┌───────────────┐  │     └──────────────┘
+                     │  │ Player        │  │
+                     │  │ EnemySpawner  │  │     ┌──────────────┐
+                     │  │   └─ Enemy[]  │  │     │  HUDScene    │
+                     │  ├───────────────┤  │◄────│              │
+                     │  │ ComboSystem   │  │     │ ┌──────────┐ │
+                     │  │ DamageSystem  │  │────▶│ │HP/Kill   │ │
+                     │  │ SkillManager  │  │     │ │Wave/Combo│ │
+                     │  │ RoguelikeSystem│ │     │ │SkillBar  │ │
+                     │  │ WaveManager   │  │     │ └──────────┘ │
+                     │  │ VFXManager    │  │     └──────────────┘
+                     │  │ AudioManager  │  │
+                     │  └───────────────┘  │
+                     └─────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                          config.js                                   │
+│   WORLD | PLAYER | ENEMY | ENEMY_TYPES | COMBAT | COLORS | SKILLS   │
+└─────────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        data/BuffData.js                              │
+│                    RARITY | CATEGORY | BUFF_LIST                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 区块索引
@@ -116,7 +146,7 @@ t1/
 | [项目根目录](./blocks/01-root.md) | `./` | 7 | 项目配置、说明、变更日志 |
 | [docs 文档目录](./blocks/02-docs.md) | `docs/` | 9 | 游戏设计文档 (GDD) 完整 8 章 |
 | [.aide 工作流目录](./blocks/03-aide.md) | `.aide/` | 21 | Aide 配置、进度、决策、计划 |
-| [src 源码目录](./blocks/04-src.md) | `src/` | 8 | 游戏源代码（技术原型） |
+| [src 源码目录](./blocks/04-src.md) | `src/` | 18 | 游戏源代码（完整实现） |
 
 ## 快速导航
 
@@ -142,6 +172,10 @@ t1/
 - 配置常量 → src/config.js
 - 玩家角色 → src/entities/Player.js
 - 游戏场景 → src/scenes/GameScene.js
+- 技能系统 → src/systems/SkillManager.js
+- Roguelike 系统 → src/systems/RoguelikeSystem.js
+- 波次系统 → src/systems/WaveManager.js
+- 强化数据 → src/data/BuffData.js
 
 ### 想了解工作流状态
 - 查看 [.aide 工作流目录](./blocks/03-aide.md)
@@ -187,40 +221,50 @@ npm run build
 
 ## 当前实现状态
 
-### 已实现（技术原型）
+### 已实现（v1.0.0 完整游戏）
 
 | 模块 | 状态 | 位置 |
 |------|------|------|
 | 游戏框架初始化 | ✅ | main.js |
+| 主菜单界面 | ✅ | MainMenuScene.js |
 | 世界边界和相机 | ✅ | GameScene.js |
 | 玩家移动（WASD） | ✅ | Player.js |
 | 玩家朝向（鼠标） | ✅ | Player.js |
 | 基础攻击（点击） | ✅ | Player.js, AttackEffect.js |
 | 扇形攻击判定 | ✅ | GameScene.js |
+| 4 个技能（Q/E/R/Space） | ✅ | SkillManager.js |
+| 连击系统 | ✅ | ComboSystem.js |
+| 伤害系统（暴击、击退） | ✅ | DamageSystem.js |
 | 敌人生成器 | ✅ | EnemySpawner.js |
 | 敌人追踪 AI | ✅ | Enemy.js |
 | 敌人对象池 | ✅ | EnemySpawner.js |
-| HP 血条 UI | ✅ | HUDScene.js |
-| 击杀计数 UI | ✅ | HUDScene.js |
-| 游戏结束流程 | ✅ | GameScene.js |
+| 6 种敌人类型 | ✅ | config.js, Enemy.js |
+| 波次系统 | ✅ | WaveManager.js |
+| Roguelike 强化系统 | ✅ | RoguelikeSystem.js |
+| 26 个强化道具 | ✅ | BuffData.js |
+| 强化选择界面 | ✅ | BuffSelectionScene.js |
+| 完整 HUD 界面 | ✅ | HUDScene.js |
+| 技能栏 UI | ✅ | HUDScene.js |
+| 波次/连击显示 | ✅ | HUDScene.js |
+| 暂停界面（ESC） | ✅ | HUDScene.js |
+| 视觉效果系统 | ✅ | VFXManager.js |
+| 程序化音效系统 | ✅ | AudioManager.js |
+| 游戏结算界面 | ✅ | GameScene.js |
+| 分数计算系统 | ✅ | GameScene.js |
 
-### 待实现
+### 待优化
 
-| 模块 | 优先级 | 子计划 |
-|------|--------|--------|
-| 完整技能系统 | 高 | 3 |
-| Roguelike 强化 | 高 | 3 |
-| 波次系统 | 高 | 3 |
-| 连击系统 | 中 | 3 |
-| 更多敌人类型 | 中 | 3 |
-| UI 界面完善 | 中 | 4 |
-| 音效系统 | 低 | 4 |
+| 模块 | 优先级 | 说明 |
+|------|--------|------|
+| UI 组件封装 | 低 | src/ui/ 目录待开发 |
+| 更多敌人行为 | 低 | 远程、分裂等特殊行为 |
+| 成就系统 | 低 | 可选功能 |
 
 ## Aide 工作流状态
 
 **当前任务**：2025-12-19T22-20-36
-- **当前环节**：flow-design（子计划3流程设计中）
-- **当前步骤**：40
+- **当前环节**：docs（文档更新中）
+- **当前步骤**：52
 - **任务分支**：aide/001
 
 **子计划进度**：
@@ -228,27 +272,27 @@ npm run build
 |--------|------|
 | 1. 前期设计 | ✅ 完成 |
 | 2. 技术原型开发 | ✅ 完成 |
-| 3. 核心系统实现 | ⏳ 进行中（流程设计） |
-| 4. 完善打磨 | ⏳ 待开发 |
+| 3. 核心系统实现 | ✅ 完成 |
+| 4. 完善打磨 | ✅ 完成 |
 
 ## 统计信息
 
 | 项目 | 数量 |
 |------|------|
 | 区块总数 | 4 |
-| 总目录数 | 12（含 2 个空目录）|
-| 总文件数 | 43（非 node_modules）|
+| 总目录数 | 14（含 2 个空目录）|
+| 总文件数 | 53（非 node_modules）|
 | 被忽略项 | 2（node_modules/, dist/）|
-| JavaScript 代码 | 约 883 行 |
+| JavaScript 代码 | 约 4850 行 |
 | 文档行数 | 约 2200 行 |
 
 ## 开发状态
 
-**开发中** - 当前处于核心系统实现阶段
+**v1.0.0 已发布** - 完整可玩版本
 
 | 阶段 | 状态 | 说明 |
 |------|------|------|
 | 前期设计 | ✅ 完成 | GDD 文档完整 |
 | 技术原型 | ✅ 完成 | 基础战斗可运行 |
-| 核心系统 | ⏳ 进行中 | 流程设计中 |
-| 完善打磨 | ⏳ 待开发 | - |
+| 核心系统 | ✅ 完成 | 技能/波次/强化/音效 |
+| 完善打磨 | ✅ 完成 | Bug 修复/性能优化 |
