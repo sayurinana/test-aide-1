@@ -20,7 +20,7 @@
 |---|------|------|----------|
 | 1 | Bug 修复 + 测试关卡 | **completed** | spec-01.md |
 | 2 | 品牌重塑 + 技能系统 | **completed** | spec-02.md |
-| 3 | 普攻系统基础架构 | **in_progress** | spec-03.md |
+| 3 | 普攻系统基础架构 | **completed** | spec-03.md |
 | 4 | 普攻类型扩展 + 强化系统 | pending | spec-04.md |
 
 ### 子计划 1 当前进度
@@ -44,6 +44,17 @@
 - [x] 重构 SkillManager.js
 - [x] 更新 BuffData.js 技能相关强化
 - [x] 更新 HUDScene.js 技能栏配置
+
+### 子计划 3 当前进度
+
+- [x] 创建 ATTACK_TYPES 配置（config.js）
+- [x] 创建 AttackBase.js 普攻基类
+- [x] 创建 AttackManager.js 普攻管理器
+- [x] 创建 ArrowAttack.js 射箭普攻
+- [x] 创建 SlashAttack.js 挥砍普攻
+- [x] 创建 AttackSelectScene.js 开局选择界面
+- [x] 修改 GameScene.js 集成 AttackManager
+- [x] 修改 main.js 注册新场景
 
 ## 执行顺序
 
