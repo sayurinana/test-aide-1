@@ -97,7 +97,8 @@
       "action": "next-part",
       "phase": "finish",
       "step": 12,
-      "summary": "全自动模式自动确认，进入收尾"
+      "summary": "全自动模式自动确认，进入收尾",
+      "git_commit": "03f91f451dda9de0570a7c067a66381366ebba54"
     }
   ],
   "source_branch": "master",
