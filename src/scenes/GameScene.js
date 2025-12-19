@@ -318,8 +318,32 @@ export class GameScene extends Phaser.Scene {
     // 触发击杀回复
     this.roguelikeSystem.onKill()
 
+    // 给予经验值（根据敌人类型给予不同经验）
+    const expReward = this.getExpReward(enemy)
+    this.roguelikeSystem.addExp(expReward)
+
     // 通知 HUD 更新
     this.events.emit('killCountUpdated', this.killCount)
+  }
+
+  // 根据敌人类型计算经验奖励
+  getExpReward(enemy) {
+    // 基础经验值
+    let baseExp = 10
+
+    // 根据敌人类型调整
+    if (enemy.isBoss) {
+      baseExp = 200
+    } else if (enemy.isElite) {
+      baseExp = 50
+    } else {
+      // 普通敌人根据属性计算
+      baseExp = Math.floor(10 + enemy.maxHp / 20)
+    }
+
+    // 波次加成
+    const waveBonus = 1 + this.waveManager.currentWave * 0.05
+    return Math.floor(baseExp * waveBonus)
   }
 
   // 显示强化选择界面

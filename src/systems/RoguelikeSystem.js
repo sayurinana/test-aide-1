@@ -13,6 +13,14 @@ export class RoguelikeSystem {
     // 玩家已获得的强化
     this.activeBuffs = []  // { buffId, stacks }
 
+    // 经验值和等级系统
+    this.level = 1
+    this.exp = 0
+    this.expToNextLevel = 100  // 初始升级所需经验
+    this.expGrowthRate = 1.15  // 每级经验需求增长率
+    this.levelUpQueue = []     // 升级队列
+    this.isSelectingBuff = false  // 是否正在选择强化
+
     // 保底计数
     this.pity = {
       rare: 0,
@@ -459,5 +467,100 @@ export class RoguelikeSystem {
         stacks: b.stacks
       }
     })
+  }
+
+  // 添加经验值
+  addExp(amount) {
+    this.exp += amount
+
+    // 检查是否升级（可能连续升多级）
+    while (this.exp >= this.expToNextLevel) {
+      this.exp -= this.expToNextLevel
+      this.level++
+      this.expToNextLevel = Math.floor(this.expToNextLevel * this.expGrowthRate)
+
+      // 将升级加入队列
+      this.levelUpQueue.push({
+        level: this.level,
+        timestamp: Date.now()
+      })
+    }
+
+    // 通知 HUD 更新经验值显示
+    this.scene.events.emit('expUpdated', {
+      exp: this.exp,
+      expToNext: this.expToNextLevel,
+      level: this.level
+    })
+
+    // 处理升级队列
+    this.processLevelUpQueue()
+  }
+
+  // 处理升级队列
+  processLevelUpQueue() {
+    // 如果正在选择强化或队列为空，不处理
+    if (this.isSelectingBuff || this.levelUpQueue.length === 0) {
+      return
+    }
+
+    // 取出队列中的第一个升级
+    const levelUp = this.levelUpQueue[0]
+    this.isSelectingBuff = true
+
+    // 显示强化选择界面
+    this.showLevelUpBuffSelection(levelUp.level)
+  }
+
+  // 显示升级强化选择界面
+  showLevelUpBuffSelection(level) {
+    const choices = this.generateChoices(level, level % 5 === 0)
+
+    this.scene.scene.launch('BuffSelectionScene', {
+      choices,
+      waveNumber: level,  // 使用等级代替波次
+      isLevelUp: true,    // 标记为升级触发
+      queueLength: this.levelUpQueue.length,  // 告知队列长度
+      onSelect: (buff) => {
+        this.onLevelUpBuffSelected(buff)
+      }
+    })
+
+    // 暂停游戏场景
+    this.scene.physics.pause()
+  }
+
+  // 升级强化选择完成
+  onLevelUpBuffSelected(buff) {
+    // 应用强化
+    this.addBuff(buff.id)
+
+    // 通知 HUD
+    this.scene.events.emit('buffAcquired', buff)
+
+    // 从队列中移除已处理的升级
+    this.levelUpQueue.shift()
+    this.isSelectingBuff = false
+
+    // 检查队列中是否还有待处理的升级
+    if (this.levelUpQueue.length > 0) {
+      // 短暂延迟后处理下一个升级
+      this.scene.time.delayedCall(300, () => {
+        this.processLevelUpQueue()
+      })
+    } else {
+      // 队列清空，恢复游戏
+      this.scene.physics.resume()
+    }
+  }
+
+  // 获取经验值信息
+  getExpInfo() {
+    return {
+      level: this.level,
+      exp: this.exp,
+      expToNext: this.expToNextLevel,
+      queueLength: this.levelUpQueue.length
+    }
   }
 }

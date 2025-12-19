@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
   "current_phase": "impl",
-  "current_step": 7,
+  "current_step": 8,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -57,7 +57,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 7,
-      "summary": "修复 Bug 1：死亡后相机/UI飘移"
+      "summary": "修复 Bug 1：死亡后相机/UI飘移",
+      "git_commit": "54401d66251ddc2a25dd8099dffb66fd383ad9f0"
+    },
+    {
+      "timestamp": "2025-12-20T04:50:22+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 8,
+      "summary": "Bug 2 实现中：已完成经验值系统基础架构，待完成 BuffSelectionScene 队列支持"
     }
   ],
   "source_branch": "master",
