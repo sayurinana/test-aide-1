@@ -1,0 +1,1 @@
+我希望我的项目能在推送到github时触发github action自动完成构建和github pages的发布
