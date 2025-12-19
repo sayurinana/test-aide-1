@@ -36,6 +36,9 @@ export class HUDScene extends Phaser.Scene {
     // 创建调试信息
     this.createDebugInfo()
 
+    // 创建自动攻击状态显示
+    this.createAutoAttackDisplay()
+
     // 监听 GameScene 事件
     this.gameScene.events.on('playerHpUpdated', this.updateHpBar, this)
     this.gameScene.events.on('killCountUpdated', this.updateKillCount, this)
@@ -47,6 +50,7 @@ export class HUDScene extends Phaser.Scene {
     this.gameScene.events.on('buffAcquired', this.showBuffAcquired, this)
     this.gameScene.events.on('gamePaused', this.showPauseOverlay, this)
     this.gameScene.events.on('gameResumed', this.hidePauseOverlay, this)
+    this.gameScene.events.on('autoAttackToggled', this.updateAutoAttackDisplay, this)
 
     console.log('HUDScene 初始化完成')
   }
@@ -202,6 +206,53 @@ export class HUDScene extends Phaser.Scene {
       fill: '#888888',
       fontFamily: 'monospace'
     })
+  }
+
+  createAutoAttackDisplay() {
+    // 自动攻击状态显示在左下角
+    const x = 20
+    const y = this.cameras.main.height - 100
+
+    // 背景框
+    this.autoAttackBg = this.add.graphics()
+    this.autoAttackBg.fillStyle(0x333333, 0.7)
+    this.autoAttackBg.fillRoundedRect(x, y, 120, 30, 6)
+    this.autoAttackBg.lineStyle(2, 0x666666, 0.8)
+    this.autoAttackBg.strokeRoundedRect(x, y, 120, 30, 6)
+
+    // 状态文字
+    this.autoAttackText = this.add.text(x + 60, y + 15, '自动攻击: 关', {
+      fontSize: '12px',
+      fill: '#888888',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+
+    // 按键提示
+    this.add.text(x + 60, y + 40, '[F] 切换', {
+      fontSize: '10px',
+      fill: '#666666',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+  }
+
+  updateAutoAttackDisplay(enabled) {
+    if (enabled) {
+      this.autoAttackText.setText('自动攻击: 开')
+      this.autoAttackText.setFill('#00ff00')
+      this.autoAttackBg.clear()
+      this.autoAttackBg.fillStyle(0x1a3a1a, 0.8)
+      this.autoAttackBg.fillRoundedRect(20, this.cameras.main.height - 100, 120, 30, 6)
+      this.autoAttackBg.lineStyle(2, 0x00ff00, 0.8)
+      this.autoAttackBg.strokeRoundedRect(20, this.cameras.main.height - 100, 120, 30, 6)
+    } else {
+      this.autoAttackText.setText('自动攻击: 关')
+      this.autoAttackText.setFill('#888888')
+      this.autoAttackBg.clear()
+      this.autoAttackBg.fillStyle(0x333333, 0.7)
+      this.autoAttackBg.fillRoundedRect(20, this.cameras.main.height - 100, 120, 30, 6)
+      this.autoAttackBg.lineStyle(2, 0x666666, 0.8)
+      this.autoAttackBg.strokeRoundedRect(20, this.cameras.main.height - 100, 120, 30, 6)
+    }
   }
 
   createSkillBar() {
