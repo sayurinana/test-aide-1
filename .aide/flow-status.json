@@ -9,7 +9,8 @@
       "action": "start",
       "phase": "task-optimize",
       "step": 1,
-      "summary": "开始任务准备: 自动攻击功能 + 界面美化"
+      "summary": "开始任务准备: 自动攻击功能 + 界面美化",
+      "git_commit": "63761a9410dda1ae67167717be759c0f51ab2390"
     }
   ],
   "source_branch": "master",
