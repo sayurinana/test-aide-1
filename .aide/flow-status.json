@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
-  "current_phase": "impl",
-  "current_step": 20,
+  "current_phase": "verify",
+  "current_step": 21,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -161,7 +161,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 20,
-      "summary": "子计划 2 实现完成：品牌重塑 + 技能系统更新"
+      "summary": "子计划 2 实现完成：品牌重塑 + 技能系统更新",
+      "git_commit": "db12ee3f1d6015f5e8b3be0a6f3db58bff1f50da"
+    },
+    {
+      "timestamp": "2025-12-20T05:23:03+08:00",
+      "action": "next-part",
+      "phase": "verify",
+      "step": 21,
+      "summary": "实现完成，进入验证环节：子计划2"
     }
   ],
   "source_branch": "master",
