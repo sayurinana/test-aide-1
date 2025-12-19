@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T02-54-45",
   "current_phase": "impl",
-  "current_step": 6,
+  "current_step": 7,
   "started_at": "2025-12-20T02:54:45+08:00",
   "history": [
     {
@@ -49,7 +49,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 6,
-      "summary": "更新 blocks/01-root.md：添加 CI/CD 配置说明"
+      "summary": "更新 blocks/01-root.md：添加 CI/CD 配置说明",
+      "git_commit": "fd71c18a669bbc0c03069ab0c9e2210bc6341dba"
+    },
+    {
+      "timestamp": "2025-12-20T03:00:13+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 7,
+      "summary": "更新 project-docs/README.md：添加 CI/CD 相关内容"
     }
   ],
   "source_branch": "master",
