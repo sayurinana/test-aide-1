@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 59,
+  "current_step": 60,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -462,7 +462,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 59,
-      "summary": "完成4.5性能优化: EnemySpawner缓存/main.js渲染配置/物理帧率锁定/移动端缩放适配/多点触控支持"
+      "summary": "完成4.5性能优化: EnemySpawner缓存/main.js渲染配置/物理帧率锁定/移动端缩放适配/多点触控支持",
+      "git_commit": "10961db9d55e126a0e976b871b28b479f78f1c12"
+    },
+    {
+      "timestamp": "2025-12-20T01:52:35+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 60,
+      "summary": "完成4.6测试和修复: 修复SkillManager技能击杀计数bug/Enemy投射物伤害计算bug"
     }
   ],
   "source_branch": "master",

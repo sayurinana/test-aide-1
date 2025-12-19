@@ -383,21 +383,21 @@ export class Enemy extends Phaser.GameObjects.Container {
     )
     projectile.body.setCircle(8)
 
-    // 碰撞检测
+    // 碰撞检测 - 模拟敌人碰撞，复用 GameScene.onEnemyHitPlayer 的逻辑
     const overlap = this.scene.physics.add.overlap(
       projectile,
       this.scene.player,
       () => {
-        // 对玩家造成伤害
-        if (!this.scene.player.isInvincible) {
-          this.scene.player.takeDamage(this.atk)
-          this.scene.events.emit('playerHpUpdated', this.scene.player.hp, this.scene.player.maxHp)
-          if (this.scene.player.hp <= 0) {
-            this.scene.onGameOver()
-          }
-        }
+        // 销毁投射物
         projectile.destroy()
         overlap.destroy()
+
+        // 通过 GameScene 处理伤害（复用减伤、护盾等逻辑）
+        if (this.scene.onEnemyHitPlayer) {
+          // 创建临时对象传递伤害信息
+          const fakeEnemy = { atk: this.atk, isActive: true }
+          this.scene.onEnemyHitPlayer(this.scene.player, fakeEnemy)
+        }
       }
     )
 

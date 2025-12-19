@@ -352,7 +352,8 @@ export class SkillManager {
     this.scene.damageSystem.applyKnockback(enemy, sourceX, sourceY)
 
     if (killed) {
-      this.scene.addKill()
+      // 使用 onEnemyKilled 确保 WaveManager 和 RoguelikeSystem 正确更新
+      this.scene.onEnemyKilled(enemy)
     }
   }
 
