@@ -34,6 +34,16 @@
 - [x] 创建测试关卡 TestScene.js - **已完成**
 - [x] 添加测试模式主菜单入口 - **已完成**
 
+### 子计划 2 当前进度
+
+- [x] 更新游戏名称（index.html, main.js, MainMenuScene.js, package.json）
+- [x] 更新敌人名称（config.js）
+- [x] 更新 UI 文案（结算界面等）
+- [ ] 更新技能系统为 4 个通用技能
+- [ ] 创建技能 SVG 图标
+- [ ] 重构 SkillManager.js
+- [ ] 更新 BuffData.js 技能相关强化
+
 ## 执行顺序
 
 ```
