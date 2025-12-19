@@ -212,6 +212,11 @@ export class RoguelikeSystem {
             (stats.skillEnhancements[effect.skill][c.stat] || 0) + c.value
         })
         break
+
+      case 'new_attack':
+        // 触发新攻击选择界面
+        this.scene.events.emit('showNewAttackSelection')
+        break
     }
 
     // 应用 HP 变化
@@ -260,10 +265,19 @@ export class RoguelikeSystem {
     this.scene.events.emit('playerHpUpdated', this.player.hp, this.player.maxHp)
   }
 
+  // 获取玩家已拥有的攻击类型列表
+  getOwnedAttackTypes() {
+    if (!this.scene.attackManager) return []
+    return this.scene.attackManager.getAllAttacks().map(a => a.id)
+  }
+
   // 生成三个选择
   generateChoices(waveNumber, isBossWave = false) {
     const choices = []
     const usedIds = new Set()
+
+    // 获取玩家已拥有的攻击类型
+    const ownedAttackTypes = this.getOwnedAttackTypes()
 
     for (let i = 0; i < 3; i++) {
       const rarity = this.rollRarity(waveNumber, isBossWave && i === 0)
@@ -278,6 +292,18 @@ export class RoguelikeSystem {
         if (b.stackable) {
           const stacks = this.getBuffStacks(b.id)
           if (stacks >= b.maxStacks) return false
+        }
+
+        // 过滤普攻类强化：只显示玩家已拥有攻击方式的专属强化
+        if (b.category === 'attack' && b.attackType) {
+          if (!ownedAttackTypes.includes(b.attackType)) {
+            return false
+          }
+        }
+
+        // 过滤"新的力量"强化：已拥有全部6种攻击时不再出现
+        if (b.id === 'ATK_NEW' && ownedAttackTypes.length >= 6) {
+          return false
         }
 
         return true
