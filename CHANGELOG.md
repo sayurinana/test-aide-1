@@ -4,6 +4,22 @@
 
 ---
 
+## [1.1.0-alpha.3] - 2025-12-20
+
+### 修复
+- **敌人生成停止**：修复第一波打完升级选强化后敌人不再生成的问题
+  - 在 `RoguelikeSystem.processLevelUpQueue()` 中检查 `WaveManager.waveState`
+  - 如果波次正在等待强化选择（reward 状态），延迟处理升级队列
+  - 避免两个 `BuffSelectionScene` 同时启动导致回调被覆盖
+- **测试模式失效**：修复测试模式中敌人不动、玩家无法移动、按键无响应的问题
+  - 在 `TestScene.create()` 中停止可能正在运行的 `AttackSelectScene` 和 `BuffSelectionScene`
+  - 避免覆盖场景阻止输入或暂停物理系统
+- **画面模糊**：修复游戏画面和文字模糊不清的问题
+  - 移除已弃用的 `resolution` 属性（Phaser 3.16+ 自动处理设备像素比）
+  - 避免手动设置 `resolution` 导致的双重缩放问题
+
+---
+
 ## [1.1.0-alpha.2] - 2025-12-20
 
 ### 修复
