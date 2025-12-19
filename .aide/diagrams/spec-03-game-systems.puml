@@ -1,0 +1,70 @@
+@startuml spec-03-game-systems
+title 子计划3: 核心系统 - 程序逻辑流图
+
+skinparam backgroundColor #1a1a2e
+skinparam defaultFontColor white
+skinparam ArrowColor #64c8ff
+
+' 主游戏循环
+rectangle "GameScene.update()" as main #2a2a4a {
+
+  rectangle "输入处理" as input #3a3a5a {
+    (WASD移动) --> (鼠标朝向)
+    (鼠标朝向) --> (技能按键检测)
+    (技能按键检测) --> (鼠标攻击)
+  }
+
+  rectangle "玩家更新" as player #3a3a5a {
+    (Player.update) --> (技能冷却更新)
+    (技能冷却更新) --> (无敌帧更新)
+    (无敌帧更新) --> (连击计时更新)
+  }
+
+  rectangle "战斗系统" as combat #3a3a5a {
+    (攻击/技能触发) --> (DamageSystem计算)
+    (DamageSystem计算) --> (暴击判定)
+    (暴击判定) --> (伤害应用)
+    (伤害应用) --> (击退效果)
+    (击退效果) --> (连击累加)
+    (连击累加) --> (伤害数字显示)
+  }
+
+  rectangle "敌人系统" as enemy #3a3a5a {
+    (EnemySpawner) --> (敌人生成)
+    (敌人生成) --> (StateMachine更新)
+    (StateMachine更新) --> (AI行为执行)
+    (AI行为执行) --> (敌人攻击判定)
+    (敌人攻击判定) --> (玩家受伤处理)
+  }
+
+  rectangle "波次系统" as wave #3a3a5a {
+    (WaveManager) --> (波次进度检测)
+    (波次进度检测) --> (敌人全灭?)
+    (敌人全灭?) --> (下一波配置)
+    (下一波配置) --> (难度递增)
+    (难度递增) --> (触发强化选择)
+  }
+}
+
+' Roguelike 系统（暂停主循环）
+rectangle "UpgradeSelectScene" as upgrade #4a3a2a {
+  (显示3个强化选项) --> (玩家选择)
+  (玩家选择) --> (应用强化效果)
+  (应用强化效果) --> (返回游戏)
+}
+
+' 游戏状态
+rectangle "游戏状态管理" as state #2a4a3a {
+  (暂停检测) --> (暂停/继续)
+  (HP归零?) --> (游戏结束)
+  (游戏结束) --> (结算统计)
+  (结算统计) --> (GameOverScene)
+  (GameOverScene) --> (重新开始?)
+}
+
+' 连接
+main -down-> upgrade : 波次结束
+upgrade -up-> main : 继续游戏
+main -right-> state : 状态变化
+
+@enduml

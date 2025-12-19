@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "flow-design",
-  "current_step": 40,
+  "current_step": 41,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -310,7 +310,15 @@
       "action": "back-part",
       "phase": "flow-design",
       "step": 40,
-      "summary": "开始子计划3(核心系统实现)的流程设计"
+      "summary": "开始子计划3(核心系统实现)的流程设计",
+      "git_commit": "be2082a5c7f6b062aa6ef78a1e882e287e2a8902"
+    },
+    {
+      "timestamp": "2025-12-20T00:28:15+08:00",
+      "action": "next-step",
+      "phase": "flow-design",
+      "step": 41,
+      "summary": "流程图设计完成: 任务执行流程图 + 核心系统逻辑图"
     }
   ],
   "source_branch": "master",
