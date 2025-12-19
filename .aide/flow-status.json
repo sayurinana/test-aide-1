@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
   "current_phase": "impl",
-  "current_step": 28,
+  "current_step": 29,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -225,7 +225,15 @@
       "action": "next-part",
       "phase": "impl",
       "step": 28,
-      "summary": "流程设计完成，进入实现环节：子计划3"
+      "summary": "流程设计完成，进入实现环节：子计划3",
+      "git_commit": "77433955757561fb13558163f3243b1964a07cd9"
+    },
+    {
+      "timestamp": "2025-12-20T05:40:17+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 29,
+      "summary": "实现进行中：AttackManager + 2种普攻 + 选择界面 + GameScene 集成"
     }
   ],
   "source_branch": "master",

@@ -157,6 +157,92 @@ export const COLORS = {
   SKILL_4: 0xff6688      // 治疗 - 粉色
 }
 
+// 普攻类型配置
+export const ATTACK_TYPES = {
+  // 射箭 - 远程投射物
+  ARROW: {
+    id: 'arrow',
+    name: '射箭',
+    description: '发射箭矢攻击远处敌人',
+    damage: 15,
+    cooldown: 600,       // 冷却 600ms
+    speed: 500,          // 箭矢速度
+    range: 400,          // 射程
+    size: 8,             // 箭矢大小
+    color: 0xffcc00,     // 金色
+    icon: '🏹'
+  },
+
+  // 挥砍 - 近战扇形
+  SLASH: {
+    id: 'slash',
+    name: '挥砍',
+    description: '近距离扇形斩击',
+    damage: 20,
+    cooldown: 400,       // 冷却 400ms
+    range: 85,           // 攻击范围
+    arcAngle: Math.PI / 2, // 90度扇形
+    color: 0x64c8ff,     // 淡蓝色
+    icon: '⚔️'
+  },
+
+  // 法球 - 追踪投射物
+  ORB: {
+    id: 'orb',
+    name: '法球',
+    description: '发射追踪敌人的魔法球',
+    damage: 12,
+    cooldown: 800,       // 冷却 800ms
+    speed: 300,          // 法球速度
+    range: 350,          // 追踪范围
+    size: 12,            // 法球大小
+    color: 0xff00ff,     // 紫色
+    icon: '🔮'
+  },
+
+  // 冲击波 - 穿透攻击
+  WAVE: {
+    id: 'wave',
+    name: '冲击波',
+    description: '发射穿透敌人的冲击波',
+    damage: 18,
+    cooldown: 700,       // 冷却 700ms
+    speed: 400,          // 冲击波速度
+    range: 300,          // 射程
+    width: 60,           // 冲击波宽度
+    color: 0x00ffff,     // 青色
+    icon: '💨'
+  },
+
+  // 闪电链 - 连锁攻击
+  LIGHTNING: {
+    id: 'lightning',
+    name: '闪电链',
+    description: '闪电在敌人之间跳跃',
+    damage: 10,
+    cooldown: 900,       // 冷却 900ms
+    range: 250,          // 初始攻击范围
+    chainRange: 150,     // 链式攻击范围
+    chainCount: 3,       // 最大跳跃次数
+    color: 0xffff00,     // 黄色
+    icon: '⚡'
+  },
+
+  // 召唤物 - 自动攻击
+  SUMMON: {
+    id: 'summon',
+    name: '召唤物',
+    description: '召唤精灵自动攻击敌人',
+    damage: 8,
+    cooldown: 1200,      // 冷却 1200ms
+    duration: 5000,      // 持续 5 秒
+    attackInterval: 500, // 攻击间隔 500ms
+    range: 200,          // 攻击范围
+    color: 0x88ff88,     // 浅绿色
+    icon: '👻'
+  }
+}
+
 // 技能配置
 export const SKILLS = {
   // 技能1: 加速 (Q) - 短时间移动速度大幅提升

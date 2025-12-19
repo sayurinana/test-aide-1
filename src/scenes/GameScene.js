@@ -4,7 +4,7 @@
  */
 
 import Phaser from 'phaser'
-import { WORLD, PLAYER, ENEMY } from '../config.js'
+import { WORLD, PLAYER, ENEMY, ATTACK_TYPES } from '../config.js'
 import { Player } from '../entities/Player.js'
 import { AttackEffect } from '../entities/AttackEffect.js'
 import { EnemySpawner } from '../systems/EnemySpawner.js'
@@ -15,6 +15,9 @@ import { RoguelikeSystem } from '../systems/RoguelikeSystem.js'
 import { WaveManager } from '../systems/WaveManager.js'
 import { VFXManager } from '../systems/VFXManager.js'
 import { getAudioManager } from '../systems/AudioManager.js'
+import { AttackManager } from '../systems/AttackManager.js'
+import { ArrowAttack } from '../attacks/ArrowAttack.js'
+import { SlashAttack } from '../attacks/SlashAttack.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -23,6 +26,7 @@ export class GameScene extends Phaser.Scene {
     this.gameOver = false
     this.isPaused = false
     this.autoAttack = false  // 自动攻击开关，默认关闭
+    this.isGameStarted = false  // 游戏是否已开始（选择普攻后）
   }
 
   create() {
@@ -31,6 +35,7 @@ export class GameScene extends Phaser.Scene {
     this.gameOver = false
     this.isPaused = false
     this.autoAttack = false  // 重置自动攻击状态
+    this.isGameStarted = false  // 重置游戏开始状态
 
     // 设置世界边界
     this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
@@ -58,6 +63,9 @@ export class GameScene extends Phaser.Scene {
     // 创建战斗系统
     this.comboSystem = new ComboSystem(this)
     this.damageSystem = new DamageSystem(this)
+
+    // 创建普攻管理器
+    this.attackManager = new AttackManager(this, this.player)
 
     // 创建技能管理器
     this.skillManager = new SkillManager(this, this.player)
@@ -89,12 +97,106 @@ export class GameScene extends Phaser.Scene {
     // 启动 HUD 场景
     this.scene.launch('HUDScene')
 
-    // 游戏开始：第一波
+    // 显示普攻选择界面
+    this.showAttackSelectScene()
+
+    console.log('GameScene 初始化完成')
+  }
+
+  /**
+   * 显示普攻选择界面
+   */
+  showAttackSelectScene() {
+    this.scene.launch('AttackSelectScene', {
+      onSelect: (attackType) => {
+        this.onAttackSelected(attackType)
+      }
+    })
+  }
+
+  /**
+   * 普攻选择回调
+   */
+  onAttackSelected(attackType) {
+    // 根据选择创建对应的普攻实例
+    let attack
+    switch (attackType.id) {
+      case 'arrow':
+        attack = new ArrowAttack(this)
+        break
+      case 'slash':
+        attack = new SlashAttack(this)
+        break
+      // 其他类型暂时默认使用挥砍
+      default:
+        attack = new SlashAttack(this)
+        break
+    }
+
+    // 添加到普攻管理器
+    this.attackManager.addAttack(attack)
+
+    // 如果是射箭，设置碰撞检测
+    if (attackType.id === 'arrow') {
+      this.setupArrowCollision(attack)
+    }
+
+    // 标记游戏已开始
+    this.isGameStarted = true
+
+    // 游戏开始：第一波（延迟 1 秒）
     this.time.delayedCall(1000, () => {
       this.waveManager.startNextWave()
     })
 
-    console.log('GameScene 初始化完成')
+    // 通知 HUD 更新
+    this.events.emit('attackSelected', attackType)
+  }
+
+  /**
+   * 设置箭矢碰撞检测
+   */
+  setupArrowCollision(arrowAttack) {
+    // 箭矢与敌人碰撞
+    this.physics.add.overlap(
+      arrowAttack.getProjectiles(),
+      this.enemySpawner.getGroup(),
+      (arrow, enemy) => {
+        this.onArrowHitEnemy(arrowAttack, arrow, enemy)
+      },
+      null,
+      this
+    )
+  }
+
+  /**
+   * 箭矢命中敌人
+   */
+  onArrowHitEnemy(arrowAttack, arrow, enemy) {
+    if (this.gameOver) return
+
+    const context = this.getAttackContext()
+    const killed = arrowAttack.onHitEnemy(arrow, enemy, context)
+
+    if (killed) {
+      this.onEnemyKilled(enemy)
+    }
+  }
+
+  /**
+   * 获取攻击上下文
+   */
+  getAttackContext() {
+    return {
+      enemies: this.enemySpawner.getActiveEnemies(),
+      damageSystem: this.damageSystem,
+      comboSystem: this.comboSystem,
+      roguelikeSystem: this.roguelikeSystem,
+      waveManager: this.waveManager,
+      vfxManager: this.vfxManager,
+      audioManager: this.audioManager,
+      onEnemyKilled: (enemy) => this.onEnemyKilled(enemy)
+    }
   }
 
   setupCollisions() {
@@ -153,7 +255,7 @@ export class GameScene extends Phaser.Scene {
   setupAttackInput() {
     // 鼠标点击攻击
     this.input.on('pointerdown', (pointer) => {
-      if (pointer.leftButtonDown() && !this.gameOver && !this.isPaused) {
+      if (pointer.leftButtonDown() && !this.gameOver && !this.isPaused && this.isGameStarted) {
         this.performAttack()
       }
     })
@@ -190,39 +292,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   performAttack() {
-    if (!this.player || !this.player.canAttack()) return
+    if (!this.player || !this.attackManager) return
 
-    if (this.player.attack()) {
-      // 获取攻击位置和角度
-      const attackPos = this.player.getAttackPosition()
+    // 获取攻击上下文
+    const context = this.getAttackContext()
 
-      // 创建攻击效果
-      const effect = new AttackEffect(
-        this,
-        attackPos.x,
-        attackPos.y,
-        this.player.rotation
-      )
-
-      this.attackEffects.add(effect)
-
-      // 攻击音效
-      this.audioManager.playSfx('attack')
-
-      // 剑光拖尾效果
-      this.vfxManager.createSlashTrail(
-        attackPos.x,
-        attackPos.y,
-        this.player.rotation,
-        PLAYER.ATTACK_RANGE,
-        0x64c8ff
-      )
-
-      // 检测攻击范围内的敌人
-      this.checkAttackHits(attackPos)
-    }
+    // 执行所有可用的普攻
+    this.attackManager.executeAll(context)
   }
 
+  // 保留原有的检测逻辑供 SlashAttack 使用（已整合到 SlashAttack 类中）
   checkAttackHits(attackPos) {
     const enemies = this.enemySpawner.getActiveEnemies()
 
@@ -439,8 +518,20 @@ export class GameScene extends Phaser.Scene {
       this.player.update(time, delta)
     }
 
-    // 自动攻击
-    if (this.autoAttack) {
+    // 更新普攻管理器（冷却等）
+    if (this.attackManager) {
+      this.attackManager.update(delta)
+
+      // 更新所有箭矢
+      this.attackManager.getAllAttacks().forEach(attack => {
+        if (attack.update) {
+          attack.update(delta)
+        }
+      })
+    }
+
+    // 自动攻击（仅在游戏开始后）
+    if (this.autoAttack && this.isGameStarted) {
       this.performAttack()
     }
 
