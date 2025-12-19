@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
   "current_phase": "impl",
-  "current_step": 8,
+  "current_step": 9,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -65,7 +65,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 8,
-      "summary": "Bug 2 实现中：已完成经验值系统基础架构，待完成 BuffSelectionScene 队列支持"
+      "summary": "Bug 2 实现中：已完成经验值系统基础架构，待完成 BuffSelectionScene 队列支持",
+      "git_commit": "562a082e341a2c73883f606e70430f004796228e"
+    },
+    {
+      "timestamp": "2025-12-20T04:55:18+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 9,
+      "summary": "Bug 2 完成：BuffSelectionScene 队列支持已实现"
     }
   ],
   "source_branch": "master",

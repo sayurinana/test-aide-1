@@ -18,10 +18,21 @@
 
 | # | 名称 | 状态 | 细则文档 |
 |---|------|------|----------|
-| 1 | Bug 修复 + 测试关卡 | pending | spec-01.md |
+| 1 | Bug 修复 + 测试关卡 | **in_progress** | spec-01.md |
 | 2 | 品牌重塑 + 技能系统 | pending | spec-02.md |
 | 3 | 普攻系统基础架构 | pending | spec-03.md |
 | 4 | 普攻类型扩展 + 强化系统 | pending | spec-04.md |
+
+### 子计划 1 当前进度
+
+- [x] Bug 1：死亡后相机/UI飘移 - **已完成**
+- [ ] Bug 2：经验值系统和升级队列 - **进行中**
+  - [x] RoguelikeSystem 添加经验值属性和方法
+  - [x] GameScene 敌人击杀给予经验值
+  - [x] HUDScene 经验值条显示
+  - [ ] BuffSelectionScene 队列支持（待完成）
+- [ ] 创建测试关卡 TestScene.js
+- [ ] 添加测试模式主菜单入口
 
 ## 执行顺序
 
