@@ -4,6 +4,7 @@
  */
 
 import Phaser from 'phaser'
+import { MainMenuScene } from './scenes/MainMenuScene.js'
 import { GameScene } from './scenes/GameScene.js'
 import { HUDScene } from './scenes/HUDScene.js'
 import { BuffSelectionScene } from './scenes/BuffSelectionScene.js'
@@ -14,7 +15,7 @@ const config = {
   width: 1280,
   height: 720,
   parent: 'game-container',
-  backgroundColor: '#1a1a2e',
+  backgroundColor: '#0a0a1e',
   physics: {
     default: 'arcade',
     arcade: {
@@ -22,7 +23,7 @@ const config = {
       debug: false
     }
   },
-  scene: [GameScene, HUDScene, BuffSelectionScene]
+  scene: [MainMenuScene, GameScene, HUDScene, BuffSelectionScene]
 }
 
 // 启动游戏

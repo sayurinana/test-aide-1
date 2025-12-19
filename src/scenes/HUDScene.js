@@ -4,6 +4,7 @@
 
 import Phaser from 'phaser'
 import { COLORS, PLAYER } from '../config.js'
+import { getAudioManager } from '../systems/AudioManager.js'
 
 export class HUDScene extends Phaser.Scene {
   constructor() {
@@ -512,13 +513,16 @@ export class HUDScene extends Phaser.Scene {
 
     this.pauseContainer = this.add.container(centerX, centerY)
     this.pauseContainer.setVisible(false)
+    this.pauseContainer.setDepth(1000)
+
+    this.audioManager = getAudioManager()
 
     // 半透明背景
-    const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.7)
+    const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.8)
     this.pauseContainer.add(bg)
 
     // 暂停文字
-    const pauseText = this.add.text(0, -50, '游戏暂停', {
+    const pauseText = this.add.text(0, -120, '游戏暂停', {
       fontSize: '48px',
       fill: '#ffffff',
       fontFamily: 'Arial',
@@ -526,13 +530,92 @@ export class HUDScene extends Phaser.Scene {
     }).setOrigin(0.5)
     this.pauseContainer.add(pauseText)
 
+    // 继续游戏按钮
+    const resumeBtn = this.createPauseButton(0, -30, '继续游戏', () => {
+      this.gameScene.togglePause()
+    })
+    this.pauseContainer.add(resumeBtn)
+
+    // 音效开关
+    const soundText = this.audioManager.enabled ? '音效：开' : '音效：关'
+    this.soundBtn = this.createPauseButton(0, 30, soundText, () => {
+      const enabled = this.audioManager.toggleMute()
+      this.soundBtnText.setText(enabled ? '音效：开' : '音效：关')
+      this.audioManager.playSfx('select')
+    })
+    this.pauseContainer.add(this.soundBtn)
+
+    // 返回主菜单
+    const menuBtn = this.createPauseButton(0, 90, '返回主菜单', () => {
+      this.audioManager.playSfx('select')
+      this.scene.stop('GameScene')
+      this.scene.stop('HUDScene')
+      this.scene.start('MainMenuScene')
+    })
+    this.pauseContainer.add(menuBtn)
+
     // 提示文字
-    const tipText = this.add.text(0, 30, '按 ESC 继续游戏', {
-      fontSize: '24px',
-      fill: '#888888',
+    const tipText = this.add.text(0, 170, '按 ESC 继续游戏', {
+      fontSize: '16px',
+      fill: '#666666',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
     this.pauseContainer.add(tipText)
+  }
+
+  createPauseButton(x, y, text, callback) {
+    const container = this.add.container(x, y)
+
+    // 按钮背景
+    const bg = this.add.graphics()
+    bg.fillStyle(0x1a1a3e, 1)
+    bg.fillRoundedRect(-100, -20, 200, 40, 8)
+    bg.lineStyle(2, 0x64c8ff, 0.8)
+    bg.strokeRoundedRect(-100, -20, 200, 40, 8)
+    container.add(bg)
+
+    // 按钮文字
+    const btnText = this.add.text(0, 0, text, {
+      fontSize: '20px',
+      fill: '#64c8ff',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+    container.add(btnText)
+
+    // 保存文字引用供后续修改
+    if (text.includes('音效')) {
+      this.soundBtnText = btnText
+    }
+
+    // 交互区域
+    const hitArea = this.add.rectangle(0, 0, 200, 40, 0x000000, 0)
+    hitArea.setInteractive({ useHandCursor: true })
+    container.add(hitArea)
+
+    hitArea.on('pointerover', () => {
+      bg.clear()
+      bg.fillStyle(0x2a2a5e, 1)
+      bg.fillRoundedRect(-100, -20, 200, 40, 8)
+      bg.lineStyle(3, 0x88ddff, 1)
+      bg.strokeRoundedRect(-100, -20, 200, 40, 8)
+      btnText.setFill('#ffffff')
+    })
+
+    hitArea.on('pointerout', () => {
+      bg.clear()
+      bg.fillStyle(0x1a1a3e, 1)
+      bg.fillRoundedRect(-100, -20, 200, 40, 8)
+      bg.lineStyle(2, 0x64c8ff, 0.8)
+      bg.strokeRoundedRect(-100, -20, 200, 40, 8)
+      btnText.setFill('#64c8ff')
+    })
+
+    hitArea.on('pointerdown', () => {
+      this.audioManager.playSfx('select')
+      callback()
+    })
+
+    return container
   }
 
   showPauseOverlay() {

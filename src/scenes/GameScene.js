@@ -461,18 +461,30 @@ export class GameScene extends Phaser.Scene {
     const overlay = this.add.rectangle(
       centerX, centerY,
       this.cameras.main.width, this.cameras.main.height,
-      0x000000, 0.7
+      0x000000, 0.85
     )
 
     // 标题
-    this.add.text(centerX, centerY - 150, '☠️ 修炼结束 ☠️', {
-      fontSize: '42px',
+    const titleText = this.add.text(centerX, centerY - 180, '修炼结束', {
+      fontSize: '48px',
       fill: '#ff6464',
-      fontFamily: 'Arial'
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
     }).setOrigin(0.5)
 
+    // 标题动画
+    this.tweens.add({
+      targets: titleText,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    })
+
     // 最高波次
-    this.add.text(centerX, centerY - 80, `最高波次：第 ${stats.highestWave} 波`, {
+    this.add.text(centerX, centerY - 100, `最高波次：第 ${stats.highestWave} 波`, {
       fontSize: '28px',
       fill: '#ffffff',
       fontFamily: 'Arial'
@@ -481,7 +493,7 @@ export class GameScene extends Phaser.Scene {
     // 存活时间
     const minutes = Math.floor(stats.survivalTime / 60000)
     const seconds = Math.floor((stats.survivalTime % 60000) / 1000)
-    this.add.text(centerX, centerY - 40, `存活时间：${minutes} 分 ${seconds} 秒`, {
+    this.add.text(centerX, centerY - 60, `存活时间：${minutes} 分 ${seconds} 秒`, {
       fontSize: '20px',
       fill: '#aaaaaa',
       fontFamily: 'Arial'
@@ -490,10 +502,10 @@ export class GameScene extends Phaser.Scene {
     // 分隔线
     const line = this.add.graphics()
     line.lineStyle(2, 0x444444)
-    line.lineBetween(centerX - 200, centerY, centerX + 200, centerY)
+    line.lineBetween(centerX - 200, centerY - 30, centerX + 200, centerY - 30)
 
     // 统计数据
-    const statsY = centerY + 30
+    const statsY = centerY + 10
     const leftX = centerX - 100
     const rightX = centerX + 100
 
@@ -523,29 +535,51 @@ export class GameScene extends Phaser.Scene {
 
     // 最终分数
     const score = this.calculateScore(stats)
-    this.add.text(centerX, centerY + 100, `📊 最终分数：${score}`, {
-      fontSize: '32px',
+    const scoreText = this.add.text(centerX, centerY + 90, `最终分数：${score}`, {
+      fontSize: '36px',
       fill: '#ffff00',
-      fontFamily: 'Arial'
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
     }).setOrigin(0.5)
 
-    // 重新开始按钮
-    const restartText = this.add.text(centerX, centerY + 170, '[ 点击重新开始 ]', {
-      fontSize: '24px',
-      fill: '#64c8ff',
-      fontFamily: 'Arial'
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+    // 分数闪烁
+    this.tweens.add({
+      targets: scoreText,
+      alpha: 0.7,
+      duration: 500,
+      yoyo: true,
+      repeat: 2
+    })
 
-    restartText.on('pointerdown', () => {
+    // 按钮样式函数
+    const createButton = (x, y, text, callback) => {
+      const btn = this.add.text(x, y, text, {
+        fontSize: '24px',
+        fill: '#64c8ff',
+        fontFamily: 'Arial',
+        backgroundColor: '#1a1a3e',
+        padding: { x: 20, y: 10 }
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+
+      btn.on('pointerover', () => btn.setFill('#ffffff'))
+      btn.on('pointerout', () => btn.setFill('#64c8ff'))
+      btn.on('pointerdown', () => {
+        this.audioManager.playSfx('select')
+        callback()
+      })
+
+      return btn
+    }
+
+    // 重新开始按钮
+    createButton(centerX - 100, centerY + 160, '再来一局', () => {
       this.scene.restart()
     })
 
-    restartText.on('pointerover', () => {
-      restartText.setFill('#ffffff')
-    })
-
-    restartText.on('pointerout', () => {
-      restartText.setFill('#64c8ff')
+    // 返回主菜单按钮
+    createButton(centerX + 100, centerY + 160, '返回菜单', () => {
+      this.scene.stop('HUDScene')
+      this.scene.start('MainMenuScene')
     })
   }
 
