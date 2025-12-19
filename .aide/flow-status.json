@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
   "current_phase": "impl",
-  "current_step": 9,
+  "current_step": 10,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -73,7 +73,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 9,
-      "summary": "Bug 2 完成：BuffSelectionScene 队列支持已实现"
+      "summary": "Bug 2 完成：BuffSelectionScene 队列支持已实现",
+      "git_commit": "d3f62a6858b2c712f592e71f1fe32d2cc40b817b"
+    },
+    {
+      "timestamp": "2025-12-20T05:02:45+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 10,
+      "summary": "完成测试关卡 TestScene.js 和主菜单入口"
     }
   ],
   "source_branch": "master",

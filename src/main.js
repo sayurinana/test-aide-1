@@ -8,6 +8,7 @@ import { MainMenuScene } from './scenes/MainMenuScene.js'
 import { GameScene } from './scenes/GameScene.js'
 import { HUDScene } from './scenes/HUDScene.js'
 import { BuffSelectionScene } from './scenes/BuffSelectionScene.js'
+import { TestScene } from './scenes/TestScene.js'
 
 // 游戏配置
 const config = {
@@ -60,7 +61,7 @@ const config = {
     disableWebAudio: false,
     noAudio: false
   },
-  scene: [MainMenuScene, GameScene, HUDScene, BuffSelectionScene]
+  scene: [MainMenuScene, GameScene, HUDScene, BuffSelectionScene, TestScene]
 }
 
 // 启动游戏

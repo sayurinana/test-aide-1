@@ -57,8 +57,13 @@ export class MainMenuScene extends Phaser.Scene {
     }).setOrigin(0.5)
 
     // 开始按钮
-    const startButton = this.createButton(centerX, centerY + 30, '开始修炼', () => {
-      this.startGame()
+    const startButton = this.createButton(centerX, centerY + 30, '开始修炼', (event) => {
+      // Shift + 点击进入测试模式
+      if (event && event.shiftKey) {
+        this.startTestMode()
+      } else {
+        this.startGame()
+      }
     })
 
     // 按钮脉动动画
@@ -104,14 +109,29 @@ export class MainMenuScene extends Phaser.Scene {
       fontFamily: 'Arial'
     }).setOrigin(0.5)
 
-    // 全屏点击监听
-    this.input.on('pointerdown', () => {
-      this.startGame()
+    // 测试模式提示
+    this.add.text(centerX, height - 25, '(按住 Shift 点击进入测试模式)', {
+      fontSize: '12px',
+      fill: '#444444',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+
+    // 全屏点击监听（Shift + 点击进入测试模式）
+    this.input.on('pointerdown', (pointer) => {
+      if (pointer.event.shiftKey) {
+        this.startTestMode()
+      } else {
+        this.startGame()
+      }
     })
 
-    // 键盘监听
-    this.input.keyboard.on('keydown', () => {
-      this.startGame()
+    // 键盘监听（Shift + 任意键进入测试模式）
+    this.input.keyboard.on('keydown', (event) => {
+      if (event.shiftKey) {
+        this.startTestMode()
+      } else {
+        this.startGame()
+      }
     })
 
     // 初始化音效管理器
@@ -198,7 +218,8 @@ export class MainMenuScene extends Phaser.Scene {
     hitArea.on('pointerdown', (pointer, localX, localY, event) => {
       event.stopPropagation()
       this.audioManager.playSfx('select')
-      callback()
+      // 传递原始事件以便检测 Shift 键
+      callback({ shiftKey: pointer.event.shiftKey })
     })
 
     return button
@@ -216,6 +237,21 @@ export class MainMenuScene extends Phaser.Scene {
 
     this.time.delayedCall(500, () => {
       this.scene.start('GameScene')
+    })
+  }
+
+  startTestMode() {
+    // 防止重复触发
+    if (this.isStarting) return
+    this.isStarting = true
+
+    this.audioManager.playSfx('select')
+
+    // 淡出过渡
+    this.cameras.main.fadeOut(500, 0, 0, 0)
+
+    this.time.delayedCall(500, () => {
+      this.scene.start('TestScene')
     })
   }
 }
