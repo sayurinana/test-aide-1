@@ -77,7 +77,7 @@ npm run build
 
 部署完成后，游戏可通过以下地址访问：
 ```
-https://<username>.github.io/<repo-name>/
+https://sayurinana.github.io/test-aide-1/
 ```
 
 ## 项目结构
