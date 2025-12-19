@@ -3,7 +3,7 @@
  */
 
 import Phaser from 'phaser'
-import { PLAYER, WORLD, COLORS } from '../config.js'
+import { PLAYER, WORLD, COLORS, COMBAT } from '../config.js'
 
 export class Player extends Phaser.GameObjects.Container {
   constructor(scene, x, y) {
@@ -16,6 +16,14 @@ export class Player extends Phaser.GameObjects.Container {
     this.speed = PLAYER.SPEED
     this.attackCooldown = 0
     this.isAttacking = false
+
+    // 无敌帧
+    this.isInvincible = false
+    this.invincibleTimer = 0
+
+    // 暴击属性
+    this.critChance = COMBAT.CRIT_CHANCE
+    this.critMultiplier = COMBAT.CRIT_MULTIPLIER
 
     // 创建角色图形
     this.createGraphics()
@@ -78,6 +86,15 @@ export class Player extends Phaser.GameObjects.Container {
     if (this.attackCooldown > 0) {
       this.attackCooldown -= delta
     }
+
+    // 更新无敌帧
+    if (this.invincibleTimer > 0) {
+      this.invincibleTimer -= delta
+      if (this.invincibleTimer <= 0) {
+        this.isInvincible = false
+        this.alpha = 1
+      }
+    }
   }
 
   handleMovement() {
@@ -126,8 +143,15 @@ export class Player extends Phaser.GameObjects.Container {
   }
 
   takeDamage(amount) {
+    // 无敌帧期间不受伤害
+    if (this.isInvincible) return false
+
     this.hp -= amount
     if (this.hp < 0) this.hp = 0
+
+    // 触发无敌帧
+    this.isInvincible = true
+    this.invincibleTimer = COMBAT.INVINCIBLE_DURATION
 
     // 受伤闪烁效果
     this.scene.tweens.add({

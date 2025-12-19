@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 42,
+  "current_step": 43,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -326,7 +326,15 @@
       "action": "next-part",
       "phase": "impl",
       "step": 42,
-      "summary": "流程设计完成，进入核心系统实现"
+      "summary": "流程设计完成，进入核心系统实现",
+      "git_commit": "10f57d13a45e8a21b3868c6d84ac8d30a0f7cfc4"
+    },
+    {
+      "timestamp": "2025-12-20T00:33:50+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 43,
+      "summary": "完成3.1完整战斗系统+3.6伤害系统: ComboSystem/DamageSystem/无敌帧/击退/暴击"
     }
   ],
   "source_branch": "master",

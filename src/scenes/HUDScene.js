@@ -20,12 +20,16 @@ export class HUDScene extends Phaser.Scene {
     // 创建击杀计数
     this.createKillCounter()
 
+    // 创建连击显示
+    this.createComboDisplay()
+
     // 创建调试信息
     this.createDebugInfo()
 
     // 监听 GameScene 事件
     this.gameScene.events.on('playerHpUpdated', this.updateHpBar, this)
     this.gameScene.events.on('killCountUpdated', this.updateKillCount, this)
+    this.gameScene.events.on('comboUpdated', this.updateCombo, this)
 
     console.log('HUDScene 初始化完成')
   }
@@ -118,6 +122,59 @@ export class HUDScene extends Phaser.Scene {
       scaleY: 1.3,
       duration: 100,
       yoyo: true
+    })
+  }
+
+  createComboDisplay() {
+    // 连击显示在屏幕中央偏上
+    const x = this.cameras.main.width / 2
+    const y = 80
+
+    this.comboText = this.add.text(x, y, '', {
+      fontSize: '36px',
+      fill: '#64c8ff',
+      fontFamily: 'Arial',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 3
+    }).setOrigin(0.5).setAlpha(0)
+
+    this.comboMultiplierText = this.add.text(x, y + 40, '', {
+      fontSize: '18px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000000',
+      strokeThickness: 2
+    }).setOrigin(0.5).setAlpha(0)
+  }
+
+  updateCombo(count, multiplier) {
+    if (count === 0) {
+      // 连击结束，淡出
+      this.tweens.add({
+        targets: [this.comboText, this.comboMultiplierText],
+        alpha: 0,
+        duration: 300
+      })
+      return
+    }
+
+    // 更新文字
+    this.comboText.setText(`${count} COMBO`)
+    this.comboMultiplierText.setText(`x${multiplier.toFixed(2)}`)
+
+    // 显示并动画
+    this.comboText.setAlpha(1)
+    this.comboMultiplierText.setAlpha(1)
+
+    // 缩放动画
+    this.tweens.add({
+      targets: this.comboText,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 100,
+      yoyo: true,
+      ease: 'Power2'
     })
   }
 

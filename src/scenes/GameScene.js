@@ -7,13 +7,14 @@ import { WORLD, PLAYER, ENEMY } from '../config.js'
 import { Player } from '../entities/Player.js'
 import { AttackEffect } from '../entities/AttackEffect.js'
 import { EnemySpawner } from '../systems/EnemySpawner.js'
+import { ComboSystem } from '../systems/ComboSystem.js'
+import { DamageSystem } from '../systems/DamageSystem.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' })
     this.killCount = 0
     this.gameOver = false
-    this.damageCooldown = 0
   }
 
   create() {
@@ -37,6 +38,10 @@ export class GameScene extends Phaser.Scene {
 
     // 创建敌人生成器
     this.enemySpawner = new EnemySpawner(this, this.player)
+
+    // 创建战斗系统
+    this.comboSystem = new ComboSystem(this)
+    this.damageSystem = new DamageSystem(this)
 
     // 设置碰撞检测
     this.setupCollisions()
@@ -63,13 +68,13 @@ export class GameScene extends Phaser.Scene {
 
   onEnemyHitPlayer(player, enemy) {
     if (this.gameOver || !enemy.isActive) return
-    if (this.damageCooldown > 0) return
+    if (this.player.isInvincible) return
 
     // 玩家受伤
     const isDead = this.player.takeDamage(enemy.atk)
 
-    // 设置伤害冷却
-    this.damageCooldown = 500
+    // 重置连击
+    this.comboSystem.resetCombo()
 
     // 更新 HUD
     this.events.emit('playerHpUpdated', this.player.hp, this.player.maxHp)
@@ -134,8 +139,22 @@ export class GameScene extends Phaser.Scene {
         const angleDiff = Phaser.Math.Angle.Wrap(angleToEnemy - attackAngle)
 
         if (Math.abs(angleDiff) <= arcAngle / 2) {
-          // 敌人受到伤害
-          const killed = enemy.takeDamage(this.player.atk)
+          // 记录连击
+          this.comboSystem.addHit()
+
+          // 计算伤害（含暴击和连击加成）
+          const { damage, isCrit } = this.damageSystem.calculateDamage(
+            this.player.atk,
+            this.comboSystem.getMultiplier(),
+            this.player
+          )
+
+          // 应用伤害
+          const killed = this.damageSystem.applyDamage(enemy, damage, isCrit)
+
+          // 应用击退
+          this.damageSystem.applyKnockback(enemy, this.player.x, this.player.y)
+
           if (killed) {
             this.addKill()
           }
@@ -165,11 +184,6 @@ export class GameScene extends Phaser.Scene {
   update(time, delta) {
     if (this.gameOver) return
 
-    // 更新伤害冷却
-    if (this.damageCooldown > 0) {
-      this.damageCooldown -= delta
-    }
-
     // 更新玩家
     if (this.player) {
       this.player.update(time, delta)
@@ -178,6 +192,11 @@ export class GameScene extends Phaser.Scene {
     // 更新敌人生成器
     if (this.enemySpawner) {
       this.enemySpawner.update(time, delta)
+    }
+
+    // 更新连击系统
+    if (this.comboSystem) {
+      this.comboSystem.update(time, delta)
     }
   }
 
