@@ -12,7 +12,8 @@ export class EnemySpawner {
     this.player = player
     this.enemies = scene.add.group({
       classType: Enemy,
-      runChildUpdate: true
+      runChildUpdate: true,
+      maxSize: ENEMY.MAX_COUNT  // 设置最大容量提升性能
     })
 
     this.spawnTimer = 0
@@ -29,9 +30,16 @@ export class EnemySpawner {
 
     // 难度系数（可由波次管理器修改）
     this.difficultyMultiplier = 1.0
+
+    // 缓存活跃敌人列表
+    this._activeEnemiesCache = []
+    this._cacheValid = false
   }
 
   update(time, delta) {
+    // 每帧开始时使缓存失效，确保数据一致性
+    this._cacheValid = false
+
     this.spawnTimer += delta
 
     if (this.spawnTimer >= this.spawnInterval) {
@@ -74,6 +82,9 @@ export class EnemySpawner {
       enemy.setTarget(this.player)
       this.enemies.add(enemy)
     }
+
+    // 敌人生成后使缓存失效
+    this._cacheValid = false
 
     return enemy
   }
@@ -213,7 +224,17 @@ export class EnemySpawner {
   }
 
   getActiveEnemies() {
-    return this.enemies.getChildren().filter(e => e.isActive)
+    // 使用缓存减少每帧的过滤开销
+    if (!this._cacheValid) {
+      this._activeEnemiesCache = this.enemies.getChildren().filter(e => e.isActive)
+      this._cacheValid = true
+    }
+    return this._activeEnemiesCache
+  }
+
+  // 使缓存失效（在敌人状态变化时调用）
+  invalidateCache() {
+    this._cacheValid = false
   }
 
   getGroup() {
@@ -229,5 +250,6 @@ export class EnemySpawner {
       enemy.setActive(false)
       enemy.setVisible(false)
     })
+    this._cacheValid = false
   }
 }
