@@ -1,5 +1,5 @@
 {
-  "next_number": 3,
+  "next_number": 4,
   "branches": [
     {
       "number": 1,
@@ -24,6 +24,16 @@
       "status": "finished",
       "end_commit": "bb6adc15c7322011784d12143f28b5aa30a3b31f",
       "finished_at": "2025-12-20T02:26:00+08:00"
+    },
+    {
+      "number": 3,
+      "branch_name": "aide/003",
+      "source_branch": "master",
+      "start_commit": "623ab536bb1b5a6ef74b10c714856c4138e4d0da",
+      "task_id": "2025-12-20T02-54-45",
+      "task_summary": "开始任务准备: 同步更新项目相关文档",
+      "started_at": "2025-12-20T02:54:45+08:00",
+      "status": "active"
     }
   ]
 }
