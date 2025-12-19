@@ -458,6 +458,9 @@ export class GameScene extends Phaser.Scene {
   onGameOver() {
     this.gameOver = true
 
+    // 停止相机跟随，固定在当前位置
+    this.cameras.main.stopFollow()
+
     // 游戏结束音效
     this.audioManager.playSfx('gameover')
 
@@ -474,8 +477,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   showGameOverScreen(stats) {
-    const centerX = this.cameras.main.scrollX + this.cameras.main.width / 2
-    const centerY = this.cameras.main.scrollY + this.cameras.main.height / 2
+    // 使用屏幕中心坐标（不受相机滚动影响）
+    const centerX = this.cameras.main.width / 2
+    const centerY = this.cameras.main.height / 2
+
+    // 创建 UI 容器，设置 scrollFactor 为 0 使其固定在屏幕上
+    const uiContainer = this.add.container(0, 0).setScrollFactor(0)
 
     // 半透明背景
     const overlay = this.add.rectangle(
@@ -483,6 +490,7 @@ export class GameScene extends Phaser.Scene {
       this.cameras.main.width, this.cameras.main.height,
       0x000000, 0.85
     )
+    uiContainer.add(overlay)
 
     // 标题
     const titleText = this.add.text(centerX, centerY - 180, '修炼结束', {
@@ -491,6 +499,7 @@ export class GameScene extends Phaser.Scene {
       fontFamily: 'Arial',
       fontStyle: 'bold'
     }).setOrigin(0.5)
+    uiContainer.add(titleText)
 
     // 标题动画
     this.tweens.add({
@@ -504,54 +513,61 @@ export class GameScene extends Phaser.Scene {
     })
 
     // 最高波次
-    this.add.text(centerX, centerY - 100, `最高波次：第 ${stats.highestWave} 波`, {
+    const waveText = this.add.text(centerX, centerY - 100, `最高波次：第 ${stats.highestWave} 波`, {
       fontSize: '28px',
       fill: '#ffffff',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(waveText)
 
     // 存活时间
     const minutes = Math.floor(stats.survivalTime / 60000)
     const seconds = Math.floor((stats.survivalTime % 60000) / 1000)
-    this.add.text(centerX, centerY - 60, `存活时间：${minutes} 分 ${seconds} 秒`, {
+    const timeText = this.add.text(centerX, centerY - 60, `存活时间：${minutes} 分 ${seconds} 秒`, {
       fontSize: '20px',
       fill: '#aaaaaa',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(timeText)
 
     // 分隔线
     const line = this.add.graphics()
     line.lineStyle(2, 0x444444)
     line.lineBetween(centerX - 200, centerY - 30, centerX + 200, centerY - 30)
+    uiContainer.add(line)
 
     // 统计数据
     const statsY = centerY + 10
     const leftX = centerX - 100
     const rightX = centerX + 100
 
-    this.add.text(leftX, statsY, `击杀数：${stats.totalKills}`, {
+    const killText = this.add.text(leftX, statsY, `击杀数：${stats.totalKills}`, {
       fontSize: '18px',
       fill: '#cccccc',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(killText)
 
-    this.add.text(rightX, statsY, `最高连击：${stats.highestCombo}`, {
+    const comboText = this.add.text(rightX, statsY, `最高连击：${stats.highestCombo}`, {
       fontSize: '18px',
       fill: '#cccccc',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(comboText)
 
-    this.add.text(leftX, statsY + 30, `造成伤害：${stats.totalDamage}`, {
+    const damageText = this.add.text(leftX, statsY + 30, `造成伤害：${stats.totalDamage}`, {
       fontSize: '18px',
       fill: '#cccccc',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(damageText)
 
-    this.add.text(rightX, statsY + 30, `获得强化：${stats.buffsCollected}`, {
+    const buffText = this.add.text(rightX, statsY + 30, `获得强化：${stats.buffsCollected}`, {
       fontSize: '18px',
       fill: '#cccccc',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+    uiContainer.add(buffText)
 
     // 最终分数
     const score = this.calculateScore(stats)
@@ -561,6 +577,7 @@ export class GameScene extends Phaser.Scene {
       fontFamily: 'Arial',
       fontStyle: 'bold'
     }).setOrigin(0.5)
+    uiContainer.add(scoreText)
 
     // 分数闪烁
     this.tweens.add({
@@ -588,6 +605,7 @@ export class GameScene extends Phaser.Scene {
         callback()
       })
 
+      uiContainer.add(btn)
       return btn
     }
 
