@@ -1,7 +1,7 @@
 # 《御剑无双》项目导览
 
 > 本文档面向 LLM，用于快速了解项目结构和脉络。
-> 最后更新：2025-12-20
+> 最后更新：2025-12-20（v2更新：新增多种普攻系统）
 
 ## 项目简介
 
@@ -10,6 +10,7 @@
 **核心卖点**：
 - 独特视觉：简约几何与仙侠元素的创新融合
 - 爽快战斗：大量敌人 + 华丽技能 + 连击系统
+- 多种普攻：6 种普攻类型，各有独特强化路线 [新增]
 - 高可重玩：Roguelike 随机强化，每局不同体验
 - 即开即玩：浏览器直接运行，无需下载
 
@@ -20,6 +21,7 @@
 - **开发语言**：JavaScript (ES6+)
 - **版本控制**：Git
 - **工作流工具**：Aide
+- **CI/CD**：GitHub Actions
 
 ## 项目结构
 
@@ -32,8 +34,8 @@ t1/
 │   ├── config.toml          核心配置
 │   ├── flow-status.json     任务进度
 │   ├── decisions/           决策记录
-│   ├── diagrams/            流程图（9文件）
-│   ├── logs/                历史归档
+│   ├── diagrams/            流程图（6文件）
+│   ├── logs/                历史归档（6文件）
 │   ├── task-plans/          任务计划（5个子计划）
 │   └── project-docs/        项目文档（本目录）
 ├── docs/                    游戏设计文档 (GDD)
@@ -41,7 +43,13 @@ t1/
 │   └── gdd-chapter1~8.md    8个章节
 ├── src/                     源代码目录
 │   ├── main.js              游戏入口
-│   ├── config.js            配置常量（含技能、敌人类型）
+│   ├── config.js            配置常量（含技能、敌人类型、普攻类型）
+│   ├── assets/              游戏素材 [新增]
+│   │   ├── skills/          技能图标（4个SVG）
+│   │   └── sprites/         角色精灵（7个SVG）
+│   ├── attacks/             普攻实现 [新增]
+│   │   ├── AttackBase.js    普攻基类
+│   │   └── *Attack.js       6种普攻实现
 │   ├── entities/            游戏实体
 │   │   ├── Player.js        玩家角色
 │   │   ├── Enemy.js         敌人类
@@ -50,7 +58,9 @@ t1/
 │   │   ├── MainMenuScene.js 主菜单场景
 │   │   ├── GameScene.js     游戏主场景
 │   │   ├── HUDScene.js      HUD 界面
-│   │   └── BuffSelectionScene.js 强化选择
+│   │   ├── BuffSelectionScene.js 强化选择
+│   │   ├── AttackSelectScene.js  普攻选择 [新增]
+│   │   └── TestScene.js     测试场景 [新增]
 │   ├── systems/             游戏系统
 │   │   ├── EnemySpawner.js  敌人生成器
 │   │   ├── ComboSystem.js   连击系统
@@ -59,7 +69,8 @@ t1/
 │   │   ├── RoguelikeSystem.js Roguelike 系统
 │   │   ├── WaveManager.js   波次管理器
 │   │   ├── VFXManager.js    视觉效果管理器
-│   │   └── AudioManager.js  音效管理器
+│   │   ├── AudioManager.js  音效管理器
+│   │   └── AttackManager.js 普攻管理器 [新增]
 │   ├── data/                游戏数据
 │   │   └── BuffData.js      强化道具数据
 │   └── ui/                  [空目录] UI 组件
@@ -146,10 +157,10 @@ t1/
 
 | 区块 | 路径 | 文件数 | 说明 |
 |------|------|--------|------|
-| [项目根目录](./blocks/01-root.md) | `./` | 7 | 项目配置、说明、变更日志 |
+| [项目根目录](./blocks/01-root.md) | `./` | 9 | 项目配置、说明、变更日志 |
 | [docs 文档目录](./blocks/02-docs.md) | `docs/` | 9 | 游戏设计文档 (GDD) 完整 8 章 |
-| [.aide 工作流目录](./blocks/03-aide.md) | `.aide/` | 21 | Aide 配置、进度、决策、计划 |
-| [src 源码目录](./blocks/04-src.md) | `src/` | 18 | 游戏源代码（完整实现） |
+| [.aide 工作流目录](./blocks/03-aide.md) | `.aide/` | 27 | Aide 配置、进度、决策、计划 |
+| [src 源码目录](./blocks/04-src.md) | `src/` | 39 | 游戏源代码（完整实现 + 多种普攻）|
 
 ## 快速导航
 
@@ -179,6 +190,10 @@ t1/
 - Roguelike 系统 → src/systems/RoguelikeSystem.js
 - 波次系统 → src/systems/WaveManager.js
 - 强化数据 → src/data/BuffData.js
+- **普攻系统** → src/attacks/ [新增]
+- **普攻管理器** → src/systems/AttackManager.js [新增]
+- **普攻选择界面** → src/scenes/AttackSelectScene.js [新增]
+- **测试场景** → src/scenes/TestScene.js [新增]
 
 ### 想了解工作流状态
 - 查看 [.aide 工作流目录](./blocks/03-aide.md)
@@ -201,14 +216,26 @@ npm run build
 ## 游戏系统摘要
 
 ### 角色系统
-- **6 基础属性**：HP(100)、ATK(10)、DEF(5)、SPD(200)、CRIT(5%)、CRITDMG(150%)
+- **6 基础属性**：HP(100)、ATK(12)、DEF(5)、SPD(220)、CRIT(8%)、CRITDMG(180%)
 - **5 隐藏属性**：攻击速度、攻击范围、冷却缩减、生命恢复、吸血
-- **5 技能**：剑气横扫、瞬步斩、护体真气、剑域、御风步
+- **4 技能**：加速(Q)、闪现(E)、护盾(R)、治疗(Space)
+
+### 普攻系统 [新增]
+- **6 种普攻类型**：
+  | 类型 | 特点 |
+  |------|------|
+  | 挥砍 | 近战扇形，范围伤害 |
+  | 射箭 | 远程投射，可穿透/多重 |
+  | 法球 | 自动追踪敌人 |
+  | 冲击波 | 穿透敌人，强击退 |
+  | 闪电链 | 链式弹射，最多 3 次 |
+  | 召唤物 | 召唤精灵自动攻击 |
+- **独立强化路线**：每种普攻有专属强化属性
 
 ### 敌人系统
-- **4 小怪**：飘影(追踪)、妖狼(冲锋)、蛇妖(远程)、怨魂(分裂)
-- **1 精英**：邪修（3技能）
-- **1 Boss**：妖将（双阶段）
+- **4 小怪**：幽灵(追踪)、狼人(冲锋)、毒蛇(远程)、灵魂(分裂)
+- **1 精英**：精英（高属性）
+- **1 Boss**：Boss（双阶段）
 
 ### Roguelike 系统
 - **4 级稀有度**：普通(60%)/稀有(25%)/史诗(12%)/传说(3%)
@@ -287,15 +314,15 @@ npm run build
 | 项目 | 数量 |
 |------|------|
 | 区块总数 | 4 |
-| 总目录数 | 16（含 2 个空目录）|
-| 总文件数 | 56（非 node_modules）|
+| 总目录数 | 20（含 1 个空目录）|
+| 总文件数 | 74（非 node_modules）|
 | 被忽略项 | 2（node_modules/, dist/）|
-| JavaScript 代码 | 约 4850 行 |
+| JavaScript 代码 | 约 7600 行 |
 | 文档行数 | 约 2500 行 |
 
 ## 开发状态
 
-**v1.0.1 已发布** - 完整可玩版本 + CI/CD
+**v1.1.0 开发中** - 多种普攻系统
 
 | 阶段 | 状态 | 说明 |
 |------|------|------|
@@ -304,3 +331,4 @@ npm run build
 | 核心系统 | ✅ 完成 | 技能/波次/强化/音效 |
 | 完善打磨 | ✅ 完成 | Bug 修复/性能优化 |
 | CI/CD | ✅ 完成 | GitHub Actions 自动部署 |
+| 多种普攻 | ✅ 完成 | 6 种普攻类型 + 选择界面 [新增] |
