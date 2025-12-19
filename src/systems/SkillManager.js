@@ -1,10 +1,10 @@
 /**
  * 技能管理器
- * 管理技能冷却、释放和特效
+ * 管理 4 个通用技能：加速、闪现、护盾、治疗
  */
 
 import Phaser from 'phaser'
-import { SKILLS, ENEMY } from '../config.js'
+import { SKILLS, WORLD } from '../config.js'
 
 export class SkillManager {
   constructor(scene, player) {
@@ -13,11 +13,15 @@ export class SkillManager {
 
     // 技能列表
     this.skills = {
-      sword_wave: { ...SKILLS.SWORD_WAVE, currentCooldown: 0 },
-      dash_slash: { ...SKILLS.DASH_SLASH, currentCooldown: 0 },
+      speed_boost: { ...SKILLS.SPEED_BOOST, currentCooldown: 0, active: false },
+      dash: { ...SKILLS.DASH, currentCooldown: 0 },
       shield: { ...SKILLS.SHIELD, currentCooldown: 0, active: false },
-      sword_domain: { ...SKILLS.SWORD_DOMAIN, currentCooldown: 0, active: false }
+      heal: { ...SKILLS.HEAL, currentCooldown: 0 }
     }
+
+    // 加速效果状态
+    this.speedBoostActive = false
+    this.originalSpeed = null
 
     // 设置按键绑定
     this.setupInput()
@@ -31,14 +35,14 @@ export class SkillManager {
       SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE
     })
 
-    // Q - 剑气横扫
-    keys.Q.on('down', () => this.castSkill('sword_wave'))
-    // E - 瞬步斩
-    keys.E.on('down', () => this.castSkill('dash_slash'))
-    // R - 护体真气
+    // Q - 加速
+    keys.Q.on('down', () => this.castSkill('speed_boost'))
+    // E - 闪现
+    keys.E.on('down', () => this.castSkill('dash'))
+    // R - 护盾
     keys.R.on('down', () => this.castSkill('shield'))
-    // Space - 剑域
-    keys.SPACE.on('down', () => this.castSkill('sword_domain'))
+    // Space - 治疗
+    keys.SPACE.on('down', () => this.castSkill('heal'))
   }
 
   /**
@@ -61,17 +65,17 @@ export class SkillManager {
 
     // 根据技能类型执行
     switch (skillId) {
-      case 'sword_wave':
-        this.castSwordWave(skill)
+      case 'speed_boost':
+        this.castSpeedBoost(skill)
         break
-      case 'dash_slash':
-        this.castDashSlash(skill)
+      case 'dash':
+        this.castDash(skill)
         break
       case 'shield':
         this.castShield(skill)
         break
-      case 'sword_domain':
-        this.castSwordDomain(skill)
+      case 'heal':
+        this.castHeal(skill)
         break
     }
 
@@ -82,64 +86,89 @@ export class SkillManager {
   }
 
   /**
-   * 技能1: 剑气横扫 - 180度扇形攻击
+   * 技能1: 加速 - 短时间移动速度大幅提升
    */
-  castSwordWave(skill) {
-    const { x, y, rotation } = this.player
+  castSpeedBoost(skill) {
+    if (this.speedBoostActive) return
 
-    // 创建扇形特效
-    const graphics = this.scene.add.graphics()
-    graphics.fillStyle(skill.color, 0.4)
+    this.speedBoostActive = true
+    skill.active = true
+    this.originalSpeed = this.player.speed
 
-    // 绘制扇形
-    graphics.beginPath()
-    graphics.moveTo(x, y)
-    graphics.arc(x, y, skill.range, rotation - skill.angle / 2, rotation + skill.angle / 2)
-    graphics.closePath()
-    graphics.fillPath()
+    // 应用加速
+    this.player.speed *= skill.speedMultiplier
 
-    // 扇形边缘
-    graphics.lineStyle(3, skill.color, 0.8)
-    graphics.beginPath()
-    graphics.arc(x, y, skill.range, rotation - skill.angle / 2, rotation + skill.angle / 2)
-    graphics.stroke()
+    // 创建加速特效（玩家周围的风圈）
+    const windEffect = this.scene.add.graphics()
+    windEffect.lineStyle(2, skill.color, 0.6)
 
-    // 特效消失动画
-    this.scene.tweens.add({
-      targets: graphics,
-      alpha: 0,
-      duration: skill.duration,
-      ease: 'Power2',
-      onComplete: () => graphics.destroy()
+    // 更新特效跟随玩家
+    const updateEffect = () => {
+      if (!this.speedBoostActive) return
+      windEffect.clear()
+      windEffect.lineStyle(2, skill.color, 0.6)
+      windEffect.strokeCircle(this.player.x, this.player.y, 40)
+      windEffect.strokeCircle(this.player.x, this.player.y, 50)
+    }
+
+    const effectTimer = this.scene.time.addEvent({
+      delay: 50,
+      callback: updateEffect,
+      repeat: skill.duration / 50
     })
 
-    // 检测范围内敌人
-    this.hitEnemiesInArc(x, y, skill.range, rotation, skill.angle, skill.damage)
+    // 加速结束
+    this.scene.time.delayedCall(skill.duration, () => {
+      this.speedBoostActive = false
+      skill.active = false
+      this.player.speed = this.originalSpeed
+      effectTimer.destroy()
+
+      // 特效消失
+      this.scene.tweens.add({
+        targets: windEffect,
+        alpha: 0,
+        duration: 200,
+        onComplete: () => windEffect.destroy()
+      })
+    })
+
+    // 触发加速激活事件
+    this.scene.events.emit('speedBoostActivated', skill)
   }
 
   /**
-   * 技能2: 瞬步斩 - 突进并造成伤害
+   * 技能2: 闪现 - 瞬间位移到指定方向
    */
-  castDashSlash(skill) {
+  castDash(skill) {
     const startX = this.player.x
     const startY = this.player.y
     const angle = this.player.rotation
 
     // 计算目标位置
-    const endX = startX + Math.cos(angle) * skill.distance
-    const endY = startY + Math.sin(angle) * skill.distance
+    let endX = startX + Math.cos(angle) * skill.distance
+    let endY = startY + Math.sin(angle) * skill.distance
 
-    // 突进期间无敌
-    this.player.isInvincible = true
+    // 边界限制
+    endX = Phaser.Math.Clamp(endX, 50, WORLD.WIDTH - 50)
+    endY = Phaser.Math.Clamp(endY, 50, WORLD.HEIGHT - 50)
 
-    // 创建拖尾特效
+    // 闪现期间无敌
+    if (skill.invincible) {
+      this.player.isInvincible = true
+    }
+
+    // 创建闪现特效（起点残影）
+    const afterimage = this.scene.add.graphics()
+    afterimage.fillStyle(skill.color, 0.5)
+    afterimage.fillCircle(startX, startY, this.player.size || 24)
+
+    // 闪现轨迹
     const trail = this.scene.add.graphics()
-    trail.fillStyle(skill.color, 0.5)
-    trail.fillRect(startX - skill.width / 2, startY - 5, skill.distance, 10)
-    trail.setRotation(angle)
-    trail.setPosition(startX, startY)
+    trail.lineStyle(3, skill.color, 0.6)
+    trail.lineBetween(startX, startY, endX, endY)
 
-    // 突进动画
+    // 瞬间移动
     this.scene.tweens.add({
       targets: this.player,
       x: endX,
@@ -147,29 +176,34 @@ export class SkillManager {
       duration: skill.duration,
       ease: 'Power2',
       onComplete: () => {
-        // 突进结束
-        this.player.isInvincible = false
-        this.player.invincibleTimer = 200 // 短暂无敌帧
+        // 闪现结束
+        if (skill.invincible) {
+          this.player.isInvincible = false
+          this.player.invincibleTimer = 200
+        }
 
-        // 消除拖尾
+        // 特效消失
         this.scene.tweens.add({
-          targets: trail,
+          targets: [afterimage, trail],
           alpha: 0,
-          duration: 200,
-          onComplete: () => trail.destroy()
+          duration: 300,
+          onComplete: () => {
+            afterimage.destroy()
+            trail.destroy()
+          }
         })
       }
     })
-
-    // 检测路径上的敌人
-    this.hitEnemiesInLine(startX, startY, endX, endY, skill.width, skill.damage)
   }
 
   /**
-   * 技能3: 护体真气 - 护盾反伤
+   * 技能3: 护盾 - 短时间免疫所有伤害
    */
   castShield(skill) {
     skill.active = true
+
+    // 开启无敌
+    this.player.isInvincible = true
 
     // 创建护盾特效
     const shield = this.scene.add.graphics()
@@ -182,9 +216,21 @@ export class SkillManager {
     this.shieldGraphics = shield
     this.shieldRadius = skill.radius
 
+    // 护盾脉冲动画
+    this.scene.tweens.add({
+      targets: shield,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      duration: 300,
+      yoyo: true,
+      repeat: -1
+    })
+
     // 护盾持续时间
     this.scene.time.delayedCall(skill.duration, () => {
       skill.active = false
+      this.player.isInvincible = false
+      this.player.invincibleTimer = 200
       this.shieldGraphics = null
 
       // 护盾消失动画
@@ -203,176 +249,71 @@ export class SkillManager {
   }
 
   /**
-   * 技能4: 剑域 - 持续范围伤害
+   * 技能4: 治疗 - 恢复一定比例生命值
    */
-  castSwordDomain(skill) {
-    skill.active = true
-    const { x, y } = this.player
+  castHeal(skill) {
+    const healAmount = Math.floor(this.player.maxHp * skill.healPercent)
+    const oldHp = this.player.hp
 
-    // 创建剑域特效
-    const domain = this.scene.add.graphics()
-    domain.lineStyle(3, skill.color, 0.6)
-    domain.strokeCircle(x, y, skill.radius)
-    domain.fillStyle(skill.color, 0.1)
-    domain.fillCircle(x, y, skill.radius)
+    // 恢复生命值
+    this.player.hp = Math.min(this.player.hp + healAmount, this.player.maxHp)
+    const actualHeal = this.player.hp - oldHp
 
-    // 剑域不跟随玩家移动（固定位置）
-    const domainX = x
-    const domainY = y
+    // 更新 HUD
+    this.scene.events.emit('playerHpUpdated', this.player.hp, this.player.maxHp)
 
-    // 脉冲动画
+    // 创建治疗特效
+    const healEffect = this.scene.add.graphics()
+    healEffect.fillStyle(skill.color, 0.4)
+    healEffect.fillCircle(this.player.x, this.player.y, 60)
+
+    // 治疗数字
+    const healText = this.scene.add.text(
+      this.player.x,
+      this.player.y - 30,
+      `+${actualHeal}`,
+      {
+        fontSize: '24px',
+        fill: '#ff6688',
+        fontFamily: 'Arial',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 2
+      }
+    ).setOrigin(0.5)
+
+    // 上升消失动画
     this.scene.tweens.add({
-      targets: domain,
-      alpha: 0.3,
+      targets: healText,
+      y: this.player.y - 80,
+      alpha: 0,
+      duration: 1000,
+      ease: 'Power2',
+      onComplete: () => healText.destroy()
+    })
+
+    // 特效消失
+    this.scene.tweens.add({
+      targets: healEffect,
+      alpha: 0,
+      scaleX: 1.5,
+      scaleY: 1.5,
       duration: 500,
-      yoyo: true,
-      repeat: skill.ticks - 1
+      onComplete: () => healEffect.destroy()
     })
 
-    // 定时造成伤害
-    const tickInterval = skill.duration / skill.ticks
-    let tickCount = 0
-
-    const damageTimer = this.scene.time.addEvent({
-      delay: tickInterval,
-      callback: () => {
-        tickCount++
-        this.hitEnemiesInRadius(domainX, domainY, skill.radius, skill.damage)
-
-        // 伤害波纹特效
-        const ripple = this.scene.add.graphics()
-        ripple.lineStyle(2, skill.color, 0.8)
-        ripple.strokeCircle(domainX, domainY, 50)
-
-        this.scene.tweens.add({
-          targets: ripple,
-          scaleX: skill.radius / 50,
-          scaleY: skill.radius / 50,
-          alpha: 0,
-          duration: 300,
-          onComplete: () => ripple.destroy()
-        })
-
-        if (tickCount >= skill.ticks) {
-          damageTimer.destroy()
-          skill.active = false
-
-          // 剑域消失
-          this.scene.tweens.add({
-            targets: domain,
-            alpha: 0,
-            duration: 300,
-            onComplete: () => domain.destroy()
-          })
-        }
-      },
-      repeat: skill.ticks - 1
-    })
+    // 触发治疗事件
+    this.scene.events.emit('healUsed', actualHeal)
   }
 
   /**
-   * 扇形范围伤害
-   */
-  hitEnemiesInArc(x, y, range, angle, arcAngle, damage) {
-    const enemies = this.scene.enemySpawner.getActiveEnemies()
-
-    enemies.forEach(enemy => {
-      if (!enemy.isActive) return
-
-      const dist = Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y)
-      if (dist > range + ENEMY.SIZE) return
-
-      const angleToEnemy = Phaser.Math.Angle.Between(x, y, enemy.x, enemy.y)
-      const angleDiff = Phaser.Math.Angle.Wrap(angleToEnemy - angle)
-
-      if (Math.abs(angleDiff) <= arcAngle / 2) {
-        this.applySkillDamage(enemy, damage, x, y)
-      }
-    })
-  }
-
-  /**
-   * 线形范围伤害
-   */
-  hitEnemiesInLine(startX, startY, endX, endY, width, damage) {
-    const enemies = this.scene.enemySpawner.getActiveEnemies()
-
-    enemies.forEach(enemy => {
-      if (!enemy.isActive) return
-
-      // 计算敌人到线段的距离
-      const dist = Phaser.Math.Distance.BetweenPointsSquared(
-        { x: enemy.x, y: enemy.y },
-        Phaser.Geom.Line.GetNearestPoint(
-          new Phaser.Geom.Line(startX, startY, endX, endY),
-          { x: enemy.x, y: enemy.y }
-        )
-      )
-
-      if (Math.sqrt(dist) <= width / 2 + ENEMY.SIZE) {
-        this.applySkillDamage(enemy, damage, startX, startY)
-      }
-    })
-  }
-
-  /**
-   * 圆形范围伤害
-   */
-  hitEnemiesInRadius(x, y, radius, damage) {
-    const enemies = this.scene.enemySpawner.getActiveEnemies()
-
-    enemies.forEach(enemy => {
-      if (!enemy.isActive) return
-
-      const dist = Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y)
-      if (dist <= radius + ENEMY.SIZE) {
-        this.applySkillDamage(enemy, damage, x, y)
-      }
-    })
-  }
-
-  /**
-   * 应用技能伤害
-   */
-  applySkillDamage(enemy, baseDamage, sourceX, sourceY) {
-    // 记录连击
-    this.scene.comboSystem.addHit()
-
-    // 计算伤害
-    const { damage, isCrit } = this.scene.damageSystem.calculateDamage(
-      baseDamage,
-      this.scene.comboSystem.getMultiplier(),
-      this.player
-    )
-
-    // 应用伤害
-    const killed = this.scene.damageSystem.applyDamage(enemy, damage, isCrit)
-
-    // 应用击退
-    this.scene.damageSystem.applyKnockback(enemy, sourceX, sourceY)
-
-    if (killed) {
-      // 使用 onEnemyKilled 确保 WaveManager 和 RoguelikeSystem 正确更新
-      this.scene.onEnemyKilled(enemy)
-    }
-  }
-
-  /**
-   * 检查护盾反伤
+   * 检查护盾是否激活（用于外部检测）
    */
   checkShieldReflect(enemy, damage) {
-    if (this.skills.shield.active && this.shieldGraphics) {
-      const dist = Phaser.Math.Distance.Between(
-        this.player.x, this.player.y,
-        enemy.x, enemy.y
-      )
-
-      if (dist <= this.shieldRadius + ENEMY.SIZE) {
-        // 反弹伤害
-        const reflectDamage = Math.floor(damage * this.skills.shield.reflect)
-        enemy.takeDamage(reflectDamage)
-        return true // 阻挡伤害
-      }
+    // 新的护盾是纯无敌，不反伤
+    // 但保留接口兼容性
+    if (this.skills.shield.active) {
+      return true // 阻挡伤害
     }
     return false
   }

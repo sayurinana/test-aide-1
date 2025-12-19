@@ -151,62 +151,55 @@ export const COLORS = {
   DAMAGE_NORMAL: '#ffffff',
   DAMAGE_CRIT: '#ffff00',
   COMBO_TEXT: '#64c8ff',
-  SKILL_1: 0x00ffff,     // 剑气横扫 - 青色
-  SKILL_2: 0xff00ff,     // 瞬步斩 - 紫色
-  SKILL_3: 0x00ff00,     // 护体真气 - 绿色
-  SKILL_4: 0xffff00      // 剑域 - 金色
+  SKILL_1: 0x00ffff,     // 加速 - 青色
+  SKILL_2: 0xff00ff,     // 闪现 - 紫色
+  SKILL_3: 0x00ff00,     // 护盾 - 绿色
+  SKILL_4: 0xff6688      // 治疗 - 粉色
 }
 
 // 技能配置
 export const SKILLS = {
-  // 技能1: 剑气横扫 (Q) - 范围攻击
-  SWORD_WAVE: {
-    id: 'sword_wave',
-    name: '剑气横扫',
+  // 技能1: 加速 (Q) - 短时间移动速度大幅提升
+  SPEED_BOOST: {
+    id: 'speed_boost',
+    name: '加速',
     key: 'Q',
-    cooldown: 3000,       // 冷却 3 秒
-    damage: 15,           // 基础伤害
-    range: 200,           // 攻击范围
-    angle: Math.PI,       // 180度扇形
-    duration: 300,        // 特效持续时间
+    cooldown: 8000,       // 冷却 8 秒
+    duration: 3000,       // 持续 3 秒
+    speedMultiplier: 2.0, // 速度翻倍
     color: 0x00ffff
   },
 
-  // 技能2: 瞬步斩 (E) - 突进攻击
-  DASH_SLASH: {
-    id: 'dash_slash',
-    name: '瞬步斩',
+  // 技能2: 闪现 (E) - 瞬间位移到指定方向
+  DASH: {
+    id: 'dash',
+    name: '闪现',
     key: 'E',
-    cooldown: 4000,       // 冷却 4 秒
-    damage: 25,           // 基础伤害
-    distance: 250,        // 突进距离
-    width: 60,            // 伤害宽度
-    duration: 200,        // 突进时间
+    cooldown: 5000,       // 冷却 5 秒
+    distance: 200,        // 闪现距离
+    duration: 100,        // 闪现时间
+    invincible: true,     // 闪现期间无敌
     color: 0xff00ff
   },
 
-  // 技能3: 护体真气 (R) - 防御/反击
+  // 技能3: 护盾 (R) - 短时间免疫所有伤害
   SHIELD: {
     id: 'shield',
-    name: '护体真气',
+    name: '护盾',
     key: 'R',
-    cooldown: 8000,       // 冷却 8 秒
+    cooldown: 15000,      // 冷却 15 秒
     duration: 2000,       // 持续 2 秒
-    reflect: 0.5,         // 反弹 50% 伤害
-    radius: 80,           // 护盾半径
+    radius: 60,           // 护盾视觉半径
     color: 0x00ff00
   },
 
-  // 技能4: 剑域 (Space) - 终极技能
-  SWORD_DOMAIN: {
-    id: 'sword_domain',
-    name: '剑域',
+  // 技能4: 治疗 (Space) - 恢复一定比例生命值
+  HEAL: {
+    id: 'heal',
+    name: '治疗',
     key: 'SPACE',
-    cooldown: 15000,      // 冷却 15 秒
-    damage: 50,           // 每次伤害
-    radius: 300,          // 影响范围
-    duration: 3000,       // 持续 3 秒
-    ticks: 6,             // 伤害次数
-    color: 0xffff00
+    cooldown: 20000,      // 冷却 20 秒
+    healPercent: 0.3,     // 恢复 30% 最大生命值
+    color: 0xff6688
   }
 }

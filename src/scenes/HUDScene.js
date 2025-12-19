@@ -335,7 +335,7 @@ export class HUDScene extends Phaser.Scene {
 
     this.skillSlots = []
     const skillKeys = ['Q', 'E', 'R', 'SPACE']
-    const skillColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xffff00]
+    const skillColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xff6688]
 
     for (let i = 0; i < 4; i++) {
       const x = centerX - (slotSize + spacing) * 1.5 + i * (slotSize + spacing)
@@ -383,7 +383,7 @@ export class HUDScene extends Phaser.Scene {
     if (!this.gameScene.skillManager) return
 
     const states = this.gameScene.skillManager.getSkillStates()
-    const skillIds = ['sword_wave', 'dash_slash', 'shield', 'sword_domain']
+    const skillIds = ['speed_boost', 'dash', 'shield', 'heal']
 
     skillIds.forEach((id, i) => {
       const state = states[id]
