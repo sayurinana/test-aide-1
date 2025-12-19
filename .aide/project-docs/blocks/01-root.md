@@ -11,10 +11,14 @@
 
 ```
 ./
+├── .github/                 GitHub 配置
+│   └── workflows/
+│       └── deploy.yml       CI/CD 自动部署
 ├── .gitignore               Git 忽略配置
 ├── CHANGELOG.md             变更日志
 ├── README.md                项目说明
 ├── task-now.md              当前任务
+├── task-spec.md             任务细则
 ├── index.html               HTML 入口页面
 ├── package.json             npm 配置
 └── vite.config.js           Vite 构建配置
@@ -24,13 +28,15 @@
 
 | 文件 | 类型 | 行数 | 说明 |
 |------|------|------|------|
-| README.md | 文档 | 69 | 项目主说明文件 |
-| CHANGELOG.md | 文档 | 70+ | 版本变更记录 |
-| task-now.md | 文档 | 7 | 原始任务描述 |
+| README.md | 文档 | 95 | 项目主说明文件 |
+| CHANGELOG.md | 文档 | 190+ | 版本变更记录 |
+| task-now.md | 文档 | 1 | 原始任务描述 |
+| task-spec.md | 文档 | 45 | 当前任务细则 |
 | index.html | 入口 | 32 | HTML 入口页面 |
 | package.json | 配置 | 26 | npm 项目配置 |
-| vite.config.js | 配置 | 14 | Vite 构建配置 |
+| vite.config.js | 配置 | 16 | Vite 构建配置 |
 | .gitignore | 配置 | 24 | Git 忽略规则 |
+| .github/workflows/deploy.yml | 配置 | 54 | GitHub Actions 部署工作流 |
 
 ## 核心内容
 
@@ -53,32 +59,29 @@
 - 构建工具：Vite
 - 开发语言：JavaScript
 
-**开发状态**：技术原型已完成，核心系统开发中
+**开发状态**：v1.0.0 完整版本已发布
 
 ---
 
 ### CHANGELOG.md - 版本历史
 
-**当前版本**：v0.2.0 (2025-12-19)
+**当前版本**：v1.0.1 (2025-12-20)
 
 **已发布版本**：
 
 | 版本 | 日期 | 主要内容 |
 |------|------|----------|
+| v1.0.1 | 2025-12-20 | CI/CD 自动部署 |
+| v1.0.0 | 2025-12-20 | 完整可玩版本 |
+| v0.3.0 | 2025-12-20 | 核心系统完成 |
 | v0.2.0 | 2025-12-19 | 技术原型完成 |
 | v0.1.0 | 2025-12-19 | GDD 设计文档完成 |
 
-**v0.2.0 新增内容**：
-- 项目初始化（Vite + Phaser 3）
-- 游戏场景搭建（世界边界、相机系统）
-- 玩家角色实现（移动、朝向、攻击）
-- 敌人系统（生成器、追踪 AI、对象池）
-- 碰撞检测（扇形攻击判定、敌人伤害）
-- 基础 UI（HP 血条、击杀计数）
-
-**计划版本**：
-- v0.3.0：核心系统实现（技能、Roguelike、波次）
-- v1.0.0：MVP 完整版本
+**v1.0.1 新增内容**：
+- GitHub Actions workflow 配置
+- 推送到 main/master 自动构建部署
+- GitHub Pages 部署支持
+- vite.config.js 动态 base 路径
 
 ---
 
@@ -134,11 +137,41 @@
 **配置项**：
 | 配置 | 值 | 说明 |
 |------|-----|------|
-| `base` | `'./'` | 相对路径部署 |
+| `base` | 动态 | 本地: `'./'`, GitHub Pages: `'/<repo>/'` |
 | `server.port` | 3000 | 开发服务器端口 |
 | `server.open` | true | 自动打开浏览器 |
 | `build.outDir` | `'dist'` | 构建输出目录 |
 | `build.assetsDir` | `'assets'` | 静态资源目录 |
+
+**动态 base 路径**：
+- 通过 `GITHUB_ACTIONS` 和 `GITHUB_REPOSITORY` 环境变量自动检测
+- 本地开发使用相对路径 `./`
+- GitHub Pages 部署自动设置为 `/<repo-name>/`
+
+---
+
+### .github/workflows/deploy.yml - CI/CD 配置
+
+**触发条件**：
+- push 到 `main` 或 `master` 分支
+- 支持手动触发 (workflow_dispatch)
+
+**工作流程**：
+1. **Build 作业**：
+   - 检出代码
+   - 设置 Node.js 20
+   - 安装依赖 (npm ci)
+   - 构建项目 (npm run build)
+   - 上传构建产物到 Pages
+
+2. **Deploy 作业**：
+   - 等待 Build 完成
+   - 部署到 GitHub Pages
+
+**权限要求**：
+- `contents: read`
+- `pages: write`
+- `id-token: write`
 
 ---
 
@@ -176,8 +209,10 @@ npm run build
 
 ## 注意事项
 
-1. 项目已从设计阶段进入开发阶段
+1. 项目 v1.0.0 已发布，完整可玩
 2. 使用 ES 模块（`type: module`）
 3. 开发服务器会自动打开浏览器
 4. 构建输出到 dist/ 目录（被 git 忽略）
-5. 许可证：MIT
+5. 推送代码会自动触发 GitHub Actions 部署
+6. 首次部署需在 GitHub Pages 设置中选择 "GitHub Actions" 作为 Source
+7. 许可证：MIT
