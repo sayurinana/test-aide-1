@@ -1,0 +1,65 @@
+@startuml spec03-task-flow
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 子计划 3：普攻系统基础架构 - 任务执行流程
+
+start
+:1. 创建基础架构;
+note right
+  src/systems/AttackManager.js
+  src/attacks/AttackBase.js
+end note
+
+:2. 实现射箭普攻;
+note right
+  src/attacks/ArrowAttack.js
+  - 发射箭矢投射物
+  - 直线飞行
+  - 命中敌人造成伤害
+end note
+
+:3. 实现挥砍普攻;
+note right
+  src/attacks/SlashAttack.js
+  - 扇形范围攻击
+  - 保留原有攻击逻辑
+end note
+
+:4. 创建开局选择界面;
+note right
+  src/scenes/AttackSelectScene.js
+  - 6种普攻类型卡片
+  - 玩家选择初始普攻
+end note
+
+:5. 修改 Player.js;
+note right
+  - 移除原有攻击逻辑
+  - 仅保留移动、朝向
+end note
+
+:6. 修改 GameScene.js;
+note right
+  - 初始化 AttackManager
+  - 开局调用 AttackSelectScene
+  - 攻击委托给 AttackManager
+end note
+
+:7. 修改 DamageSystem.js;
+note right
+  - 适配新的伤害来源
+  - 支持不同普攻类型
+end note
+
+:8. 验证功能;
+note right
+  - 开局选择正常
+  - 射箭/挥砍正常工作
+  - 多普攻同时触发
+end note
+
+stop
+
+@enduml

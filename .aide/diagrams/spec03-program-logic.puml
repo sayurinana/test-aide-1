@@ -1,0 +1,108 @@
+@startuml spec03-program-logic
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 普攻系统程序逻辑流图
+
+|GameScene|
+start
+:游戏开始;
+:显示 AttackSelectScene;
+
+|AttackSelectScene|
+:展示 6 种普攻类型卡片;
+:玩家选择初始普攻;
+:返回选择结果;
+
+|GameScene|
+:创建 AttackManager;
+:AttackManager.addAttack(选择的普攻);
+:开始游戏循环;
+
+|游戏循环|
+repeat
+  :玩家按下攻击键;
+  :GameScene.performAttack();
+
+  |AttackManager|
+  :遍历所有已装备普攻;
+
+  while (还有普攻?) is (是)
+    :获取当前普攻;
+    if (普攻.canFire()?) then (是)
+      :普攻.execute(player, scene);
+      note right
+        每种普攻有独立实现：
+        - ArrowAttack: 发射箭矢
+        - SlashAttack: 扇形挥砍
+      end note
+    else (否)
+      :跳过（冷却中）;
+    endif
+  endwhile (否)
+
+  |AttackBase子类|
+  :创建攻击实体/效果;
+  :检测命中敌人;
+  :通知 DamageSystem 造成伤害;
+
+  |DamageSystem|
+  :计算伤害（含暴击/连击）;
+  :应用伤害到敌人;
+  :应用击退效果;
+
+  |GameScene|
+  :更新视觉效果;
+  :播放音效;
+
+  if (敌人死亡?) then (是)
+    :onEnemyKilled();
+  else (否)
+  endif
+
+repeat while (游戏未结束) is (是)
+
+stop
+
+== 普攻类结构 ==
+
+class AttackBase {
+  id: string
+  name: string
+  damage: number
+  cooldown: number
+  currentCooldown: number
+  level: number
+  --
+  canFire(): boolean
+  execute(player, scene): void
+  upgrade(): void
+  update(delta): void
+}
+
+class ArrowAttack extends AttackBase {
+  speed: number
+  range: number
+  projectiles: Group
+  --
+  execute(): 发射箭矢投射物
+}
+
+class SlashAttack extends AttackBase {
+  arcAngle: number
+  range: number
+  --
+  execute(): 扇形范围攻击
+}
+
+class AttackManager {
+  attacks: AttackBase[]
+  --
+  addAttack(attack): void
+  removeAttack(id): void
+  update(delta): void
+  executeAll(player, scene): void
+}
+
+@enduml
