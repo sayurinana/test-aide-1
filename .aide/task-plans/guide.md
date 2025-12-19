@@ -18,8 +18,8 @@
 
 | # | 名称 | 状态 | 细则文档 |
 |---|------|------|----------|
-| 1 | Bug 修复 + 测试关卡 | **in_progress** | spec-01.md |
-| 2 | 品牌重塑 + 技能系统 | pending | spec-02.md |
+| 1 | Bug 修复 + 测试关卡 | **completed** | spec-01.md |
+| 2 | 品牌重塑 + 技能系统 | **in_progress** | spec-02.md |
 | 3 | 普攻系统基础架构 | pending | spec-03.md |
 | 4 | 普攻类型扩展 + 强化系统 | pending | spec-04.md |
 
