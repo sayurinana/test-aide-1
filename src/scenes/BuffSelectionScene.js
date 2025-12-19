@@ -5,6 +5,7 @@
 
 import Phaser from 'phaser'
 import { RARITY, CATEGORY } from '../data/BuffData.js'
+import { getAudioManager } from '../systems/AudioManager.js'
 
 export class BuffSelectionScene extends Phaser.Scene {
   constructor() {
@@ -147,6 +148,9 @@ export class BuffSelectionScene extends Phaser.Scene {
   selectBuff(index) {
     if (index >= 0 && index < this.choices.length) {
       const selectedBuff = this.choices[index]
+
+      // 选择音效
+      getAudioManager().playSfx('buff')
 
       // 选择动画
       this.cameras.main.flash(200, 255, 255, 255, false)

@@ -14,6 +14,7 @@ import { SkillManager } from '../systems/SkillManager.js'
 import { RoguelikeSystem } from '../systems/RoguelikeSystem.js'
 import { WaveManager } from '../systems/WaveManager.js'
 import { VFXManager } from '../systems/VFXManager.js'
+import { getAudioManager } from '../systems/AudioManager.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -68,6 +69,9 @@ export class GameScene extends Phaser.Scene {
     // 创建视觉效果管理器
     this.vfxManager = new VFXManager(this)
 
+    // 初始化音效管理器
+    this.audioManager = getAudioManager()
+
     // 设置碰撞检测
     this.setupCollisions()
 
@@ -120,6 +124,9 @@ export class GameScene extends Phaser.Scene {
     // 受伤视觉反馈
     this.vfxManager.screenShake(0.008, 100)
     this.vfxManager.showDamageNumber(this.player.x, this.player.y, actualDamage, false)
+
+    // 受伤音效
+    this.audioManager.playSfx('hurt')
 
     // 重置连击
     this.comboSystem.resetCombo()
@@ -183,6 +190,9 @@ export class GameScene extends Phaser.Scene {
       )
 
       this.attackEffects.add(effect)
+
+      // 攻击音效
+      this.audioManager.playSfx('attack')
 
       // 剑光拖尾效果
       this.vfxManager.createSlashTrail(
@@ -253,6 +263,10 @@ export class GameScene extends Phaser.Scene {
           // 视觉效果
           this.vfxManager.showDamageNumber(enemy.x, enemy.y, finalDamage, isCrit)
           this.vfxManager.flashWhite(enemy, 30)
+
+          // 音效
+          this.audioManager.playSfx('hit')
+
           if (isCrit) {
             this.vfxManager.screenShake(0.003, 50)
             this.vfxManager.hitStop(30)
@@ -271,6 +285,8 @@ export class GameScene extends Phaser.Scene {
             // 死亡粒子效果
             this.vfxManager.createDeathParticles(enemy.x, enemy.y, enemy.color, 10)
             this.vfxManager.screenShake(0.002, 30)
+            // 击杀音效
+            this.audioManager.playSfx('kill')
             this.onEnemyKilled(enemy)
           }
         }
@@ -421,6 +437,9 @@ export class GameScene extends Phaser.Scene {
 
   onGameOver() {
     this.gameOver = true
+
+    // 游戏结束音效
+    this.audioManager.playSfx('gameover')
 
     // 获取结算数据
     const stats = this.waveManager.getGameOverStats()
