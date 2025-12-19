@@ -31,8 +31,8 @@
   - [x] GameScene 敌人击杀给予经验值
   - [x] HUDScene 经验值条显示
   - [x] BuffSelectionScene 队列支持
-- [ ] 创建测试关卡 TestScene.js
-- [ ] 添加测试模式主菜单入口
+- [x] 创建测试关卡 TestScene.js - **已完成**
+- [x] 添加测试模式主菜单入口 - **已完成**
 
 ## 执行顺序
 
