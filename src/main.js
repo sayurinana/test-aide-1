@@ -18,8 +18,7 @@ const config = {
   height: 720,
   parent: 'game-container',
   backgroundColor: '#0a0a1e',
-  // 高 DPI 屏幕支持（修复画面模糊问题）
-  resolution: window.devicePixelRatio || 1,
+  // 注意：resolution 属性在 Phaser 3.16+ 已弃用，Phaser 会自动处理设备像素比
   // 渲染性能优化
   render: {
     pixelArt: false,           // 非像素风格

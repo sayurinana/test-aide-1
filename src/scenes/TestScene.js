@@ -27,6 +27,10 @@ export class TestScene extends Phaser.Scene {
   }
 
   create() {
+    // 修复：停止可能正在运行的覆盖场景，避免输入被阻止或物理被暂停
+    this.scene.stop('AttackSelectScene')
+    this.scene.stop('BuffSelectionScene')
+
     // 重置状态
     this.killCount = 0
     this.gameOver = false

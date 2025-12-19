@@ -504,6 +504,15 @@ export class RoguelikeSystem {
       return
     }
 
+    // 修复：如果波次管理器正在等待强化选择（reward 状态），延迟处理
+    // 避免同时启动两个 BuffSelectionScene 导致回调被覆盖
+    if (this.scene.waveManager && this.scene.waveManager.waveState === 'reward') {
+      this.scene.time.delayedCall(500, () => {
+        this.processLevelUpQueue()
+      })
+      return
+    }
+
     // 取出队列中的第一个升级
     const levelUp = this.levelUpQueue[0]
     this.isSelectingBuff = true
