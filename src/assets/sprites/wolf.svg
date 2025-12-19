@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
+  <!-- 妖狼 - 三角形野兽 -->
+  <defs>
+    <linearGradient id="wolfGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#aa4444"/>
+      <stop offset="100%" style="stop-color:#cc6666"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 主体三角形 -->
+  <polygon points="42,22 6,6 6,38" fill="url(#wolfGrad)" stroke="#cc5555" stroke-width="1"/>
+
+  <!-- 耳朵 -->
+  <polygon points="10,8 14,2 18,10" fill="#aa4444"/>
+  <polygon points="10,36 14,42 18,34" fill="#aa4444"/>
+
+  <!-- 眼睛 - 凶狠的黄眼 -->
+  <ellipse cx="20" cy="17" rx="4" ry="3" fill="#ffff00"/>
+  <ellipse cx="20" cy="27" rx="4" ry="3" fill="#ffff00"/>
+
+  <!-- 瞳孔 -->
+  <ellipse cx="22" cy="17" rx="2" ry="2" fill="#000000"/>
+  <ellipse cx="22" cy="27" rx="2" ry="2" fill="#000000"/>
+
+  <!-- 獠牙 -->
+  <polygon points="30,20 34,22 30,24" fill="#ffffff"/>
+</svg>
