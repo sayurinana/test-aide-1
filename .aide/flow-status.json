@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "confirm",
-  "current_step": 22,
+  "current_step": 23,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -166,7 +166,15 @@
       "action": "next-step",
       "phase": "confirm",
       "step": 22,
-      "summary": "项目文档创建完成: 2区块+总导览"
+      "summary": "项目文档创建完成: 2区块+总导览",
+      "git_commit": "2502defe4fca39fa5c2860019d75e0feaf34c1d0"
+    },
+    {
+      "timestamp": "2025-12-19T23:19:10+08:00",
+      "action": "next-step",
+      "phase": "confirm",
+      "step": 23,
+      "summary": "项目文档更新: 新增区块3(.aide工作流目录)"
     }
   ],
   "source_branch": "master",
