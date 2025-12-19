@@ -1,0 +1,289 @@
+{
+  "input": {
+    "task": "Bug修复 + 游戏重设计",
+    "source": "task-now.md",
+    "items": [
+      {
+        "id": 1,
+        "title": "游戏新名称",
+        "options": [
+          {
+            "value": "survivor",
+            "label": "无尽幸存者 (Endless Survivor)",
+            "score": 85.0,
+            "pros": [
+              "契合无尽生存玩法",
+              "简洁易记",
+              "国际化友好"
+            ],
+            "cons": [
+              "与《吸血鬼幸存者》类似"
+            ]
+          },
+          {
+            "value": "arena",
+            "label": "战斗竞技场 (Battle Arena)",
+            "score": 75.0,
+            "pros": [
+              "直观描述玩法",
+              "通用性强"
+            ],
+            "cons": [
+              "较为普通",
+              "缺乏特色"
+            ]
+          },
+          {
+            "value": "custom",
+            "label": "自定义名称",
+            "score": 90.0,
+            "pros": [
+              "完全符合用户想法"
+            ],
+            "cons": [
+              "需要用户提供"
+            ]
+          }
+        ],
+        "location": {
+          "file": "task-now.md",
+          "start": 9,
+          "end": 9
+        },
+        "context": "用户表示不再叫「御剑无双」，但未指定新名称。游戏名称是品牌核心，需要用户决定。",
+        "recommend": "survivor"
+      },
+      {
+        "id": 2,
+        "title": "角色初始攻击方式",
+        "options": [
+          {
+            "value": "no_attack",
+            "label": "开局无攻击，必须先获得普攻卡",
+            "score": 60.0,
+            "pros": [
+              "强调卡片获取的重要性",
+              "每局开局体验不同"
+            ],
+            "cons": [
+              "新手体验差",
+              "开局可能无法反击"
+            ]
+          },
+          {
+            "value": "basic_melee",
+            "label": "开局有基础近战攻击，后续可增强/替换",
+            "score": 90.0,
+            "pros": [
+              "新手友好",
+              "保证基础战斗能力",
+              "符合同类游戏惯例"
+            ],
+            "cons": [
+              "初始攻击可能显得单调"
+            ]
+          },
+          {
+            "value": "choose_start",
+            "label": "开局选择初始普攻类型",
+            "score": 75.0,
+            "pros": [
+              "增加策略深度",
+              "每局开局有选择感"
+            ],
+            "cons": [
+              "增加流程复杂度",
+              "新手可能困惑"
+            ]
+          }
+        ],
+        "location": {
+          "file": "task-now.md",
+          "start": 11,
+          "end": 13
+        },
+        "context": "普攻方式以强化卡片形式获得，但角色开局时如何攻击未说明。",
+        "recommend": "basic_melee"
+      },
+      {
+        "id": 3,
+        "title": "多普攻触发机制",
+        "options": [
+          {
+            "value": "auto_all",
+            "label": "按攻击键同时触发所有已装备普攻",
+            "score": 90.0,
+            "pros": [
+              "简单直观",
+              "战斗爽快",
+              "符合《吸血鬼幸存者》模式"
+            ],
+            "cons": [
+              "可能导致性能问题",
+              "需要平衡各普攻冷却"
+            ]
+          },
+          {
+            "value": "auto_ai",
+            "label": "自动触发，AI 智能选择最合适的普攻",
+            "score": 65.0,
+            "pros": [
+              "玩家操作简单"
+            ],
+            "cons": [
+              "玩家控制感降低",
+              "AI 逻辑复杂"
+            ]
+          },
+          {
+            "value": "manual_switch",
+            "label": "不同按键控制不同普攻类型",
+            "score": 70.0,
+            "pros": [
+              "精确控制",
+              "策略深度高"
+            ],
+            "cons": [
+              "操作复杂",
+              "按键可能冲突"
+            ]
+          }
+        ],
+        "location": {
+          "file": "task-now.md",
+          "start": 11,
+          "end": 11
+        },
+        "context": "用户希望角色可以同时拥有多种普攻方式，但多种普攻如何触发未说明。",
+        "recommend": "auto_all"
+      },
+      {
+        "id": 4,
+        "title": "首批实现的普攻类型",
+        "options": [
+          {
+            "value": "core_4",
+            "label": "4种核心类型：射箭、挥砍、法球、冲击波",
+            "score": 85.0,
+            "pros": [
+              "覆盖远程/近战/追踪/范围",
+              "工作量适中",
+              "可后续扩展"
+            ],
+            "cons": [
+              "类型相对较少"
+            ]
+          },
+          {
+            "value": "expanded_6",
+            "label": "6种类型：射箭、挥砍、法球、冲击波、闪电链、召唤物",
+            "score": 80.0,
+            "pros": [
+              "类型丰富",
+              "玩法多样"
+            ],
+            "cons": [
+              "工作量较大",
+              "平衡难度增加"
+            ]
+          },
+          {
+            "value": "minimal_3",
+            "label": "3种基础类型：射箭、挥砍、法球（快速验证）",
+            "score": 75.0,
+            "pros": [
+              "快速实现",
+              "验证核心玩法"
+            ],
+            "cons": [
+              "类型较少",
+              "后续需要补充"
+            ]
+          }
+        ],
+        "location": {
+          "file": "task-now.md",
+          "start": 13,
+          "end": 17
+        },
+        "context": "用户提到射箭、挥砍、追踪法球等普攻类型，并希望发挥创造力设计更多。需确定首批实现范围。",
+        "recommend": "core_4"
+      },
+      {
+        "id": 5,
+        "title": "视觉风格调整范围",
+        "options": [
+          {
+            "value": "text_only",
+            "label": "仅改文案，保留几何美术风格",
+            "score": 90.0,
+            "pros": [
+              "工作量小",
+              "几何风格本身是中性的",
+              "保持视觉一致性"
+            ],
+            "cons": [
+              "某些仙侠特定元素可能需要调整"
+            ]
+          },
+          {
+            "value": "partial_visual",
+            "label": "改文案 + 调整部分视觉元素（如技能特效颜色）",
+            "score": 80.0,
+            "pros": [
+              "适度更新",
+              "视觉更统一"
+            ],
+            "cons": [
+              "工作量中等"
+            ]
+          },
+          {
+            "value": "full_restyle",
+            "label": "全面重做美术风格",
+            "score": 50.0,
+            "pros": [
+              "全新视觉体验"
+            ],
+            "cons": [
+              "工作量巨大",
+              "可能超出当前任务范围"
+            ]
+          }
+        ],
+        "location": {
+          "file": "task-now.md",
+          "start": 9,
+          "end": 9
+        },
+        "context": "移除仙侠元素后，视觉风格需要相应调整。需确定调整范围。",
+        "recommend": "text_only"
+      }
+    ]
+  },
+  "output": {
+    "decisions": [
+      {
+        "id": 1,
+        "chosen": "survivor"
+      },
+      {
+        "id": 2,
+        "chosen": "choose_start"
+      },
+      {
+        "id": 3,
+        "chosen": "auto_all"
+      },
+      {
+        "id": 4,
+        "chosen": "expanded_6"
+      },
+      {
+        "id": 5,
+        "chosen": "partial_visual"
+      }
+    ]
+  },
+  "completed_at": "2025-12-20T04:37:30+08:00"
+}
