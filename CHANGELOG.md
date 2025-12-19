@@ -4,6 +4,19 @@
 
 ---
 
+## [1.0.1] - 2025-12-20
+
+### 新增
+- **CI/CD 自动部署**
+  - GitHub Actions workflow 配置
+  - 推送到 main/master 分支时自动构建和部署
+  - GitHub Pages 部署支持
+
+### 变更
+- vite.config.js 支持动态 base 路径（兼容本地开发和 GitHub Pages）
+
+---
+
 ## [1.0.0] - 2025-12-20
 
 ### 新增

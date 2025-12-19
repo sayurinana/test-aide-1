@@ -1,5 +1,5 @@
 {
-  "next_number": 2,
+  "next_number": 3,
   "branches": [
     {
       "number": 1,
@@ -12,6 +12,18 @@
       "status": "finished",
       "end_commit": "26a3b7f70b46594fe356196b01c3cd1711a72f6a",
       "finished_at": "2025-12-20T02:07:17+08:00"
+    },
+    {
+      "number": 2,
+      "branch_name": "aide/002",
+      "source_branch": "master",
+      "start_commit": "b4fc60493d635837916c18f45c77b520112649c4",
+      "task_id": "2025-12-20T02-16-28",
+      "task_summary": "开始任务准备: 配置 GitHub Actions CI/CD 自动构建与部署",
+      "started_at": "2025-12-20T02:16:28+08:00",
+      "status": "finished",
+      "end_commit": "bb6adc15c7322011784d12143f28b5aa30a3b31f",
+      "finished_at": "2025-12-20T02:26:00+08:00"
     }
   ]
 }
