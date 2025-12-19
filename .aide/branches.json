@@ -1,5 +1,5 @@
 {
-  "next_number": 10,
+  "next_number": 11,
   "branches": [
     {
       "number": 1,
@@ -108,6 +108,16 @@
       "status": "force-cleaned",
       "end_commit": "92b1842901206fff5568534b4dc3fbce18c0866b",
       "finished_at": "2025-12-20T07:24:08+08:00"
+    },
+    {
+      "number": 10,
+      "branch_name": "aide/010",
+      "source_branch": "master",
+      "start_commit": "1680c360483ee00a5b64edfc6a6671b8d284d0b7",
+      "task_id": "2025-12-20T07-27-36",
+      "task_summary": "开始任务准备: 攻击方式选择与强化过滤",
+      "started_at": "2025-12-20T07:27:36+08:00",
+      "status": "active"
     }
   ]
 }
