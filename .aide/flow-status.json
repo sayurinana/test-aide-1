@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 60,
+  "current_step": 61,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -470,7 +470,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 60,
-      "summary": "完成4.6测试和修复: 修复SkillManager技能击杀计数bug/Enemy投射物伤害计算bug"
+      "summary": "完成4.6测试和修复: 修复SkillManager技能击杀计数bug/Enemy投射物伤害计算bug",
+      "git_commit": "df268180efa3567d06f2d99fcaef7261e046703b"
+    },
+    {
+      "timestamp": "2025-12-20T01:54:51+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 61,
+      "summary": "完成4.7发布准备: 版本号更新v1.0.0/加载提示/生产构建"
     }
   ],
   "source_branch": "master",

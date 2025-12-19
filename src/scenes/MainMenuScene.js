@@ -80,7 +80,7 @@ export class MainMenuScene extends Phaser.Scene {
     })
 
     // 版本信息
-    this.add.text(width - 10, height - 10, 'v0.4.0 - 完善版', {
+    this.add.text(width - 10, height - 10, 'v1.0.0', {
       fontSize: '12px',
       fill: '#444444',
       fontFamily: 'Arial'
