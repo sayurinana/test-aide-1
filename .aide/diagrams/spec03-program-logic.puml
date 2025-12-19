@@ -32,23 +32,18 @@ repeat
     :获取当前普攻;
     if (普攻.canFire()?) then (是)
       :普攻.execute(player, scene);
-      note right
-        每种普攻有独立实现：
-        - ArrowAttack: 发射箭矢
-        - SlashAttack: 扇形挥砍
-      end note
     else (否)
       :跳过（冷却中）;
     endif
   endwhile (否)
 
   |AttackBase子类|
-  :创建攻击实体/效果;
+  :创建攻击实体或效果;
   :检测命中敌人;
   :通知 DamageSystem 造成伤害;
 
   |DamageSystem|
-  :计算伤害（含暴击/连击）;
+  :计算伤害（含暴击和连击）;
   :应用伤害到敌人;
   :应用击退效果;
 
@@ -64,45 +59,5 @@ repeat
 repeat while (游戏未结束) is (是)
 
 stop
-
-== 普攻类结构 ==
-
-class AttackBase {
-  id: string
-  name: string
-  damage: number
-  cooldown: number
-  currentCooldown: number
-  level: number
-  --
-  canFire(): boolean
-  execute(player, scene): void
-  upgrade(): void
-  update(delta): void
-}
-
-class ArrowAttack extends AttackBase {
-  speed: number
-  range: number
-  projectiles: Group
-  --
-  execute(): 发射箭矢投射物
-}
-
-class SlashAttack extends AttackBase {
-  arcAngle: number
-  range: number
-  --
-  execute(): 扇形范围攻击
-}
-
-class AttackManager {
-  attacks: AttackBase[]
-  --
-  addAttack(attack): void
-  removeAttack(id): void
-  update(delta): void
-  executeAll(player, scene): void
-}
 
 @enduml
