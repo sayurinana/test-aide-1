@@ -4,6 +4,28 @@
 
 ---
 
+## [1.1.0-alpha.4] - 2025-12-20
+
+### 新增
+- **游戏中获得新攻击方式**
+  - 新增"新的力量"强化道具（稀有级别）
+  - 选择后弹出攻击方式选择界面
+  - 已拥有的攻击方式不会出现在选择列表中
+  - 已拥有全部 6 种攻击时，该强化不再出现
+
+- **强化过滤机制**
+  - 普攻专属强化只在拥有对应攻击方式时出现
+  - 例如：没有法球攻击时，法球相关强化不会出现
+  - 避免玩家获得无法使用的强化
+
+### 变更
+- `RoguelikeSystem.generateChoices()`：添加攻击类型过滤逻辑
+- `RoguelikeSystem.applyBuffEffect()`：处理 `new_attack` 效果类型
+- `GameScene`：添加 `showNewAttackSelection()` 和 `onNewAttackSelected()` 方法
+- `AttackSelectScene`：支持 `excludeAttacks` 参数过滤已拥有攻击
+
+---
+
 ## [1.1.0-alpha.3] - 2025-12-20
 
 ### 修复
