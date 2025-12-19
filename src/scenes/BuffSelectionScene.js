@@ -16,6 +16,8 @@ export class BuffSelectionScene extends Phaser.Scene {
     this.choices = data.choices || []
     this.waveNumber = data.waveNumber || 1
     this.onSelect = data.onSelect || (() => {})
+    this.isLevelUp = data.isLevelUp || false
+    this.queueLength = data.queueLength || 0
   }
 
   create() {
@@ -24,19 +26,32 @@ export class BuffSelectionScene extends Phaser.Scene {
     // 半透明背景
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
 
-    // 标题
-    this.add.text(width / 2, 80, '选择你的强化', {
+    // 标题（根据触发类型显示不同文案）
+    const titleText = this.isLevelUp ? '升级！选择强化' : '选择你的强化'
+    this.add.text(width / 2, 80, titleText, {
       fontSize: '36px',
       fill: '#ffffff',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
 
-    // 波次信息
-    this.add.text(width / 2, 130, `第 ${this.waveNumber} 波完成`, {
+    // 副标题（波次或等级信息）
+    const subTitleText = this.isLevelUp
+      ? `等级 ${this.waveNumber}`
+      : `第 ${this.waveNumber} 波完成`
+    this.add.text(width / 2, 130, subTitleText, {
       fontSize: '20px',
       fill: '#888888',
       fontFamily: 'Arial'
     }).setOrigin(0.5)
+
+    // 队列提示（如果有多个升级待处理）
+    if (this.queueLength > 1) {
+      this.add.text(width / 2, 160, `(还有 ${this.queueLength - 1} 次选择)`, {
+        fontSize: '16px',
+        fill: '#ffaa00',
+        fontFamily: 'Arial'
+      }).setOrigin(0.5)
+    }
 
     // 创建三个选项卡片
     const cardWidth = 200

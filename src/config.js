@@ -32,10 +32,10 @@ export const ENEMY = {
 
 // 敌人类型配置
 export const ENEMY_TYPES = {
-  // 飘影 - 基础追踪型
+  // 幽灵 - 基础追踪型
   SHADOW: {
     id: 'shadow',
-    name: '飘影',
+    name: '幽灵',
     hp: 30,
     atk: 10,
     speed: 80,
@@ -45,10 +45,10 @@ export const ENEMY_TYPES = {
     score: 10
   },
 
-  // 妖狼 - 冲锋型
+  // 狼人 - 冲锋型
   WOLF: {
     id: 'wolf',
-    name: '妖狼',
+    name: '狼人',
     hp: 50,
     atk: 15,
     speed: 60,
@@ -61,10 +61,10 @@ export const ENEMY_TYPES = {
     score: 20
   },
 
-  // 蛇妖 - 远程投射型
+  // 毒蛇 - 远程投射型
   SNAKE: {
     id: 'snake',
-    name: '蛇妖',
+    name: '毒蛇',
     hp: 25,
     atk: 8,
     speed: 50,
@@ -77,10 +77,10 @@ export const ENEMY_TYPES = {
     score: 15
   },
 
-  // 怨魂 - 分裂型
+  // 灵魂 - 分裂型
   WRAITH: {
     id: 'wraith',
-    name: '怨魂',
+    name: '灵魂',
     hp: 40,
     atk: 8,
     speed: 70,
@@ -92,10 +92,10 @@ export const ENEMY_TYPES = {
     score: 25
   },
 
-  // 精英 - 邪修
+  // 精英怪
   ELITE: {
     id: 'elite',
-    name: '邪修',
+    name: '精英',
     hp: 200,
     atk: 25,
     speed: 60,
@@ -106,10 +106,10 @@ export const ENEMY_TYPES = {
     score: 100
   },
 
-  // Boss - 妖将
+  // Boss
   BOSS: {
     id: 'boss',
-    name: '妖将',
+    name: 'Boss',
     hp: 500,
     atk: 40,
     speed: 40,
@@ -151,62 +151,141 @@ export const COLORS = {
   DAMAGE_NORMAL: '#ffffff',
   DAMAGE_CRIT: '#ffff00',
   COMBO_TEXT: '#64c8ff',
-  SKILL_1: 0x00ffff,     // 剑气横扫 - 青色
-  SKILL_2: 0xff00ff,     // 瞬步斩 - 紫色
-  SKILL_3: 0x00ff00,     // 护体真气 - 绿色
-  SKILL_4: 0xffff00      // 剑域 - 金色
+  SKILL_1: 0x00ffff,     // 加速 - 青色
+  SKILL_2: 0xff00ff,     // 闪现 - 紫色
+  SKILL_3: 0x00ff00,     // 护盾 - 绿色
+  SKILL_4: 0xff6688      // 治疗 - 粉色
+}
+
+// 普攻类型配置
+export const ATTACK_TYPES = {
+  // 射箭 - 远程投射物
+  ARROW: {
+    id: 'arrow',
+    name: '射箭',
+    description: '发射箭矢攻击远处敌人',
+    damage: 15,
+    cooldown: 600,       // 冷却 600ms
+    speed: 500,          // 箭矢速度
+    range: 400,          // 射程
+    size: 8,             // 箭矢大小
+    color: 0xffcc00,     // 金色
+    icon: '🏹'
+  },
+
+  // 挥砍 - 近战扇形
+  SLASH: {
+    id: 'slash',
+    name: '挥砍',
+    description: '近距离扇形斩击',
+    damage: 20,
+    cooldown: 400,       // 冷却 400ms
+    range: 85,           // 攻击范围
+    arcAngle: Math.PI / 2, // 90度扇形
+    color: 0x64c8ff,     // 淡蓝色
+    icon: '⚔️'
+  },
+
+  // 法球 - 追踪投射物
+  ORB: {
+    id: 'orb',
+    name: '法球',
+    description: '发射追踪敌人的魔法球',
+    damage: 12,
+    cooldown: 800,       // 冷却 800ms
+    speed: 300,          // 法球速度
+    range: 350,          // 追踪范围
+    size: 12,            // 法球大小
+    color: 0xff00ff,     // 紫色
+    icon: '🔮'
+  },
+
+  // 冲击波 - 穿透攻击
+  WAVE: {
+    id: 'wave',
+    name: '冲击波',
+    description: '发射穿透敌人的冲击波',
+    damage: 18,
+    cooldown: 700,       // 冷却 700ms
+    speed: 400,          // 冲击波速度
+    range: 300,          // 射程
+    width: 60,           // 冲击波宽度
+    color: 0x00ffff,     // 青色
+    icon: '💨'
+  },
+
+  // 闪电链 - 连锁攻击
+  LIGHTNING: {
+    id: 'lightning',
+    name: '闪电链',
+    description: '闪电在敌人之间跳跃',
+    damage: 10,
+    cooldown: 900,       // 冷却 900ms
+    range: 250,          // 初始攻击范围
+    chainRange: 150,     // 链式攻击范围
+    chainCount: 3,       // 最大跳跃次数
+    color: 0xffff00,     // 黄色
+    icon: '⚡'
+  },
+
+  // 召唤物 - 自动攻击
+  SUMMON: {
+    id: 'summon',
+    name: '召唤物',
+    description: '召唤精灵自动攻击敌人',
+    damage: 8,
+    cooldown: 1200,      // 冷却 1200ms
+    duration: 5000,      // 持续 5 秒
+    attackInterval: 500, // 攻击间隔 500ms
+    range: 200,          // 攻击范围
+    color: 0x88ff88,     // 浅绿色
+    icon: '👻'
+  }
 }
 
 // 技能配置
 export const SKILLS = {
-  // 技能1: 剑气横扫 (Q) - 范围攻击
-  SWORD_WAVE: {
-    id: 'sword_wave',
-    name: '剑气横扫',
+  // 技能1: 加速 (Q) - 短时间移动速度大幅提升
+  SPEED_BOOST: {
+    id: 'speed_boost',
+    name: '加速',
     key: 'Q',
-    cooldown: 3000,       // 冷却 3 秒
-    damage: 15,           // 基础伤害
-    range: 200,           // 攻击范围
-    angle: Math.PI,       // 180度扇形
-    duration: 300,        // 特效持续时间
+    cooldown: 8000,       // 冷却 8 秒
+    duration: 3000,       // 持续 3 秒
+    speedMultiplier: 2.0, // 速度翻倍
     color: 0x00ffff
   },
 
-  // 技能2: 瞬步斩 (E) - 突进攻击
-  DASH_SLASH: {
-    id: 'dash_slash',
-    name: '瞬步斩',
+  // 技能2: 闪现 (E) - 瞬间位移到指定方向
+  DASH: {
+    id: 'dash',
+    name: '闪现',
     key: 'E',
-    cooldown: 4000,       // 冷却 4 秒
-    damage: 25,           // 基础伤害
-    distance: 250,        // 突进距离
-    width: 60,            // 伤害宽度
-    duration: 200,        // 突进时间
+    cooldown: 5000,       // 冷却 5 秒
+    distance: 200,        // 闪现距离
+    duration: 100,        // 闪现时间
+    invincible: true,     // 闪现期间无敌
     color: 0xff00ff
   },
 
-  // 技能3: 护体真气 (R) - 防御/反击
+  // 技能3: 护盾 (R) - 短时间免疫所有伤害
   SHIELD: {
     id: 'shield',
-    name: '护体真气',
+    name: '护盾',
     key: 'R',
-    cooldown: 8000,       // 冷却 8 秒
+    cooldown: 15000,      // 冷却 15 秒
     duration: 2000,       // 持续 2 秒
-    reflect: 0.5,         // 反弹 50% 伤害
-    radius: 80,           // 护盾半径
+    radius: 60,           // 护盾视觉半径
     color: 0x00ff00
   },
 
-  // 技能4: 剑域 (Space) - 终极技能
-  SWORD_DOMAIN: {
-    id: 'sword_domain',
-    name: '剑域',
+  // 技能4: 治疗 (Space) - 恢复一定比例生命值
+  HEAL: {
+    id: 'heal',
+    name: '治疗',
     key: 'SPACE',
-    cooldown: 15000,      // 冷却 15 秒
-    damage: 50,           // 每次伤害
-    radius: 300,          // 影响范围
-    duration: 3000,       // 持续 3 秒
-    ticks: 6,             // 伤害次数
-    color: 0xffff00
+    cooldown: 20000,      // 冷却 20 秒
+    healPercent: 0.3,     // 恢复 30% 最大生命值
+    color: 0xff6688
   }
 }

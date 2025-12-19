@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- 加速技能图标 - 风/箭头 -->
+  <defs>
+    <linearGradient id="speedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#00ffff;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <!-- 主箭头 -->
+  <polygon points="38,24 18,12 22,22 8,22 8,26 22,26 18,36" fill="url(#speedGrad)" stroke="#00ffff" stroke-width="1.5"/>
+  <!-- 速度线 -->
+  <line x1="6" y1="16" x2="14" y2="16" stroke="#00ffff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="4" y1="24" x2="12" y2="24" stroke="#00ffff" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <line x1="6" y1="32" x2="14" y2="32" stroke="#00ffff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+</svg>

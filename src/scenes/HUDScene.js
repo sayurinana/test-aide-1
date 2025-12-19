@@ -18,6 +18,9 @@ export class HUDScene extends Phaser.Scene {
     // 创建 HP 血条
     this.createHpBar()
 
+    // 创建经验值条
+    this.createExpBar()
+
     // 创建击杀计数
     this.createKillCounter()
 
@@ -51,6 +54,7 @@ export class HUDScene extends Phaser.Scene {
     this.gameScene.events.on('gamePaused', this.showPauseOverlay, this)
     this.gameScene.events.on('gameResumed', this.hidePauseOverlay, this)
     this.gameScene.events.on('autoAttackToggled', this.updateAutoAttackDisplay, this)
+    this.gameScene.events.on('expUpdated', this.updateExpBar, this)
 
     console.log('HUDScene 初始化完成')
   }
@@ -114,10 +118,77 @@ export class HUDScene extends Phaser.Scene {
     this.hpText.setText(`${hp}/${maxHp}`)
   }
 
+  createExpBar() {
+    const x = 20
+    const y = 45
+    const width = 200
+    const height = 12
+
+    // 等级标签
+    this.levelText = this.add.text(x, y - 2, 'Lv.1', {
+      fontSize: '12px',
+      fill: '#ffff00',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    })
+
+    // 经验条背景
+    this.expBarBg = this.add.graphics()
+    this.expBarBg.fillStyle(0x222222, 0.8)
+    this.expBarBg.fillRoundedRect(x + 35, y, width - 5, height, 3)
+
+    // 经验条前景
+    this.expBar = this.add.graphics()
+    this.expBarWidth = width - 9
+    this.expBarHeight = height - 4
+    this.expBarX = x + 37
+    this.expBarY = y + 2
+
+    this.drawExpBar(0)
+
+    // 经验值文字
+    this.expText = this.add.text(x + 35 + (width - 5) / 2, y + height / 2, '0/100', {
+      fontSize: '10px',
+      fill: '#ffffff',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+  }
+
+  drawExpBar(percent) {
+    this.expBar.clear()
+    this.expBar.fillStyle(0xffff00, 1)
+    this.expBar.fillRoundedRect(
+      this.expBarX,
+      this.expBarY,
+      Math.max(this.expBarWidth * percent, 0),
+      this.expBarHeight,
+      2
+    )
+  }
+
+  updateExpBar(data) {
+    const percent = data.exp / data.expToNext
+    this.drawExpBar(percent)
+    this.levelText.setText(`Lv.${data.level}`)
+    this.expText.setText(`${data.exp}/${data.expToNext}`)
+
+    // 升级时的动画效果
+    if (this.lastLevel && data.level > this.lastLevel) {
+      this.tweens.add({
+        targets: this.levelText,
+        scaleX: 1.5,
+        scaleY: 1.5,
+        duration: 150,
+        yoyo: true
+      })
+    }
+    this.lastLevel = data.level
+  }
+
   createKillCounter() {
     // 击杀图标（简单的 X）
     const x = 20
-    const y = 55
+    const y = 70
 
     this.add.text(x, y, 'KILLS', {
       fontSize: '14px',
@@ -264,7 +335,7 @@ export class HUDScene extends Phaser.Scene {
 
     this.skillSlots = []
     const skillKeys = ['Q', 'E', 'R', 'SPACE']
-    const skillColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xffff00]
+    const skillColors = [0x00ffff, 0xff00ff, 0x00ff00, 0xff6688]
 
     for (let i = 0; i < 4; i++) {
       const x = centerX - (slotSize + spacing) * 1.5 + i * (slotSize + spacing)
@@ -312,7 +383,7 @@ export class HUDScene extends Phaser.Scene {
     if (!this.gameScene.skillManager) return
 
     const states = this.gameScene.skillManager.getSkillStates()
-    const skillIds = ['sword_wave', 'dash_slash', 'shield', 'sword_domain']
+    const skillIds = ['speed_boost', 'dash', 'shield', 'heal']
 
     skillIds.forEach((id, i) => {
       const state = states[id]

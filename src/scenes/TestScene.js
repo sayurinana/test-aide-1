@@ -1,10 +1,10 @@
 /**
- * 游戏主场景
- * 集成战斗系统、技能系统、Roguelike 系统和波次管理
+ * 测试关卡场景
+ * 基于 GameScene，添加测试用快捷键功能
  */
 
 import Phaser from 'phaser'
-import { WORLD, PLAYER, ENEMY, ATTACK_TYPES } from '../config.js'
+import { WORLD, PLAYER } from '../config.js'
 import { Player } from '../entities/Player.js'
 import { AttackEffect } from '../entities/AttackEffect.js'
 import { EnemySpawner } from '../systems/EnemySpawner.js'
@@ -15,22 +15,15 @@ import { RoguelikeSystem } from '../systems/RoguelikeSystem.js'
 import { WaveManager } from '../systems/WaveManager.js'
 import { VFXManager } from '../systems/VFXManager.js'
 import { getAudioManager } from '../systems/AudioManager.js'
-import { AttackManager } from '../systems/AttackManager.js'
-import { ArrowAttack } from '../attacks/ArrowAttack.js'
-import { SlashAttack } from '../attacks/SlashAttack.js'
-import { OrbAttack } from '../attacks/OrbAttack.js'
-import { WaveAttack } from '../attacks/WaveAttack.js'
-import { LightningAttack } from '../attacks/LightningAttack.js'
-import { SummonAttack } from '../attacks/SummonAttack.js'
 
-export class GameScene extends Phaser.Scene {
+export class TestScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'GameScene' })
+    super({ key: 'TestScene' })
     this.killCount = 0
     this.gameOver = false
     this.isPaused = false
-    this.autoAttack = false  // 自动攻击开关，默认关闭
-    this.isGameStarted = false  // 游戏是否已开始（选择普攻后）
+    this.autoAttack = false
+    this.testInvincible = true
   }
 
   create() {
@@ -38,191 +31,200 @@ export class GameScene extends Phaser.Scene {
     this.killCount = 0
     this.gameOver = false
     this.isPaused = false
-    this.autoAttack = false  // 重置自动攻击状态
-    this.isGameStarted = false  // 重置游戏开始状态
+    this.autoAttack = false
+    this.testInvincible = true
 
     // 设置世界边界
     this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
-
-    // 设置相机边界
     this.cameras.main.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
 
-    // 创建简单的背景网格
+    // 创建背景
     this.createBackground()
 
     // 创建玩家
     this.player = new Player(this, WORLD.WIDTH / 2, WORLD.HEIGHT / 2)
+    this.player.isInvincible = true  // 测试模式默认无敌
 
-    // 相机跟随玩家
+    // 相机跟随
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
 
     // 攻击效果组
     this.attackEffects = this.add.group()
 
-    // 创建敌人生成器（由 WaveManager 控制生成）
+    // 创建系统
     this.enemySpawner = new EnemySpawner(this, this.player)
-    // 禁用自动生成，由 WaveManager 控制
     this.enemySpawner.setSpawnInterval(Infinity)
-
-    // 创建战斗系统
     this.comboSystem = new ComboSystem(this)
     this.damageSystem = new DamageSystem(this)
-
-    // 创建普攻管理器
-    this.attackManager = new AttackManager(this, this.player)
-
-    // 创建技能管理器
     this.skillManager = new SkillManager(this, this.player)
-
-    // 创建 Roguelike 系统
     this.roguelikeSystem = new RoguelikeSystem(this, this.player)
-
-    // 创建波次管理器
     this.waveManager = new WaveManager(this)
-
-    // 创建视觉效果管理器
     this.vfxManager = new VFXManager(this)
-
-    // 初始化音效管理器
     this.audioManager = getAudioManager()
 
-    // 设置碰撞检测
+    // 设置碰撞和输入
     this.setupCollisions()
-
-    // 设置攻击输入
     this.setupAttackInput()
-
-    // 设置暂停输入
     this.setupPauseInput()
-
-    // 设置自动攻击输入
     this.setupAutoAttackInput()
+    this.setupTestKeys()
 
-    // 启动 HUD 场景
+    // 启动 HUD
     this.scene.launch('HUDScene')
 
-    // 显示普攻选择界面
-    this.showAttackSelectScene()
+    // 显示测试模式提示
+    this.showTestModeHint()
 
-    console.log('GameScene 初始化完成')
-  }
-
-  /**
-   * 显示普攻选择界面
-   */
-  showAttackSelectScene() {
-    this.scene.launch('AttackSelectScene', {
-      onSelect: (attackType) => {
-        this.onAttackSelected(attackType)
-      }
-    })
-  }
-
-  /**
-   * 普攻选择回调
-   */
-  onAttackSelected(attackType) {
-    // 根据选择创建对应的普攻实例
-    let attack
-    switch (attackType.id) {
-      case 'arrow':
-        attack = new ArrowAttack(this)
-        break
-      case 'slash':
-        attack = new SlashAttack(this)
-        break
-      case 'orb':
-        attack = new OrbAttack(this)
-        break
-      case 'wave':
-        attack = new WaveAttack(this)
-        break
-      case 'lightning':
-        attack = new LightningAttack(this)
-        break
-      case 'summon':
-        attack = new SummonAttack(this)
-        break
-      default:
-        attack = new SlashAttack(this)
-        break
-    }
-
-    // 添加到普攻管理器
-    this.attackManager.addAttack(attack)
-
-    // 设置碰撞检测（投射物类普攻）
-    if (['arrow', 'orb', 'wave'].includes(attackType.id)) {
-      this.setupProjectileCollision(attack)
-    }
-
-    // 标记游戏已开始
-    this.isGameStarted = true
-
-    // 游戏开始：第一波（延迟 1 秒）
+    // 开始第一波
     this.time.delayedCall(1000, () => {
       this.waveManager.startNextWave()
     })
 
-    // 通知 HUD 更新
-    this.events.emit('attackSelected', attackType)
+    console.log('TestScene 初始化完成 - 测试模式')
   }
 
-  /**
-   * 设置投射物碰撞检测（通用）
-   */
-  setupProjectileCollision(attack) {
-    // 投射物与敌人碰撞
-    this.physics.add.overlap(
-      attack.getProjectiles(),
-      this.enemySpawner.getGroup(),
-      (projectile, enemy) => {
-        this.onProjectileHitEnemy(attack, projectile, enemy)
-      },
-      null,
-      this
-    )
+  setupTestKeys() {
+    this.input.keyboard.on('keydown-ONE', () => {
+      if (this.gameOver || this.isPaused) return
+      this.grantLargeExp()
+    })
+
+    this.input.keyboard.on('keydown-TWO', () => {
+      if (this.gameOver || this.isPaused) return
+      this.triggerDeath()
+    })
+
+    this.input.keyboard.on('keydown-THREE', () => {
+      if (this.gameOver || this.isPaused) return
+      this.spawnEnemyWave()
+    })
+
+    this.input.keyboard.on('keydown-FOUR', () => {
+      if (this.gameOver || this.isPaused) return
+      this.clearAllEnemies()
+    })
+
+    this.input.keyboard.on('keydown-FIVE', () => {
+      if (this.gameOver || this.isPaused) return
+      this.toggleInvincible()
+    })
+
+    this.input.keyboard.on('keydown-ZERO', () => {
+      this.returnToMenu()
+    })
   }
 
-  /**
-   * 投射物命中敌人
-   */
-  onProjectileHitEnemy(attack, projectile, enemy) {
-    if (this.gameOver) return
+  showTestModeHint() {
+    const hintContainer = this.add.container(10, 10).setScrollFactor(0).setDepth(1000)
 
-    const context = this.getAttackContext()
-    const killed = attack.onHitEnemy(projectile, enemy, context)
+    const bg = this.add.rectangle(0, 0, 200, 180, 0x000000, 0.7).setOrigin(0, 0)
+    hintContainer.add(bg)
 
-    if (killed) {
-      this.onEnemyKilled(enemy)
+    const title = this.add.text(10, 10, '[ 测试模式 ]', {
+      fontSize: '16px',
+      fill: '#ff6600',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    })
+    hintContainer.add(title)
+
+    const hints = [
+      '1 - 获得大量经验',
+      '2 - 触发死亡',
+      '3 - 生成敌人波',
+      '4 - 清除所有敌人',
+      '5 - 切换无敌',
+      '0 - 返回主菜单'
+    ]
+
+    hints.forEach((hint, index) => {
+      const text = this.add.text(10, 35 + index * 22, hint, {
+        fontSize: '14px',
+        fill: '#cccccc',
+        fontFamily: 'Arial'
+      })
+      hintContainer.add(text)
+    })
+
+    this.invincibleText = this.add.text(10, 160, '无敌: ON', {
+      fontSize: '14px',
+      fill: '#00ff00',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    })
+    hintContainer.add(this.invincibleText)
+  }
+
+  grantLargeExp() {
+    const expInfo = this.roguelikeSystem.getExpInfo()
+    let totalExp = 0
+    let currentExpToNext = expInfo.expToNext
+    for (let i = 0; i < 5; i++) {
+      totalExp += currentExpToNext
+      currentExpToNext = Math.floor(currentExpToNext * 1.15)
     }
+
+    console.log(`[测试] 获得经验: ${totalExp}`)
+    this.roguelikeSystem.addExp(totalExp)
+    this.vfxManager.screenFlash(0xffff00, 200, 0.3)
+    this.audioManager.playSfx('levelup')
   }
 
-  /**
-   * 设置箭矢碰撞检测（保留向后兼容）
-   */
-  setupArrowCollision(arrowAttack) {
-    this.setupProjectileCollision(arrowAttack)
+  triggerDeath() {
+    this.player.isInvincible = false
+    this.player.hp = 0
+    this.events.emit('playerHpUpdated', 0, this.player.maxHp)
+    console.log('[测试] 触发死亡')
+    this.onGameOver()
   }
 
-  /**
-   * 获取攻击上下文
-   */
-  getAttackContext() {
-    return {
-      enemies: this.enemySpawner.getActiveEnemies(),
-      damageSystem: this.damageSystem,
-      comboSystem: this.comboSystem,
-      roguelikeSystem: this.roguelikeSystem,
-      waveManager: this.waveManager,
-      vfxManager: this.vfxManager,
-      audioManager: this.audioManager,
-      onEnemyKilled: (enemy) => this.onEnemyKilled(enemy)
+  spawnEnemyWave() {
+    const wave = this.waveManager.currentWave || 1
+    for (let i = 0; i < 10; i++) {
+      const angle = (i / 10) * Math.PI * 2
+      const distance = 300 + Math.random() * 100
+      const x = this.player.x + Math.cos(angle) * distance
+      const y = this.player.y + Math.sin(angle) * distance
+      const spawnX = Phaser.Math.Clamp(x, 50, WORLD.WIDTH - 50)
+      const spawnY = Phaser.Math.Clamp(y, 50, WORLD.HEIGHT - 50)
+      this.enemySpawner.spawnEnemy(spawnX, spawnY, wave)
     }
+    console.log('[测试] 生成敌人波: 10 个敌人')
+    this.audioManager.playSfx('wave')
   }
 
+  clearAllEnemies() {
+    const enemies = this.enemySpawner.getActiveEnemies()
+    let count = 0
+    enemies.forEach(enemy => {
+      if (enemy.isActive) {
+        enemy.destroy()
+        count++
+      }
+    })
+    console.log(`[测试] 清除敌人: ${count} 个`)
+    this.vfxManager.screenFlash(0x00ffff, 200, 0.3)
+  }
+
+  toggleInvincible() {
+    this.testInvincible = !this.testInvincible
+    this.player.isInvincible = this.testInvincible
+    if (this.invincibleText) {
+      this.invincibleText.setText(`无敌: ${this.testInvincible ? 'ON' : 'OFF'}`)
+      this.invincibleText.setFill(this.testInvincible ? '#00ff00' : '#ff0000')
+    }
+    console.log(`[测试] 无敌模式: ${this.testInvincible ? '开启' : '关闭'}`)
+    this.audioManager.playSfx('select')
+  }
+
+  returnToMenu() {
+    console.log('[测试] 返回主菜单')
+    this.scene.stop('HUDScene')
+    this.scene.start('MainMenuScene')
+  }
+
+  // 复用 GameScene 的方法
   setupCollisions() {
-    // 敌人与玩家碰撞
     this.physics.add.overlap(
       this.player,
       this.enemySpawner.getGroup(),
@@ -235,38 +237,23 @@ export class GameScene extends Phaser.Scene {
   onEnemyHitPlayer(player, enemy) {
     if (this.gameOver || !enemy.isActive) return
     if (this.player.isInvincible) return
-
-    // 检查连击无敌（无双之力）
     if (this.roguelikeSystem.isComboInvincible()) return
 
-    // 检查护盾反伤
     if (this.skillManager && this.skillManager.checkShieldReflect(enemy, enemy.atk)) {
-      return // 护盾阻挡了伤害
+      return
     }
 
-    // 计算实际受到的伤害（应用减伤）
     const actualDamage = this.roguelikeSystem.calculateDamageTaken(enemy.atk)
-
-    // 玩家受伤
     const isDead = this.player.takeDamage(actualDamage)
 
-    // 受伤视觉反馈
     this.vfxManager.screenShake(0.008, 100)
     this.vfxManager.showDamageNumber(this.player.x, this.player.y, actualDamage, false)
-
-    // 受伤音效
     this.audioManager.playSfx('hurt')
-
-    // 重置连击
     this.comboSystem.resetCombo()
-
-    // 更新 HUD
     this.events.emit('playerHpUpdated', this.player.hp, this.player.maxHp)
 
     if (isDead) {
-      // 检查复活
       if (this.roguelikeSystem.checkRevive()) {
-        // 复活成功
         this.events.emit('playerRevived')
       } else {
         this.onGameOver()
@@ -275,9 +262,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   setupAttackInput() {
-    // 鼠标点击攻击
     this.input.on('pointerdown', (pointer) => {
-      if (pointer.leftButtonDown() && !this.gameOver && !this.isPaused && this.isGameStarted) {
+      if (pointer.leftButtonDown() && !this.gameOver && !this.isPaused) {
         this.performAttack()
       }
     })
@@ -303,7 +289,6 @@ export class GameScene extends Phaser.Scene {
 
   togglePause() {
     this.isPaused = !this.isPaused
-
     if (this.isPaused) {
       this.physics.pause()
       this.events.emit('gamePaused')
@@ -314,73 +299,63 @@ export class GameScene extends Phaser.Scene {
   }
 
   performAttack() {
-    if (!this.player || !this.attackManager) return
+    if (!this.player || !this.player.canAttack()) return
 
-    // 获取攻击上下文
-    const context = this.getAttackContext()
+    if (this.player.attack()) {
+      const attackPos = this.player.getAttackPosition()
+      const effect = new AttackEffect(this, attackPos.x, attackPos.y, this.player.rotation)
+      this.attackEffects.add(effect)
+      this.audioManager.playSfx('attack')
 
-    // 执行所有可用的普攻
-    this.attackManager.executeAll(context)
+      this.vfxManager.createSlashTrail(
+        attackPos.x, attackPos.y,
+        this.player.rotation,
+        PLAYER.ATTACK_RANGE,
+        0x64c8ff
+      )
+
+      this.checkAttackHits(attackPos)
+    }
   }
 
-  // 保留原有的检测逻辑供 SlashAttack 使用（已整合到 SlashAttack 类中）
   checkAttackHits(attackPos) {
     const enemies = this.enemySpawner.getActiveEnemies()
-
-    // 获取计算后的攻击范围
     let attackRange = PLAYER.ATTACK_RANGE
     if (this.roguelikeSystem) {
       attackRange = this.roguelikeSystem.getComputedStat(PLAYER.ATTACK_RANGE, 'attackRange')
     }
 
     const attackAngle = this.player.rotation
-    const arcAngle = Math.PI / 2 // 90度攻击扇形
+    const arcAngle = Math.PI / 2
 
     enemies.forEach(enemy => {
       if (!enemy.isActive) return
 
-      // 计算敌人到攻击点的距离
-      const dist = Phaser.Math.Distance.Between(
-        attackPos.x, attackPos.y,
-        enemy.x, enemy.y
-      )
+      const dist = Phaser.Math.Distance.Between(attackPos.x, attackPos.y, enemy.x, enemy.y)
 
       if (dist <= attackRange + enemy.size) {
-        // 检查是否在攻击扇形范围内
         const angleToEnemy = Phaser.Math.Angle.Between(
-          this.player.x, this.player.y,
-          enemy.x, enemy.y
+          this.player.x, this.player.y, enemy.x, enemy.y
         )
         const angleDiff = Phaser.Math.Angle.Wrap(angleToEnemy - attackAngle)
 
         if (Math.abs(angleDiff) <= arcAngle / 2) {
-          // 记录连击
           this.comboSystem.addHit()
 
-          // 获取计算后的攻击力
           let playerAtk = this.player.atk
           if (this.roguelikeSystem) {
             playerAtk = this.roguelikeSystem.getComputedStat(this.player.baseAtk, 'atk')
           }
 
-          // 计算伤害（含暴击和连击加成）
           const { damage, isCrit } = this.damageSystem.calculateDamage(
-            playerAtk,
-            this.comboSystem.getMultiplier(),
-            this.player
+            playerAtk, this.comboSystem.getMultiplier(), this.player
           )
 
-          // 应用伤害加成（如处刑者）
           const finalDamage = Math.floor(damage * this.roguelikeSystem.getDamageMultiplier(enemy))
-
-          // 应用伤害
           const killed = this.damageSystem.applyDamage(enemy, finalDamage, isCrit)
 
-          // 视觉效果
           this.vfxManager.showDamageNumber(enemy.x, enemy.y, finalDamage, isCrit)
           this.vfxManager.flashWhite(enemy, 30)
-
-          // 音效
           this.audioManager.playSfx('hit')
 
           if (isCrit) {
@@ -388,20 +363,13 @@ export class GameScene extends Phaser.Scene {
             this.vfxManager.hitStop(30)
           }
 
-          // 应用击退
           this.damageSystem.applyKnockback(enemy, this.player.x, this.player.y)
-
-          // 触发吸血
           this.roguelikeSystem.onDamageDealt(finalDamage)
-
-          // 记录伤害
           this.waveManager.recordDamage(finalDamage)
 
           if (killed) {
-            // 死亡粒子效果
             this.vfxManager.createDeathParticles(enemy.x, enemy.y, enemy.color, 10)
             this.vfxManager.screenShake(0.002, 30)
-            // 击杀音效
             this.audioManager.playSfx('kill')
             this.onEnemyKilled(enemy)
           }
@@ -412,42 +380,26 @@ export class GameScene extends Phaser.Scene {
 
   onEnemyKilled(enemy) {
     this.killCount++
-
-    // 通知 WaveManager
     this.waveManager.onEnemyKilled(enemy)
-
-    // 触发击杀回复
     this.roguelikeSystem.onKill()
-
-    // 给予经验值（根据敌人类型给予不同经验）
     const expReward = this.getExpReward(enemy)
     this.roguelikeSystem.addExp(expReward)
-
-    // 通知 HUD 更新
     this.events.emit('killCountUpdated', this.killCount)
   }
 
-  // 根据敌人类型计算经验奖励
   getExpReward(enemy) {
-    // 基础经验值
     let baseExp = 10
-
-    // 根据敌人类型调整
     if (enemy.isBoss) {
       baseExp = 200
     } else if (enemy.isElite) {
       baseExp = 50
     } else {
-      // 普通敌人根据属性计算
       baseExp = Math.floor(10 + enemy.maxHp / 20)
     }
-
-    // 波次加成
     const waveBonus = 1 + this.waveManager.currentWave * 0.05
     return Math.floor(baseExp * waveBonus)
   }
 
-  // 显示强化选择界面
   showBuffSelection() {
     const choices = this.roguelikeSystem.generateChoices(
       this.waveManager.currentWave,
@@ -462,46 +414,32 @@ export class GameScene extends Phaser.Scene {
       }
     })
 
-    // 暂停游戏场景
     this.physics.pause()
   }
 
   onBuffSelected(buff) {
-    // 应用强化
     this.roguelikeSystem.addBuff(buff.id)
-
-    // 通知 HUD
     this.events.emit('buffAcquired', buff)
-
-    // 恢复游戏
     this.physics.resume()
-
-    // 通知 WaveManager 继续
     this.waveManager.onBuffSelected()
   }
 
   createBackground() {
-    // 创建背景层
     const graphics = this.add.graphics()
 
-    // 渐变背景色块（模拟深度）
     graphics.fillStyle(0x151528, 1)
     graphics.fillRect(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
 
-    // 添加随机装饰光点（仙气效果）
     for (let i = 0; i < 50; i++) {
       const x = Phaser.Math.Between(50, WORLD.WIDTH - 50)
       const y = Phaser.Math.Between(50, WORLD.HEIGHT - 50)
       const alpha = Phaser.Math.FloatBetween(0.1, 0.3)
       const size = Phaser.Math.Between(2, 5)
-
       graphics.fillStyle(0x6688aa, alpha)
       graphics.fillCircle(x, y, size)
     }
 
-    // 创建网格背景
     graphics.lineStyle(1, 0x2a2a4a, 0.3)
-
     const gridSize = 100
     for (let x = 0; x <= WORLD.WIDTH; x += gridSize) {
       graphics.lineBetween(x, 0, x, WORLD.HEIGHT)
@@ -510,13 +448,11 @@ export class GameScene extends Phaser.Scene {
       graphics.lineBetween(0, y, WORLD.WIDTH, y)
     }
 
-    // 绘制世界边界（带发光效果）
     graphics.lineStyle(4, 0x4a6a8a, 0.8)
     graphics.strokeRect(2, 2, WORLD.WIDTH - 4, WORLD.HEIGHT - 4)
     graphics.lineStyle(2, 0x6a8aaa, 0.5)
     graphics.strokeRect(6, 6, WORLD.WIDTH - 12, WORLD.HEIGHT - 12)
 
-    // 添加角落装饰
     this.createCornerDecoration(graphics, 0, 0, 1, 1)
     this.createCornerDecoration(graphics, WORLD.WIDTH, 0, -1, 1)
     this.createCornerDecoration(graphics, 0, WORLD.HEIGHT, 1, -1)
@@ -535,101 +471,36 @@ export class GameScene extends Phaser.Scene {
   update(time, delta) {
     if (this.gameOver || this.isPaused) return
 
-    // 更新玩家
-    if (this.player) {
-      this.player.update(time, delta)
-    }
-
-    // 更新普攻管理器（冷却等）
-    if (this.attackManager) {
-      this.attackManager.update(delta)
-
-      // 更新所有箭矢
-      this.attackManager.getAllAttacks().forEach(attack => {
-        if (attack.update) {
-          attack.update(delta)
-        }
-      })
-    }
-
-    // 自动攻击（仅在游戏开始后）
-    if (this.autoAttack && this.isGameStarted) {
-      this.performAttack()
-    }
-
-    // 更新敌人生成器
-    if (this.enemySpawner) {
-      this.enemySpawner.update(time, delta)
-    }
-
-    // 更新连击系统
+    if (this.player) this.player.update(time, delta)
+    if (this.autoAttack) this.performAttack()
+    if (this.enemySpawner) this.enemySpawner.update(time, delta)
     if (this.comboSystem) {
       this.comboSystem.update(time, delta)
-
-      // 记录最高连击
       this.waveManager.recordCombo(this.comboSystem.comboCount)
     }
-
-    // 更新技能管理器
-    if (this.skillManager) {
-      this.skillManager.update(time, delta)
-    }
-
-    // 更新 Roguelike 系统（HP 回复等）
-    if (this.roguelikeSystem) {
-      this.roguelikeSystem.update(time, delta)
-    }
-
-    // 更新波次管理器
-    if (this.waveManager) {
-      this.waveManager.update(time, delta)
-    }
-  }
-
-  addKill() {
-    this.killCount++
-    // 通知 HUD 更新
-    this.events.emit('killCountUpdated', this.killCount)
+    if (this.skillManager) this.skillManager.update(time, delta)
+    if (this.roguelikeSystem) this.roguelikeSystem.update(time, delta)
+    if (this.waveManager) this.waveManager.update(time, delta)
   }
 
   onGameOver() {
     this.gameOver = true
-
-    // 停止相机跟随，固定在当前位置
     this.cameras.main.stopFollow()
-
-    // 游戏结束音效
     this.audioManager.playSfx('gameover')
-
-    // 获取结算数据
     const stats = this.waveManager.getGameOverStats()
-
     console.log('游戏结束！', stats)
-
-    // 发送结算事件给 HUD
     this.events.emit('gameOver', stats)
-
-    // 显示游戏结束界面
     this.showGameOverScreen(stats)
   }
 
   showGameOverScreen(stats) {
-    // 使用屏幕中心坐标（不受相机滚动影响）
     const centerX = this.cameras.main.width / 2
     const centerY = this.cameras.main.height / 2
-
-    // 创建 UI 容器，设置 scrollFactor 为 0 使其固定在屏幕上
     const uiContainer = this.add.container(0, 0).setScrollFactor(0)
 
-    // 半透明背景
-    const overlay = this.add.rectangle(
-      centerX, centerY,
-      this.cameras.main.width, this.cameras.main.height,
-      0x000000, 0.85
-    )
+    const overlay = this.add.rectangle(centerX, centerY, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.85)
     uiContainer.add(overlay)
 
-    // 标题
     const titleText = this.add.text(centerX, centerY - 180, '游戏结束', {
       fontSize: '48px',
       fill: '#ff6464',
@@ -638,18 +509,15 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5)
     uiContainer.add(titleText)
 
-    // 标题动画
     this.tweens.add({
       targets: titleText,
-      scaleX: 1.1,
-      scaleY: 1.1,
+      scaleX: 1.1, scaleY: 1.1,
       duration: 800,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
     })
 
-    // 最高波次
     const waveText = this.add.text(centerX, centerY - 100, `最高波次：第 ${stats.highestWave} 波`, {
       fontSize: '28px',
       fill: '#ffffff',
@@ -657,7 +525,6 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5)
     uiContainer.add(waveText)
 
-    // 存活时间
     const minutes = Math.floor(stats.survivalTime / 60000)
     const seconds = Math.floor((stats.survivalTime % 60000) / 1000)
     const timeText = this.add.text(centerX, centerY - 60, `存活时间：${minutes} 分 ${seconds} 秒`, {
@@ -667,46 +534,35 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5)
     uiContainer.add(timeText)
 
-    // 分隔线
     const line = this.add.graphics()
     line.lineStyle(2, 0x444444)
     line.lineBetween(centerX - 200, centerY - 30, centerX + 200, centerY - 30)
     uiContainer.add(line)
 
-    // 统计数据
     const statsY = centerY + 10
     const leftX = centerX - 100
     const rightX = centerX + 100
 
     const killText = this.add.text(leftX, statsY, `击杀数：${stats.totalKills}`, {
-      fontSize: '18px',
-      fill: '#cccccc',
-      fontFamily: 'Arial'
+      fontSize: '18px', fill: '#cccccc', fontFamily: 'Arial'
     }).setOrigin(0.5)
     uiContainer.add(killText)
 
     const comboText = this.add.text(rightX, statsY, `最高连击：${stats.highestCombo}`, {
-      fontSize: '18px',
-      fill: '#cccccc',
-      fontFamily: 'Arial'
+      fontSize: '18px', fill: '#cccccc', fontFamily: 'Arial'
     }).setOrigin(0.5)
     uiContainer.add(comboText)
 
     const damageText = this.add.text(leftX, statsY + 30, `造成伤害：${stats.totalDamage}`, {
-      fontSize: '18px',
-      fill: '#cccccc',
-      fontFamily: 'Arial'
+      fontSize: '18px', fill: '#cccccc', fontFamily: 'Arial'
     }).setOrigin(0.5)
     uiContainer.add(damageText)
 
     const buffText = this.add.text(rightX, statsY + 30, `获得强化：${stats.buffsCollected}`, {
-      fontSize: '18px',
-      fill: '#cccccc',
-      fontFamily: 'Arial'
+      fontSize: '18px', fill: '#cccccc', fontFamily: 'Arial'
     }).setOrigin(0.5)
     uiContainer.add(buffText)
 
-    // 最终分数
     const score = this.calculateScore(stats)
     const scoreText = this.add.text(centerX, centerY + 90, `最终分数：${score}`, {
       fontSize: '36px',
@@ -716,7 +572,6 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5)
     uiContainer.add(scoreText)
 
-    // 分数闪烁
     this.tweens.add({
       targets: scoreText,
       alpha: 0.7,
@@ -725,7 +580,6 @@ export class GameScene extends Phaser.Scene {
       repeat: 2
     })
 
-    // 按钮样式函数
     const createButton = (x, y, text, callback) => {
       const btn = this.add.text(x, y, text, {
         fontSize: '24px',
@@ -741,17 +595,11 @@ export class GameScene extends Phaser.Scene {
         this.audioManager.playSfx('select')
         callback()
       })
-
       uiContainer.add(btn)
       return btn
     }
 
-    // 重新开始按钮
-    createButton(centerX - 100, centerY + 160, '再来一局', () => {
-      this.scene.restart()
-    })
-
-    // 返回主菜单按钮
+    createButton(centerX - 100, centerY + 160, '再来一局', () => this.scene.restart())
     createButton(centerX + 100, centerY + 160, '返回菜单', () => {
       this.scene.stop('HUDScene')
       this.scene.start('MainMenuScene')
@@ -759,20 +607,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   calculateScore(stats) {
-    // 基础分 = 击杀数 × 10 + 波次 × 1000
     const baseScore = stats.totalKills * 10 + stats.highestWave * 1000
-
-    // 连击系数 = 1 + 最高连击 / 500 (上限 2.0)
     const comboMultiplier = Math.min(1 + stats.highestCombo / 500, 2.0)
-
-    // 效率系数 = 1 + 总伤害 / 存活时间 / 1000 (上限 1.5)
     const efficiencyMultiplier = stats.survivalTime > 0
       ? Math.min(1 + stats.totalDamage / stats.survivalTime / 1000, 1.5)
       : 1
-
-    // 难度系数 = 1 + 最高波次 / 50
     const difficultyMultiplier = 1 + stats.highestWave / 50
-
     return Math.floor(baseScore * comboMultiplier * efficiencyMultiplier * difficultyMultiplier)
   }
 }

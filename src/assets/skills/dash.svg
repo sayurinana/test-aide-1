@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- 闪现技能图标 - 闪电/瞬移 -->
+  <defs>
+    <linearGradient id="dashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff00ff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#aa00aa;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <!-- 闪电形状 -->
+  <polygon points="28,4 12,22 20,22 16,44 36,22 26,22 32,4" fill="url(#dashGrad)" stroke="#ff88ff" stroke-width="1"/>
+  <!-- 闪烁效果 -->
+  <circle cx="14" cy="14" r="2" fill="#ff00ff" opacity="0.5"/>
+  <circle cx="36" cy="34" r="2" fill="#ff00ff" opacity="0.5"/>
+</svg>
