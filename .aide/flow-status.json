@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 28,
+  "current_step": 29,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -214,7 +214,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 28,
-      "summary": "完成2.1项目初始化: Vite+Phaser3环境搭建"
+      "summary": "完成2.1项目初始化: Vite+Phaser3环境搭建",
+      "git_commit": "58043e7a43a0b91473d82d9512999d6ab426cc0d"
+    },
+    {
+      "timestamp": "2025-12-19T23:48:19+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 29,
+      "summary": "完成2.2游戏场景搭建: 世界边界+相机系统+网格背景"
     }
   ],
   "source_branch": "master",

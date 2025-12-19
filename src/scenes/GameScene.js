@@ -14,6 +14,9 @@ export class GameScene extends Phaser.Scene {
     // 设置世界边界
     this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
 
+    // 设置相机边界
+    this.cameras.main.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
+
     // 创建简单的背景网格
     this.createBackground()
 
