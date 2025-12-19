@@ -21,7 +21,7 @@
 | 1 | Bug 修复 + 测试关卡 | **completed** | spec-01.md |
 | 2 | 品牌重塑 + 技能系统 | **completed** | spec-02.md |
 | 3 | 普攻系统基础架构 | **completed** | spec-03.md |
-| 4 | 普攻类型扩展 + 强化系统 | pending | spec-04.md |
+| 4 | 普攻类型扩展 + 强化系统 | **completed** | spec-04.md |
 
 ### 子计划 1 当前进度
 
@@ -55,6 +55,15 @@
 - [x] 创建 AttackSelectScene.js 开局选择界面
 - [x] 修改 GameScene.js 集成 AttackManager
 - [x] 修改 main.js 注册新场景
+
+### 子计划 4 当前进度
+
+- [x] 创建 OrbAttack.js 法球普攻
+- [x] 创建 WaveAttack.js 冲击波普攻
+- [x] 创建 LightningAttack.js 闪电链普攻
+- [x] 创建 SummonAttack.js 召唤物普攻
+- [x] 更新 GameScene.js 集成所有普攻类型
+- [x] 添加 18 个普攻专属强化（BuffData.js）
 
 ## 执行顺序
 
