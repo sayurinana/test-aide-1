@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T04-33-28",
-  "current_phase": "docs",
-  "current_step": 25,
+  "current_phase": "flow-design",
+  "current_step": 26,
   "started_at": "2025-12-20T04:33:28+08:00",
   "history": [
     {
@@ -201,7 +201,15 @@
       "action": "next-step",
       "phase": "docs",
       "step": 25,
-      "summary": "子计划 2 完成，开始子计划 3"
+      "summary": "子计划 2 完成，开始子计划 3",
+      "git_commit": "34dc026a937f6536e0011849ee5f58ec1c2fa9b3"
+    },
+    {
+      "timestamp": "2025-12-20T05:29:48+08:00",
+      "action": "back-part",
+      "phase": "flow-design",
+      "step": 26,
+      "summary": "开始子计划 3 的流程设计"
     }
   ],
   "source_branch": "master",
