@@ -55,8 +55,9 @@ export class WaveManager {
     // 初期更少，后期增长更平滑
     this.totalEnemiesInWave = 8 + wave * 2 + Math.floor(wave / 5) * 3
 
-    // 生成间隔: 逐渐加快，但有下限
-    this.spawnInterval = Math.max(150, 800 - wave * 25)
+    // 生成间隔: 初期更快，逐渐变慢到一定程度后加快
+    // 修复：降低初始间隔，让敌人生成更快
+    this.spawnInterval = Math.max(150, 500 - wave * 20)
 
     // 敌人配置
     this.waveEnemyTypes = this.getEnemyTypesForWave(wave)

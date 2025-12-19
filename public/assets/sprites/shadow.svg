@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+  <!-- 飘影 - 六边形幽灵 -->
+  <defs>
+    <radialGradient id="shadowGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff6464;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#aa3333;stop-opacity:0.7"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 六边形主体 -->
+  <polygon points="18,2 32,10 32,26 18,34 4,26 4,10"
+           fill="url(#shadowGlow)" stroke="#ff8888" stroke-width="1"/>
+
+  <!-- 内部阴影核心 -->
+  <circle cx="18" cy="18" r="6" fill="#330000"/>
+
+  <!-- 眼睛 -->
+  <circle cx="14" cy="15" r="2" fill="#ffcccc"/>
+  <circle cx="22" cy="15" r="2" fill="#ffcccc"/>
+
+  <!-- 瞳孔 -->
+  <circle cx="14" cy="15" r="1" fill="#330000"/>
+  <circle cx="22" cy="15" r="1" fill="#330000"/>
+</svg>

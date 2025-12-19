@@ -12,17 +12,20 @@ export class MainMenuScene extends Phaser.Scene {
   }
 
   preload() {
-    // 预加载 SVG 资源
-    this.load.svg('player', 'src/assets/sprites/player.svg', { width: 48, height: 48 })
-    this.load.svg('shadow', 'src/assets/sprites/shadow.svg', { width: 36, height: 36 })
-    this.load.svg('wolf', 'src/assets/sprites/wolf.svg', { width: 44, height: 44 })
-    this.load.svg('snake', 'src/assets/sprites/snake.svg', { width: 32, height: 32 })
-    this.load.svg('wraith', 'src/assets/sprites/wraith.svg', { width: 40, height: 40 })
-    this.load.svg('elite', 'src/assets/sprites/elite.svg', { width: 60, height: 60 })
-    this.load.svg('boss', 'src/assets/sprites/boss.svg', { width: 100, height: 100 })
+    // 预加载 SVG 资源（从 public 目录加载，确保构建后路径正确）
+    this.load.svg('player', 'assets/sprites/player.svg', { width: 48, height: 48 })
+    this.load.svg('shadow', 'assets/sprites/shadow.svg', { width: 36, height: 36 })
+    this.load.svg('wolf', 'assets/sprites/wolf.svg', { width: 44, height: 44 })
+    this.load.svg('snake', 'assets/sprites/snake.svg', { width: 32, height: 32 })
+    this.load.svg('wraith', 'assets/sprites/wraith.svg', { width: 40, height: 40 })
+    this.load.svg('elite', 'assets/sprites/elite.svg', { width: 60, height: 60 })
+    this.load.svg('boss', 'assets/sprites/boss.svg', { width: 100, height: 100 })
   }
 
   create() {
+    // 重置状态（修复返回主菜单后按钮失效的问题）
+    this.isStarting = false
+
     const { width, height } = this.cameras.main
     const centerX = width / 2
     const centerY = height / 2

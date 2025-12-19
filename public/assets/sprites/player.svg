@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- 玩家角色 - 仙侠剑客 -->
+  <defs>
+    <radialGradient id="playerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#64c8ff;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#3a7a9a;stop-opacity:0.6"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 外层光环 -->
+  <circle cx="24" cy="24" r="22" fill="none" stroke="#64c8ff" stroke-width="1" opacity="0.3"/>
+
+  <!-- 主体 - 圆形身体 -->
+  <circle cx="24" cy="24" r="18" fill="url(#playerGlow)" filter="url(#glow)"/>
+
+  <!-- 内圈装饰 -->
+  <circle cx="24" cy="24" r="14" fill="none" stroke="#88ddff" stroke-width="1" opacity="0.5"/>
+
+  <!-- 方向指示 - 三角形剑形 -->
+  <polygon points="42,24 20,18 20,30" fill="#ffffff" opacity="0.9"/>
+
+  <!-- 核心光点 -->
+  <circle cx="24" cy="24" r="4" fill="#ffffff"/>
+
+  <!-- 剑气纹路 -->
+  <path d="M24,10 L26,24 L24,38" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.4"/>
+</svg>
