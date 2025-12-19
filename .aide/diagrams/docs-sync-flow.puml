@@ -1,0 +1,24 @@
+@startuml docs-sync-flow
+!theme plain
+title 文档同步更新流程
+
+start
+
+:更新 blocks/01-root.md;
+note right
+  - 添加 .github 目录
+  - 更新版本信息
+  - 更新 vite 配置说明
+end note
+
+:更新 project-docs/README.md;
+note right
+  - 更新项目结构
+  - 添加 CI/CD 状态
+  - 更新统计信息
+end note
+
+:验证文档一致性;
+
+stop
+@enduml
