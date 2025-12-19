@@ -1,0 +1,66 @@
+@startuml spec-02-game-logic
+!theme plain
+title 技术原型 - 游戏主循环逻辑
+
+start
+
+:游戏启动;
+:初始化 Phaser Game;
+:加载 GameScene;
+
+partition "场景初始化 (create)" {
+  :创建游戏世界边界;
+  :初始化物理引擎;
+  :创建玩家实例;
+  :初始化敌人生成器;
+  :创建 HUD 层;
+  :设置相机跟随;
+}
+
+partition "游戏主循环 (update)" {
+  repeat
+    :处理输入;
+    note right: WASD移动 + 鼠标攻击
+
+    :更新玩家状态;
+    if (玩家正在攻击?) then (是)
+      :执行攻击逻辑;
+      :检测攻击范围内敌人;
+      :对命中敌人造成伤害;
+    endif
+
+    :更新敌人状态;
+    while (遍历所有敌人) is (还有敌人)
+      :计算到玩家的方向;
+      :移动敌人向玩家;
+      if (敌人碰到玩家?) then (是)
+        :对玩家造成伤害;
+      endif
+      if (敌人 HP <= 0?) then (是)
+        :播放死亡效果;
+        :回收到对象池;
+        :增加击杀计数;
+      endif
+    endwhile (遍历完成)
+
+    :敌人生成检查;
+    if (满足生成条件?) then (是)
+      :从对象池获取敌人;
+      :设置随机位置;
+      :激活敌人;
+    endif
+
+    :更新 UI;
+    :更新血条显示;
+    :更新击杀计数;
+
+    if (玩家 HP <= 0?) then (是)
+      :游戏结束;
+      stop
+    endif
+
+  repeat while (游戏运行中)
+}
+
+stop
+@enduml
