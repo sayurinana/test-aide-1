@@ -69,7 +69,9 @@
       "task_id": "2025-12-20T04-33-28",
       "task_summary": "开始任务准备: Bug修复 + 游戏重设计",
       "started_at": "2025-12-20T04:33:28+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "649166d0561b296ceef4f984a12f79e934992db1",
+      "finished_at": "2025-12-20T05:51:47+08:00"
     }
   ]
 }
