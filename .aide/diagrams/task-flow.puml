@@ -1,0 +1,43 @@
+@startuml 任务执行流程
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 任务执行流程：自动攻击 + 界面美化
+
+start
+
+partition "功能1：自动攻击" {
+  :修改 GameScene.js;
+  note right: 添加 autoAttack 状态变量
+  :添加 F 键监听;
+  :修改 update 循环;
+  note right: 自动攻击逻辑
+  :修改 HUDScene.js;
+  note right: 显示状态
+  :测试自动攻击功能;
+}
+
+partition "功能2：界面美化" {
+  :创建 assets/sprites 目录;
+  :设计玩家 SVG;
+  :设计敌人 SVG（6种）;
+  :修改 main.js 预加载;
+  :修改 Player.js 渲染;
+  :修改 Enemy.js 渲染;
+  :测试 SVG 显示;
+}
+
+partition "验证与收尾" {
+  :整体功能验证;
+  if (验证通过?) then (是)
+    :更新文档;
+    :任务完成;
+  else (否)
+    :修复问题;
+    :重新验证;
+  endif
+}
+
+stop
+@enduml
