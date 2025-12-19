@@ -19,8 +19,8 @@
 | # | 名称 | 状态 | 细则文档 |
 |---|------|------|----------|
 | 1 | Bug 修复 + 测试关卡 | **completed** | spec-01.md |
-| 2 | 品牌重塑 + 技能系统 | **in_progress** | spec-02.md |
-| 3 | 普攻系统基础架构 | pending | spec-03.md |
+| 2 | 品牌重塑 + 技能系统 | **completed** | spec-02.md |
+| 3 | 普攻系统基础架构 | **in_progress** | spec-03.md |
 | 4 | 普攻类型扩展 + 强化系统 | pending | spec-04.md |
 
 ### 子计划 1 当前进度
@@ -39,10 +39,11 @@
 - [x] 更新游戏名称（index.html, main.js, MainMenuScene.js, package.json）
 - [x] 更新敌人名称（config.js）
 - [x] 更新 UI 文案（结算界面等）
-- [ ] 更新技能系统为 4 个通用技能
-- [ ] 创建技能 SVG 图标
-- [ ] 重构 SkillManager.js
-- [ ] 更新 BuffData.js 技能相关强化
+- [x] 更新技能系统为 4 个通用技能（config.js）
+- [x] 创建技能 SVG 图标（src/assets/skills/）
+- [x] 重构 SkillManager.js
+- [x] 更新 BuffData.js 技能相关强化
+- [x] 更新 HUDScene.js 技能栏配置
 
 ## 执行顺序
 
