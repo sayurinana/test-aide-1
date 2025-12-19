@@ -1,0 +1,86 @@
+@startuml 程序逻辑流图
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 强化生成与攻击选择 - 程序逻辑流图
+
+|RoguelikeSystem|
+start
+:generateChoices(waveNumber, isBossWave);
+
+:获取玩家已拥有的攻击类型列表;
+note right
+  从 scene.attackManager.getAllAttacks()
+  获取已装备的攻击 ID 列表
+end note
+
+:初始化 choices = [], usedIds = Set();
+
+repeat :循环3次生成选项;
+  :rollRarity() 确定稀有度;
+
+  :过滤候选强化;
+  note right
+    过滤条件:
+    1. 未被选中 (usedIds)
+    2. 稀有度匹配
+    3. 未满级/未拥有
+    4. **普攻强化检查**
+  end note
+
+  if (buff.category === 'attack'?) then (是)
+    if (buff.id === 'ATK_NEW'?) then (是)
+      if (已拥有全部6种攻击?) then (是)
+        :排除此强化;
+      else (否)
+        :保留此强化;
+      endif
+    else (否-专属强化)
+      if (buff.attackType 在已拥有列表中?) then (是)
+        :保留此强化;
+      else (否)
+        :排除此强化;
+      endif
+    endif
+  else (否)
+    :保留此强化;
+  endif
+
+  :从候选中随机选择一个;
+  :添加到 choices;
+repeat while (choices.length < 3?)
+
+:返回 choices;
+
+|BuffSelectionScene|
+:显示强化选择界面;
+:玩家选择一个强化;
+
+|RoguelikeSystem|
+:addBuff(buffId);
+:applyBuffEffect(buffData);
+
+if (effect.type === 'new_attack'?) then (是)
+  |GameScene|
+  :showNewAttackSelection();
+
+  |AttackSelectScene|
+  :获取未拥有的攻击类型;
+  :显示可选攻击卡片;
+  :玩家选择新攻击;
+
+  |GameScene|
+  :onNewAttackSelected(attackType);
+  :创建攻击实例;
+  :attackManager.addAttack(attack);
+  :设置碰撞检测;
+else (否)
+  :应用其他类型效果;
+endif
+
+|GameScene|
+:恢复游戏;
+stop
+
+@enduml
