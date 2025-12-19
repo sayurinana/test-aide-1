@@ -15,6 +15,9 @@
 ### 变更
 - vite.config.js 支持动态 base 路径（兼容本地开发和 GitHub Pages）
 
+### 文档
+- 同步更新项目文档（project-docs）反映 CI/CD 配置变更
+
 ---
 
 ## [1.0.0] - 2025-12-20
