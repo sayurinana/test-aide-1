@@ -1,0 +1,72 @@
+@startuml spec04-program-logic
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 子计划 4：普攻扩展程序逻辑
+
+|普攻执行|
+start
+:AttackManager.executeAll();
+
+partition "法球攻击" {
+  :寻找最近敌人;
+  :发射法球;
+  :法球追踪移动;
+  :命中时造成伤害;
+}
+
+partition "冲击波攻击" {
+  :创建扩散波纹;
+  :波纹向前扩散;
+  :检测穿透的敌人;
+  :对所有敌人造成伤害;
+}
+
+partition "闪电链攻击" {
+  :选择初始目标;
+  while (还有弹射次数?) is (是)
+    :寻找下一个目标;
+    :绘制电弧特效;
+    :造成递减伤害;
+  endwhile (否)
+}
+
+partition "召唤物攻击" {
+  :生成召唤物;
+  :召唤物寻敌;
+  :自动攻击;
+  if (持续时间结束?) then (是)
+    :销毁召唤物;
+  else (否)
+    :继续攻击;
+  endif
+}
+
+|强化系统|
+:玩家升级;
+:生成强化选择;
+
+if (有已装备普攻?) then (是)
+  :加入普攻专属强化;
+endif
+
+if (未拥有所有普攻?) then (是)
+  if (随机概率10%?) then (是)
+    :加入新普攻卡片;
+  endif
+endif
+
+:显示选择界面;
+:玩家选择;
+
+if (选择了新普攻?) then (是)
+  :创建普攻实例;
+  :添加到 AttackManager;
+else (否)
+  :应用强化效果;
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,59 @@
+@startuml spec04-task-flow
+skinparam defaultFontName "PingFang SC"
+skinparam dpi 300
+scale 0.3
+
+title 子计划 4：普攻类型扩展 + 强化系统 - 任务执行流程
+
+start
+:1. 实现法球普攻 OrbAttack.js;
+note right
+  - 自动追踪最近敌人
+  - 支持穿透强化
+end note
+
+:2. 实现冲击波普攻 WaveAttack.js;
+note right
+  - 向前方发射扩散波
+  - 可穿透敌人
+end note
+
+:3. 实现闪电链普攻 LightningAttack.js;
+note right
+  - 闪电弹射多目标
+  - 伤害递减机制
+end note
+
+:4. 实现召唤物普攻 SummonAttack.js;
+note right
+  - 召唤自动攻击分身
+  - 持续时间限制
+end note
+
+:5. 更新 GameScene 集成新普攻;
+note right
+  - onAttackSelected 添加新类型
+  - 设置碰撞检测
+end note
+
+:6. 创建普攻专属强化数据;
+note right
+  - 更新 BuffData.js
+  - 每种普攻 5+ 专属强化
+end note
+
+:7. 更新 BuffSelectionScene;
+note right
+  - 支持普攻强化显示
+  - 新普攻获取卡片
+end note
+
+:8. 平衡性测试;
+note right
+  - 使用测试关卡验证
+  - 调整数值配置
+end note
+
+stop
+
+@enduml
