@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 30,
+  "current_step": 31,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -230,7 +230,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 30,
-      "summary": "完成2.3玩家角色实现: WASD移动+鼠标朝向+几何渲染"
+      "summary": "完成2.3玩家角色实现: WASD移动+鼠标朝向+几何渲染",
+      "git_commit": "c0046691eb298994e123a2a3a3cc30dfd49850dc"
+    },
+    {
+      "timestamp": "2025-12-19T23:51:22+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 31,
+      "summary": "完成2.4基础攻击系统: 鼠标点击攻击+挥剑弧线效果"
     }
   ],
   "source_branch": "master",

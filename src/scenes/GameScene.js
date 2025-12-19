@@ -5,6 +5,7 @@
 import Phaser from 'phaser'
 import { WORLD, PLAYER, ENEMY } from '../config.js'
 import { Player } from '../entities/Player.js'
+import { AttackEffect } from '../entities/AttackEffect.js'
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -27,10 +28,44 @@ export class GameScene extends Phaser.Scene {
     // 相机跟随玩家
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
 
+    // 攻击效果组
+    this.attackEffects = this.add.group()
+
+    // 设置攻击输入
+    this.setupAttackInput()
+
     // 启动 HUD 场景
     this.scene.launch('HUDScene')
 
     console.log('GameScene 初始化完成')
+  }
+
+  setupAttackInput() {
+    // 鼠标点击攻击
+    this.input.on('pointerdown', (pointer) => {
+      if (pointer.leftButtonDown()) {
+        this.performAttack()
+      }
+    })
+  }
+
+  performAttack() {
+    if (!this.player || !this.player.canAttack()) return
+
+    if (this.player.attack()) {
+      // 获取攻击位置和角度
+      const attackPos = this.player.getAttackPosition()
+
+      // 创建攻击效果
+      const effect = new AttackEffect(
+        this,
+        attackPos.x,
+        attackPos.y,
+        this.player.rotation
+      )
+
+      this.attackEffects.add(effect)
+    }
   }
 
   createBackground() {
