@@ -30,6 +30,97 @@ export const ENEMY = {
   MAX_COUNT: 100
 }
 
+// 敌人类型配置
+export const ENEMY_TYPES = {
+  // 飘影 - 基础追踪型
+  SHADOW: {
+    id: 'shadow',
+    name: '飘影',
+    hp: 30,
+    atk: 10,
+    speed: 80,
+    size: 18,
+    color: 0xff6464,
+    behavior: 'chase',
+    score: 10
+  },
+
+  // 妖狼 - 冲锋型
+  WOLF: {
+    id: 'wolf',
+    name: '妖狼',
+    hp: 50,
+    atk: 15,
+    speed: 60,
+    size: 22,
+    color: 0xaa4444,
+    behavior: 'charge',
+    chargeSpeed: 300,
+    chargeCooldown: 3000,
+    chargeDistance: 200,
+    score: 20
+  },
+
+  // 蛇妖 - 远程投射型
+  SNAKE: {
+    id: 'snake',
+    name: '蛇妖',
+    hp: 25,
+    atk: 8,
+    speed: 50,
+    size: 16,
+    color: 0x44aa44,
+    behavior: 'ranged',
+    attackRange: 300,
+    attackCooldown: 2000,
+    projectileSpeed: 200,
+    score: 15
+  },
+
+  // 怨魂 - 分裂型
+  WRAITH: {
+    id: 'wraith',
+    name: '怨魂',
+    hp: 40,
+    atk: 8,
+    speed: 70,
+    size: 20,
+    color: 0x8844ff,
+    behavior: 'split',
+    splitCount: 2,
+    splitHp: 15,
+    score: 25
+  },
+
+  // 精英 - 邪修
+  ELITE: {
+    id: 'elite',
+    name: '邪修',
+    hp: 200,
+    atk: 25,
+    speed: 60,
+    size: 30,
+    color: 0xff8800,
+    behavior: 'elite',
+    isElite: true,
+    score: 100
+  },
+
+  // Boss - 妖将
+  BOSS: {
+    id: 'boss',
+    name: '妖将',
+    hp: 500,
+    atk: 40,
+    speed: 40,
+    size: 50,
+    color: 0xff0000,
+    behavior: 'boss',
+    isBoss: true,
+    score: 500
+  }
+}
+
 // 战斗系统配置
 export const COMBAT = {
   // 连击系统
