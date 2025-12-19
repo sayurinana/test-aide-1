@@ -3,7 +3,7 @@
  */
 
 import Phaser from 'phaser'
-import { PLAYER, WORLD, COLORS, COMBAT } from '../config.js'
+import { PLAYER, COMBAT } from '../config.js'
 
 export class Player extends Phaser.GameObjects.Container {
   constructor(scene, x, y) {
@@ -53,32 +53,9 @@ export class Player extends Phaser.GameObjects.Container {
   }
 
   createGraphics() {
-    // 创建主体 - 简约几何风格的剑客
-    this.graphics = this.scene.add.graphics()
-    this.add(this.graphics)
-
-    // 绘制角色
-    this.drawCharacter()
-  }
-
-  drawCharacter() {
-    this.graphics.clear()
-
-    // 身体 - 淡蓝色圆形
-    this.graphics.fillStyle(COLORS.PLAYER, 1)
-    this.graphics.fillCircle(0, 0, PLAYER.SIZE)
-
-    // 方向指示器 - 三角形
-    this.graphics.fillStyle(0xffffff, 0.8)
-    this.graphics.fillTriangle(
-      PLAYER.SIZE * 0.5, 0,
-      -PLAYER.SIZE * 0.3, -PLAYER.SIZE * 0.4,
-      -PLAYER.SIZE * 0.3, PLAYER.SIZE * 0.4
-    )
-
-    // 核心光点
-    this.graphics.fillStyle(0xffffff, 1)
-    this.graphics.fillCircle(0, 0, PLAYER.SIZE * 0.2)
+    // 使用预加载的 SVG 纹理
+    this.sprite = this.scene.add.image(0, 0, 'player')
+    this.add(this.sprite)
   }
 
   update(time, delta) {

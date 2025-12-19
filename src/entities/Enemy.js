@@ -55,162 +55,29 @@ export class Enemy extends Phaser.GameObjects.Container {
   }
 
   createGraphics() {
-    this.graphics = this.scene.add.graphics()
-    this.add(this.graphics)
-    this.drawEnemy()
+    // 根据行为类型选择 SVG 纹理
+    const textureKey = this.getTextureKey()
+    this.sprite = this.scene.add.image(0, 0, textureKey)
+    this.add(this.sprite)
   }
 
-  drawEnemy() {
-    this.graphics.clear()
-
-    // 根据敌人类型绘制不同外观
+  getTextureKey() {
     switch (this.behavior) {
-      case 'chase':
-        this.drawHexagon()
-        break
-      case 'charge':
-        this.drawTriangle()
-        break
-      case 'ranged':
-        this.drawDiamond()
-        break
-      case 'split':
-        this.drawGhost()
-        break
-      case 'elite':
-        this.drawElite()
-        break
-      case 'boss':
-        this.drawBoss()
-        break
-      default:
-        this.drawHexagon()
+      case 'chase': return 'shadow'
+      case 'charge': return 'wolf'
+      case 'ranged': return 'snake'
+      case 'split': return 'wraith'
+      case 'elite': return 'elite'
+      case 'boss': return 'boss'
+      default: return 'shadow'
     }
   }
 
-  // 六边形 - 飘影
-  drawHexagon() {
-    this.graphics.fillStyle(this.color, 1)
-    const points = []
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i - Math.PI / 6
-      points.push({
-        x: Math.cos(angle) * this.size,
-        y: Math.sin(angle) * this.size
-      })
+  updateTexture() {
+    const textureKey = this.getTextureKey()
+    if (this.sprite) {
+      this.sprite.setTexture(textureKey)
     }
-    this.graphics.beginPath()
-    this.graphics.moveTo(points[0].x, points[0].y)
-    for (let i = 1; i < points.length; i++) {
-      this.graphics.lineTo(points[i].x, points[i].y)
-    }
-    this.graphics.closePath()
-    this.graphics.fillPath()
-
-    // 核心
-    this.graphics.fillStyle(0x330000, 1)
-    this.graphics.fillCircle(0, 0, this.size * 0.3)
-  }
-
-  // 三角形 - 妖狼
-  drawTriangle() {
-    this.graphics.fillStyle(this.color, 1)
-    this.graphics.fillTriangle(
-      this.size, 0,
-      -this.size * 0.8, -this.size * 0.7,
-      -this.size * 0.8, this.size * 0.7
-    )
-
-    // 眼睛
-    this.graphics.fillStyle(0xffff00, 1)
-    this.graphics.fillCircle(this.size * 0.2, -this.size * 0.2, 3)
-    this.graphics.fillCircle(this.size * 0.2, this.size * 0.2, 3)
-  }
-
-  // 菱形 - 蛇妖
-  drawDiamond() {
-    this.graphics.fillStyle(this.color, 1)
-    this.graphics.fillTriangle(
-      0, -this.size,
-      this.size * 0.6, 0,
-      0, this.size
-    )
-    this.graphics.fillTriangle(
-      0, -this.size,
-      -this.size * 0.6, 0,
-      0, this.size
-    )
-
-    // 蛇眼
-    this.graphics.fillStyle(0xff0000, 1)
-    this.graphics.fillCircle(0, -this.size * 0.3, 3)
-  }
-
-  // 幽灵 - 怨魂
-  drawGhost() {
-    this.graphics.fillStyle(this.color, 0.7)
-    this.graphics.fillCircle(0, -this.size * 0.3, this.size * 0.8)
-
-    // 波浪底部
-    this.graphics.beginPath()
-    this.graphics.moveTo(-this.size * 0.8, -this.size * 0.3)
-    for (let i = 0; i < 4; i++) {
-      const x = -this.size * 0.8 + (this.size * 1.6 / 4) * (i + 0.5)
-      const y = this.size * 0.3 + (i % 2 === 0 ? this.size * 0.3 : 0)
-      this.graphics.lineTo(x, y)
-    }
-    this.graphics.lineTo(this.size * 0.8, -this.size * 0.3)
-    this.graphics.closePath()
-    this.graphics.fillPath()
-
-    // 眼睛
-    this.graphics.fillStyle(0xffffff, 1)
-    this.graphics.fillCircle(-this.size * 0.25, -this.size * 0.4, 4)
-    this.graphics.fillCircle(this.size * 0.25, -this.size * 0.4, 4)
-  }
-
-  // 精英
-  drawElite() {
-    // 外圈
-    this.graphics.lineStyle(3, 0xffff00, 0.8)
-    this.graphics.strokeCircle(0, 0, this.size)
-
-    // 内圈
-    this.graphics.fillStyle(this.color, 1)
-    this.graphics.fillCircle(0, 0, this.size * 0.8)
-
-    // 符文
-    this.graphics.lineStyle(2, 0x000000, 1)
-    this.graphics.strokeCircle(0, 0, this.size * 0.4)
-  }
-
-  // Boss
-  drawBoss() {
-    // 外圈光环
-    this.graphics.lineStyle(4, 0xffff00, 0.6)
-    this.graphics.strokeCircle(0, 0, this.size * 1.2)
-
-    // 主体
-    this.graphics.fillStyle(this.color, 1)
-    this.graphics.fillCircle(0, 0, this.size)
-
-    // 角
-    this.graphics.fillStyle(0x880000, 1)
-    this.graphics.fillTriangle(
-      -this.size * 0.4, -this.size,
-      -this.size * 0.6, -this.size * 1.5,
-      -this.size * 0.2, -this.size
-    )
-    this.graphics.fillTriangle(
-      this.size * 0.4, -this.size,
-      this.size * 0.6, -this.size * 1.5,
-      this.size * 0.2, -this.size
-    )
-
-    // 眼睛
-    this.graphics.fillStyle(0xffff00, 1)
-    this.graphics.fillCircle(-this.size * 0.3, -this.size * 0.2, 6)
-    this.graphics.fillCircle(this.size * 0.3, -this.size * 0.2, 6)
   }
 
   setTarget(target) {
@@ -531,7 +398,7 @@ export class Enemy extends Phaser.GameObjects.Container {
       this.body.setOffset(-this.size, -this.size)
 
       // 重绘外观
-      this.drawEnemy()
+      this.updateTexture()
     } else {
       this.hp = this.maxHp
     }
