@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-19T22-20-36",
   "current_phase": "impl",
-  "current_step": 45,
+  "current_step": 46,
   "started_at": "2025-12-19T22:20:36+08:00",
   "history": [
     {
@@ -350,7 +350,15 @@
       "action": "next-step",
       "phase": "impl",
       "step": 45,
-      "summary": "完成3.3敌人AI系统: 6种敌人类型+行为状态机+对象池"
+      "summary": "完成3.3敌人AI系统: 6种敌人类型+行为状态机+对象池",
+      "git_commit": "65d4c74205be8972cf881a0c60b8adf326c2e78f"
+    },
+    {
+      "timestamp": "2025-12-20T00:55:09+08:00",
+      "action": "next-step",
+      "phase": "impl",
+      "step": 46,
+      "summary": "完成3.4 Roguelike系统+3.5无尽模式+3.7游戏状态: 强化道具/选择界面/波次管理/暂停结算"
     }
   ],
   "source_branch": "master",

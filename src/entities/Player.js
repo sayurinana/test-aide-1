@@ -12,8 +12,11 @@ export class Player extends Phaser.GameObjects.Container {
     this.scene = scene
     this.hp = PLAYER.HP
     this.maxHp = PLAYER.HP
+    this.baseMaxHp = PLAYER.HP  // 基础最大 HP（用于强化计算）
     this.atk = PLAYER.ATK
+    this.baseAtk = PLAYER.ATK   // 基础攻击力
     this.speed = PLAYER.SPEED
+    this.baseSpeed = PLAYER.SPEED // 基础速度
     this.attackCooldown = 0
     this.isAttacking = false
 
@@ -24,6 +27,9 @@ export class Player extends Phaser.GameObjects.Container {
     // 暴击属性
     this.critChance = COMBAT.CRIT_CHANCE
     this.critMultiplier = COMBAT.CRIT_MULTIPLIER
+
+    // 强化属性（由 RoguelikeSystem 管理）
+    this.buffStats = null
 
     // 创建角色图形
     this.createGraphics()

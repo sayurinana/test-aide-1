@@ -141,6 +141,18 @@ export class EnemySpawner {
   }
 
   /**
+   * 生成指定类型的敌人（由 WaveManager 调用）
+   * @param {string} typeKey - 敌人类型键（如 'SHADOW', 'BOSS'）
+   * @param {object} customConfig - 可选的自定义配置（覆盖默认值）
+   */
+  spawnSpecificEnemy(typeKey, customConfig = null) {
+    const baseConfig = ENEMY_TYPES[typeKey] || ENEMY_TYPES.SHADOW
+    const config = customConfig || baseConfig
+    const pos = this.getSpawnPosition(config.size)
+    return this.spawnEnemy(pos.x, pos.y, config)
+  }
+
+  /**
    * 批量生成敌人
    */
   spawnWave(count, typeId = null) {

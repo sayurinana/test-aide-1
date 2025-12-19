@@ -6,6 +6,7 @@
 import Phaser from 'phaser'
 import { GameScene } from './scenes/GameScene.js'
 import { HUDScene } from './scenes/HUDScene.js'
+import { BuffSelectionScene } from './scenes/BuffSelectionScene.js'
 
 // 游戏配置
 const config = {
@@ -21,7 +22,7 @@ const config = {
       debug: false
     }
   },
-  scene: [GameScene, HUDScene]
+  scene: [GameScene, HUDScene, BuffSelectionScene]
 }
 
 // 启动游戏

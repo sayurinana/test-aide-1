@@ -20,11 +20,17 @@ export class HUDScene extends Phaser.Scene {
     // 创建击杀计数
     this.createKillCounter()
 
+    // 创建波次显示
+    this.createWaveDisplay()
+
     // 创建连击显示
     this.createComboDisplay()
 
     // 创建技能栏
     this.createSkillBar()
+
+    // 创建暂停界面
+    this.createPauseOverlay()
 
     // 创建调试信息
     this.createDebugInfo()
@@ -33,6 +39,13 @@ export class HUDScene extends Phaser.Scene {
     this.gameScene.events.on('playerHpUpdated', this.updateHpBar, this)
     this.gameScene.events.on('killCountUpdated', this.updateKillCount, this)
     this.gameScene.events.on('comboUpdated', this.updateCombo, this)
+    this.gameScene.events.on('waveAnnouncement', this.showWaveAnnouncement, this)
+    this.gameScene.events.on('waveFightStart', this.onWaveFightStart, this)
+    this.gameScene.events.on('waveProgress', this.updateWaveProgress, this)
+    this.gameScene.events.on('waveComplete', this.onWaveComplete, this)
+    this.gameScene.events.on('buffAcquired', this.showBuffAcquired, this)
+    this.gameScene.events.on('gamePaused', this.showPauseOverlay, this)
+    this.gameScene.events.on('gameResumed', this.hidePauseOverlay, this)
 
     console.log('HUDScene 初始化完成')
   }
@@ -302,5 +315,231 @@ export class HUDScene extends Phaser.Scene {
 
     // 更新技能栏
     this.updateSkillBar()
+  }
+
+  createWaveDisplay() {
+    const x = this.cameras.main.width / 2
+    const y = 30
+
+    // 波次文字
+    this.waveText = this.add.text(x, y, '准备开始', {
+      fontSize: '24px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    }).setOrigin(0.5)
+
+    // 进度条背景
+    this.waveProgressBg = this.add.graphics()
+    this.waveProgressBg.fillStyle(0x333333, 0.6)
+    this.waveProgressBg.fillRoundedRect(x - 100, y + 20, 200, 10, 5)
+
+    // 进度条前景
+    this.waveProgress = this.add.graphics()
+    this.waveProgressWidth = 196
+    this.waveProgressX = x - 98
+    this.waveProgressY = y + 22
+
+    // 波次公告容器
+    this.waveAnnouncementContainer = this.add.container(x, this.cameras.main.height / 2)
+    this.waveAnnouncementContainer.setAlpha(0)
+  }
+
+  showWaveAnnouncement(data) {
+    // 清空并重建公告
+    this.waveAnnouncementContainer.removeAll(true)
+
+    // 标题
+    const title = this.add.text(0, -30, data.title, {
+      fontSize: '48px',
+      fill: data.color,
+      fontFamily: 'Arial',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 4
+    }).setOrigin(0.5)
+
+    this.waveAnnouncementContainer.add(title)
+
+    // 副标题
+    if (data.subtitle) {
+      const subtitle = this.add.text(0, 30, data.subtitle, {
+        fontSize: '24px',
+        fill: '#aaaaaa',
+        fontFamily: 'Arial'
+      }).setOrigin(0.5)
+      this.waveAnnouncementContainer.add(subtitle)
+    }
+
+    // 敌人数量
+    const enemyInfo = this.add.text(0, 70, `敌人数量: ${data.enemyCount}`, {
+      fontSize: '18px',
+      fill: '#888888',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+    this.waveAnnouncementContainer.add(enemyInfo)
+
+    // 显示动画
+    this.waveAnnouncementContainer.setAlpha(0)
+    this.waveAnnouncementContainer.setScale(0.5)
+
+    this.tweens.add({
+      targets: this.waveAnnouncementContainer,
+      alpha: 1,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 300,
+      ease: 'Back.out'
+    })
+
+    // 3秒后淡出
+    this.time.delayedCall(2500, () => {
+      this.tweens.add({
+        targets: this.waveAnnouncementContainer,
+        alpha: 0,
+        duration: 500
+      })
+    })
+  }
+
+  onWaveFightStart(data) {
+    this.waveText.setText(`第 ${data.wave} 波`)
+    this.currentWaveTotal = data.enemyCount
+    this.currentWaveKilled = 0
+    this.updateWaveProgressBar()
+  }
+
+  updateWaveProgress(data) {
+    this.currentWaveKilled = data.killed
+    this.currentWaveTotal = data.total
+    this.updateWaveProgressBar()
+  }
+
+  updateWaveProgressBar() {
+    this.waveProgress.clear()
+    const percent = this.currentWaveKilled / Math.max(this.currentWaveTotal, 1)
+    this.waveProgress.fillStyle(0x64c8ff, 1)
+    this.waveProgress.fillRoundedRect(
+      this.waveProgressX,
+      this.waveProgressY,
+      this.waveProgressWidth * percent,
+      6,
+      3
+    )
+  }
+
+  onWaveComplete(data) {
+    // 显示波次完成
+    const text = this.add.text(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2,
+      `第 ${data.wave} 波完成！`,
+      {
+        fontSize: '36px',
+        fill: '#00ff00',
+        fontFamily: 'Arial',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 3
+      }
+    ).setOrigin(0.5)
+
+    // 动画后移除
+    this.tweens.add({
+      targets: text,
+      alpha: 0,
+      y: text.y - 50,
+      duration: 1000,
+      delay: 500,
+      onComplete: () => text.destroy()
+    })
+
+    // 里程碑显示
+    if (data.milestone) {
+      this.showMilestone(data.milestone)
+    }
+  }
+
+  showMilestone(milestone) {
+    const centerX = this.cameras.main.width / 2
+    const centerY = this.cameras.main.height / 2 + 60
+
+    const text = this.add.text(centerX, centerY, `⚔️ ${milestone.name} ⚔️\n${milestone.reward}`, {
+      fontSize: '24px',
+      fill: '#ffff00',
+      fontFamily: 'Arial',
+      fontStyle: 'bold',
+      align: 'center',
+      stroke: '#000000',
+      strokeThickness: 3
+    }).setOrigin(0.5)
+
+    this.tweens.add({
+      targets: text,
+      alpha: 0,
+      y: text.y - 30,
+      duration: 1500,
+      delay: 2000,
+      onComplete: () => text.destroy()
+    })
+  }
+
+  showBuffAcquired(buff) {
+    // 右下角显示获得的强化
+    const x = this.cameras.main.width - 20
+    const y = this.cameras.main.height - 120
+
+    const text = this.add.text(x, y, `+ ${buff.name}`, {
+      fontSize: '20px',
+      fill: '#00ff00',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    }).setOrigin(1, 0.5)
+
+    this.tweens.add({
+      targets: text,
+      alpha: 0,
+      y: y - 30,
+      duration: 1500,
+      delay: 1000,
+      onComplete: () => text.destroy()
+    })
+  }
+
+  createPauseOverlay() {
+    const centerX = this.cameras.main.width / 2
+    const centerY = this.cameras.main.height / 2
+
+    this.pauseContainer = this.add.container(centerX, centerY)
+    this.pauseContainer.setVisible(false)
+
+    // 半透明背景
+    const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.7)
+    this.pauseContainer.add(bg)
+
+    // 暂停文字
+    const pauseText = this.add.text(0, -50, '游戏暂停', {
+      fontSize: '48px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    }).setOrigin(0.5)
+    this.pauseContainer.add(pauseText)
+
+    // 提示文字
+    const tipText = this.add.text(0, 30, '按 ESC 继续游戏', {
+      fontSize: '24px',
+      fill: '#888888',
+      fontFamily: 'Arial'
+    }).setOrigin(0.5)
+    this.pauseContainer.add(tipText)
+  }
+
+  showPauseOverlay() {
+    this.pauseContainer.setVisible(true)
+  }
+
+  hidePauseOverlay() {
+    this.pauseContainer.setVisible(false)
   }
 }
