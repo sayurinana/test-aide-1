@@ -117,7 +117,9 @@
       "task_id": "2025-12-20T07-27-36",
       "task_summary": "开始任务准备: 攻击方式选择与强化过滤",
       "started_at": "2025-12-20T07:27:36+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "a7036e70f56764e2967ceb8916878e5c9279b605",
+      "finished_at": "2025-12-20T07:32:31+08:00"
     }
   ]
 }
