@@ -1,7 +1,7 @@
 {
   "task_id": "2025-12-20T08-04-39",
   "current_phase": "task-optimize",
-  "current_step": 1,
+  "current_step": 2,
   "started_at": "2025-12-20T08:04:39+08:00",
   "history": [
     {
@@ -9,7 +9,15 @@
       "action": "start",
       "phase": "task-optimize",
       "step": 1,
-      "summary": "开始任务准备: 清理御剑无双旧信息"
+      "summary": "开始任务准备: 清理御剑无双旧信息",
+      "git_commit": "1f951d69017e591f040a2c1f3766c6227569deab"
+    },
+    {
+      "timestamp": "2025-12-20T08:06:06+08:00",
+      "action": "next-step",
+      "phase": "task-optimize",
+      "step": 2,
+      "summary": "任务细则已生成，自动确认"
     }
   ],
   "source_branch": "master",
