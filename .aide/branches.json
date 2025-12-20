@@ -1,5 +1,5 @@
 {
-  "next_number": 11,
+  "next_number": 12,
   "branches": [
     {
       "number": 1,
@@ -120,6 +120,18 @@
       "status": "finished",
       "end_commit": "a7036e70f56764e2967ceb8916878e5c9279b605",
       "finished_at": "2025-12-20T07:32:31+08:00"
+    },
+    {
+      "number": 11,
+      "branch_name": "aide/011",
+      "source_branch": "master",
+      "start_commit": "674175a169b2a713f4f6641678bee0d54f037b68",
+      "task_id": "2025-12-20T08-04-39",
+      "task_summary": "开始任务准备: 清理御剑无双旧信息",
+      "started_at": "2025-12-20T08:04:39+08:00",
+      "status": "finished",
+      "end_commit": "6372fcbe5350a066a0b43382b6148dde354cfaec",
+      "finished_at": "2025-12-20T08:09:22+08:00"
     }
   ]
 }
