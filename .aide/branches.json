@@ -129,7 +129,9 @@
       "task_id": "2025-12-20T08-04-39",
       "task_summary": "开始任务准备: 清理御剑无双旧信息",
       "started_at": "2025-12-20T08:04:39+08:00",
-      "status": "active"
+      "status": "finished",
+      "end_commit": "6372fcbe5350a066a0b43382b6148dde354cfaec",
+      "finished_at": "2025-12-20T08:09:22+08:00"
     }
   ]
 }
